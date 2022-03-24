@@ -1,3 +1,4 @@
+import Discord from 'discord.js';
 import { ExecuteCommand, BotCommand } from '../';
 
 const getOnlineMembers: ExecuteCommand = (message, args) => {
@@ -6,7 +7,10 @@ const getOnlineMembers: ExecuteCommand = (message, args) => {
 
 const command: BotCommand = {
     name: 'get-online-members',
-    description: '!get-online-members: I will return the amount of online members in this server.',
+    getDescription: () => new Discord.MessageEmbed({})
+        .setColor('GREEN')
+        .setTitle(`Command ${process.env.BOT_PREFIX}${command.name}`)
+        .setDescription('!get-online-members: I will return the amount of online members in this server.'),
     exec: getOnlineMembers
 }
 
