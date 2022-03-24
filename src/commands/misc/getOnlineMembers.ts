@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import { ExecuteCommand, BotCommand } from '../';
+import { ExecuteCommand, BotCommand } from '..';
 
 const getOnlineMembers: ExecuteCommand = (message, args) => {
     message.reply(`Online Members: ${message.guild?.memberCount}`);
