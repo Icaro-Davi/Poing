@@ -35,7 +35,8 @@
 # Hello, i'm Poing :3
 
 I'm a discord bot(don't know what this is), hope to help you on your discord server(too many difficult words). Let's Play!!
-**If you want to try me, put these magic words in your big black box.**
+
+**If you want to try me, put these magic words in your big black box 💻.**
 
 - ✨ First you need a special key to access all the magic, use ".env.example" and create a file called ".env".
 - 🧙 To create my subconscious, switch and swipe. ```yarn```
