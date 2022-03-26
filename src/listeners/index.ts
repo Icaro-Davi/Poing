@@ -1,13 +1,10 @@
-import { Client, Collection } from "discord.js";
+import fs from 'fs';
 
-import onReady from "./ready";
-
-import { BotCommand } from "../commands";
-import onMessageCreate from "./messageCreate";
-
-const Listener = (client: Client, commands: Collection<string, BotCommand>) => {
-    client.on('ready', () => onReady());
-    client.on('messageCreate', (message) => onMessageCreate(message, commands));
+const startListeningEvents = () => {
+    const ignoreFiles = ['index.ts'];
+    fs.readdirSync('./src/listeners')
+        .filter(file => file.endsWith('.ts') && !ignoreFiles.some(ignoreFile => ignoreFile === file))
+        .forEach(file => require(`./${file}`).default())
 }
 
-export default Listener;
+export default startListeningEvents;
