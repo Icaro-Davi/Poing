@@ -4,7 +4,7 @@ import fs from 'fs';
 import { BotCommand } from '../commands';
 
 export const splitCommandAndArgs = (message: string) => {
-    const args = message.trim().slice(process.env.BOT_DEFAULT_PREFIX?.length).split(/ +/);
+    const args = message.trim().slice(process.env.BOT_PREFIX?.length).split(/ +/);
     const name = args.shift()?.toLocaleLowerCase() || '';
     return {
         name, args
@@ -13,12 +13,16 @@ export const splitCommandAndArgs = (message: string) => {
 
 export const getAllBotCommands = () => {
     const clientCommands = new DiscordJS.Collection<string, BotCommand>();
+    const aliasesCommandsKey = new DiscordJS.Collection<string, string>();
     const commandPaths = searchCommandsFiles('./src/commands', '../');
     for (const path of commandPaths) {
         const command = require(path).default as BotCommand;
         clientCommands.set(command.name, command);
+        command.aliases?.forEach(aliases => {
+            aliasesCommandsKey.set(aliases, command.name);
+        });
     }
-    return clientCommands;
+    return { clientCommands, aliasesCommandsKey };
 }
 
 export const searchCommandsFiles = (dir: string, returnWithInitialPath = './') => {
