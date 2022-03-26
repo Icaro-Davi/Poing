@@ -1,5 +1,5 @@
-import Discord from 'discord.js';
 import { BotCommand, ExecuteCommand } from "..";
+import { createGetHelp } from '../../utils/messageEmbed';
 
 const ping: ExecuteCommand = (message, args) => {
     message.channel.send('...').then(resultMessage => (
@@ -9,10 +9,10 @@ const ping: ExecuteCommand = (message, args) => {
 
 const command: BotCommand = {
     name: 'ping',
-    getDescription: () => new Discord.MessageEmbed()
-        .setColor('GREEN')
-        .setTitle(`Command ${command.name}`)
-        .setDescription('I will send you the time in milliseconds (ms) it takes me to reply to you.'),
+    category: 'Utility',
+    description: 'I will send you the time in milliseconds (ms) it takes me to reply to you.',
+    aliases: ['p'],
+    getHelp: (customPrefix) => createGetHelp(command, customPrefix),
     exec: ping
 }
 

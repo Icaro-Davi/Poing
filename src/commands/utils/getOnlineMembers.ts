@@ -1,5 +1,5 @@
-import Discord from 'discord.js';
 import { ExecuteCommand, BotCommand } from '..';
+import { createGetHelp } from '../../utils/messageEmbed';
 
 const getOnlineMembers: ExecuteCommand = (message, args) => {
     message.reply(`Online Members: ${message.guild?.memberCount}`);
@@ -7,10 +7,10 @@ const getOnlineMembers: ExecuteCommand = (message, args) => {
 
 const command: BotCommand = {
     name: 'get-online-members',
-    getDescription: () => new Discord.MessageEmbed({})
-        .setColor('GREEN')
-        .setTitle(`Command ${process.env.BOT_PREFIX}${command.name}`)
-        .setDescription('!get-online-members: I will return the amount of online members in this server.'),
+    category: 'Utility',
+    description: 'I will return the amount of online members in this server.',
+    aliases: ['gom', 'online-count'],
+    getHelp: (customPrefix) => createGetHelp(command, customPrefix),
     exec: getOnlineMembers
 }
 
