@@ -2,17 +2,18 @@ import DiscordJS, { Intents } from 'discord.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import BotListeners from './listeners';
+import { DiscordBot } from './config';
 import { getAllBotCommands } from './utils/commands';
 
-const client = new DiscordJS.Client({
+DiscordBot.Client.set(new DiscordJS.Client({
     intents: [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MESSAGES
     ]
-});
+}));
 
-const botCommands = getAllBotCommands();
-BotListeners(client, botCommands);
+const { aliasesCommandsKey, clientCommands } = getAllBotCommands();
+DiscordBot.Commands.setCollection(clientCommands);
+DiscordBot.Commands.setAliases(aliasesCommandsKey);
 
-client.login(process.env.BOT_TOKEN);
+DiscordBot.Client.start();
