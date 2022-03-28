@@ -9,7 +9,7 @@ const getHelpAboutAnyCommand = (message: Message, arg: string) => {
     const commandFromAliases = DiscordBot.Commands.AliasesCollection.get(arg);
     const command = DiscordBot.Commands.Collection.get(commandFromAliases || arg);
     if (command) return message.reply({ embeds: [command?.getHelp(process.env.BOT_PREFIX)] });
-    return message.reply(`I do not know this command ${MD.codeBlock.line(arg)}`);
+    return message.reply(`I do not know this argument ${MD.codeBlock.line(arg)}`);
 }
 
 const listAllCommands = (message: Message) => {
@@ -46,7 +46,7 @@ const listAllCommands = (message: Message) => {
 const command: BotCommand = {
     name: 'help',
     category: 'Utility',
-    description: 'Get help about any command',
+    description: `Get help about any command, ${MD.bold.b('require at least 1 argument')}`,
     aliases: ['h'],
     usage: [
         [
