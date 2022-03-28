@@ -4,11 +4,11 @@ import MD from '../md';
 
 const createAsterisk = (isRequired: boolean) => isRequired ? '*' : '';
 
-const generateArguments = (usage: BotUsage) => {
-    const allArgs = usage.reduce((prev, current) => [...prev, ...current], []).reverse();
-    const createText = (arg: string, required: boolean, description?: string) =>
-        `\n${MD.bold.b(MD.codeBlock.line(`[${arg}]${createAsterisk(required)}`))}${description ? ' - ' + description : ''}`;
-    return allArgs.reduce((prev, current) =>
+const generateArguments = (allArgsOneDepth: BotArguments) => {
+    const createText = (arg: string, required: boolean, description?: string) => {
+        return `\n${MD.codeBlock.line(`[${arg}]${createAsterisk(required)}`)}${description ? ' - ' + description : ''}`;
+    }
+    return allArgsOneDepth.reduce((prev, current) =>
         createText(current.arg, current.required, current.description) + prev, '');
 }
 
@@ -28,7 +28,6 @@ const generateHowToUse = (usage: BotArguments[]) => {
                 return `${formattedArg}|`;
         }
     }
-
     return usage.reduce((prev, current) => {
         return prev + current.reduce((_prev, _current, _index) =>
             _prev + createArgumentByIndex({ ..._current, currentIndex: _index, lastIndex: current.length - 1 })
@@ -36,22 +35,32 @@ const generateHowToUse = (usage: BotArguments[]) => {
     }, '').trim();
 }
 
-const createGetHelp = (command: BotCommand, customPrefix = process.env.BOT_PREFIX): MessageEmbed => new MessageEmbed()
-    .setColor(`#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}`)
-    .setTitle(`:dividers: Help command ${customPrefix}${command.name}`)
-    .setDescription(command.description)
-    .setFields([
-        {
-            name: ':paperclip: How to use',
-            value: MD.codeBlock.line(`${customPrefix}${command.name} ${command.usage ? generateHowToUse(command.usage) : ''}`)
-        },
-        ...command.aliases
-            ? [{ name: ':paperclip: Aliases', value: generateAliases(command.aliases, customPrefix || '') }]
-            : [],
-        ...command.usage
-            ? [{ name: ':paperclip: Arguments', value: generateArguments(command.usage) }]
-            : [],
-    ])
-    .setFooter({ text: `Category - ${command.category}` })
+const generateExamples = (allArgsOneDepth: BotArguments, customPrefix?: string) => {
+    return allArgsOneDepth.reduce((prev, current) => current.example ? prev + `${current.example.replaceAll('{prefix}', customPrefix || '!')}\n` : prev, '');
+}
+
+const createGetHelp = (command: BotCommand, customPrefix = process.env.BOT_PREFIX): MessageEmbed => {
+    const allArgs = command.usage?.reduce((prev, current) => [...prev, ...current], []);
+    return new MessageEmbed()
+        .setColor(`#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}`)
+        .setTitle(`:dividers: Help command ${customPrefix}${command.name}`)
+        .setDescription(command.description)
+        .setFields([
+            {
+                name: ':paperclip: How to use',
+                value: MD.codeBlock.line(`${customPrefix}${command.name} ${command.usage ? generateHowToUse(command.usage) : ''}`)
+            },
+            ...command.aliases
+                ? [{ name: ':paperclip: Aliases', value: generateAliases(command.aliases, customPrefix || '') }]
+                : [],
+            ...allArgs
+                ? [{ name: ':paperclip: Arguments', value: generateArguments([...allArgs].reverse()) },]
+                : [],
+            ...allArgs?.some(arg => arg.example)
+                ? [{ name: ':paperclip: Example', value: generateExamples(allArgs, customPrefix) }]
+                : []
+        ])
+        .setFooter({ text: `Category - ${command.category}` });
+}
 
 export default createGetHelp;
