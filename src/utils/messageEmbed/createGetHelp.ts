@@ -57,7 +57,7 @@ const createGetHelp = (command: BotCommand, customPrefix = process.env.BOT_PREFI
                 ? [{ name: ':paperclip: Arguments', value: generateArguments([...allArgs].reverse()) },]
                 : [],
             ...allArgs?.some(arg => arg.example)
-                ? [{ name: ':paperclip: Example', value: generateExamples(allArgs, customPrefix) }]
+                ? [{ name: ':paperclip: Examples', value: generateExamples(allArgs, customPrefix) }]
                 : []
         ])
         .setFooter({ text: `Category - ${command.category}` });
