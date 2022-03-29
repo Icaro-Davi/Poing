@@ -46,7 +46,7 @@ const listAllCommands = (message: Message) => {
 const command: BotCommand = {
     name: 'help',
     category: 'Utility',
-    description: `Get help about any command, ${MD.bold.b('require at least 1 argument')}`,
+    description: `Get help on any command, ${MD.bold.b('at least 1 argument is required')}.`,
     aliases: ['h'],
     usage: [
         [
@@ -58,7 +58,7 @@ const command: BotCommand = {
             {
                 required: false, arg: 'list',
                 description: 'List all commands.',
-                example: `${MD.codeBlock.line('{prefix}help list')} Will list all my commands.`
+                example: `${MD.codeBlock.line('{prefix}help list')} It will list all my commands.`
             }
         ]
     ],
