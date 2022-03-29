@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { BotCommand, BotArguments, BotUsage } from '../../commands';
+import { BotCommand, BotArguments } from '../../commands';
 import MD from '../md';
 
 const createAsterisk = (isRequired: boolean) => isRequired ? '*' : '';
