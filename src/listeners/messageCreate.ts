@@ -29,6 +29,10 @@ export default () =>
                 message.reply(`I do not understand what are you order to me, please use ${MD.codeBlock.line(process.env.BOT_PREFIX + 'h ' + command.name)} to learn about this command.`);
                 return;
             }
+            if (botCommand.allowedPermissions?.length) {
+                if (!botCommand.allowedPermissions?.some(permission => message.member?.permissions.has(permission)))
+                    message.reply('You does not have permission to execute this command.');
+            }
             botCommand.exec(message, command.args);
         } catch (error) {
             console.error(error);
