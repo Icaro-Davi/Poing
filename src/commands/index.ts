@@ -1,4 +1,4 @@
-import { Collection, Message, MessageEmbed } from 'discord.js';
+import { Collection, Message, MessageEmbed, PermissionResolvable } from 'discord.js';
 
 export type ExecuteCommand = (message: Message, args: string[]) => void;
 export type BotCommands = Collection<string, BotCommand>;
@@ -12,6 +12,7 @@ export type BotCommand = {
     exec: ExecuteCommand;
     category: BotCommandCategory;
     description: string;    
+    allowedPermissions?: PermissionResolvable[];
     usage?: BotUsage;
     aliases?: string[];   
 }
