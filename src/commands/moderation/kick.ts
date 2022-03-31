@@ -31,12 +31,13 @@ const command: BotCommand = {
         }
         const member = await Member.search(message, user ? [user] : args);
         if (member) {
-            if (member.kickable) member.kick(reason).then((_member) => {
-                return message.channel.send(`${_member.user.username} was kicked!`);
-            });
-            else return message.channel.send('I cannot kick this member.');
+            if (member.kickable) {
+                const kikedMember = await member.kick(reason);
+                return kikedMember ? message.channel.send(`${kikedMember.user.username} was kicked!`) : false;
+            }
+            return message.channel.send('I cannot kick this member.');
         }
-        message.channel.send('User not found');
+        return message.channel.send('User not found');
     }
 };
 
