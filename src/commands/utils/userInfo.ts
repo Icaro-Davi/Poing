@@ -1,7 +1,8 @@
-import { GuildMember, Message, MessageEmbed } from 'discord.js';
+import { GuildMember, MessageEmbed } from 'discord.js';
 import moment from 'moment';
 
 import { BotCommand } from '..';
+import { Member } from '../../application';
 import MD from '../../utils/md';
 import { createGetHelp } from '../../utils/messageEmbed';
 
@@ -15,23 +16,6 @@ const memberMessageEmbed = async (member: GuildMember) => {
             { name: 'Roles', value: member.roles.cache.map((role, key, collection) => MD.codeBlock.line(`[${role.name}]`)).join(' ') }
         ])
         .setThumbnail(member.user.avatarURL() || '')
-}
-
-const searchMember = async (message: Message, args: string[]): Promise<GuildMember | undefined> => {
-    try {
-        if (args.length) {
-            if (!Number.isNaN(Number(args.join(' ')))){
-                const member = (await message.guild?.members.fetch({ user: args.join(' '), limit: 1 }));                
-                if(member?.user) return member;
-            }
-            return message.mentions.members?.first() ||
-                (await message.guild?.members.search({ query: args.join(' '), limit: 1 }))?.first();
-        }
-        return (await searchMember(message, [message.author.username]));
-    } catch (error) {
-        console.log(error)
-        message.channel.send('I could not complete this adventure to search your member friend, something wrong.')
-    }
 }
 
 const command: BotCommand = {
@@ -55,7 +39,7 @@ const command: BotCommand = {
     ],
     getHelp: (customPrefix) => createGetHelp(command, customPrefix || process.env.BOT_PREFIX),
     exec: async (message, args) => {
-        const member = await searchMember(message, args);        
+        const member = await Member.search(message, args);        
         if (member) return message.reply({ embeds: [await memberMessageEmbed(member)] });
         return message.reply('Sorry, I could not find any members');
     }
