@@ -4,7 +4,7 @@ import { searchCommandsFiles } from "../utils/commands";
 
 export default () =>
     DiscordBot.Client.get().on('ready', () => {
-        DiscordBot.Client.get().user?.setActivity('!help', {
+        DiscordBot.Client.get().user?.setActivity('!help list', {
             type: 'LISTENING',
             name: 'Poing Poing Poing',
             url: 'https://github.com/icaro-davi'
