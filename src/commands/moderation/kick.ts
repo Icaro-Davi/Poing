@@ -7,7 +7,7 @@ const command: BotCommand = {
     name: 'kick',
     category: 'Moderation',
     description: 'Kick a member from the server.',
-    allowedPermissions: ['ADMINISTRATOR', 'KICK_MEMBERS'],
+    allowedPermissions: ['KICK_MEMBERS'],
     usage: [
         [{
             required: true, arg: 'user',
