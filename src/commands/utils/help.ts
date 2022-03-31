@@ -51,7 +51,7 @@ const command: BotCommand = {
     usage: [
         [
             {
-                required: true, arg: 'command',
+                required: false, arg: 'command',
                 description: 'Any command i can use.',
                 example: `${MD.codeBlock.line('{prefix}help who')} Will return help about ${MD.codeBlock.line('{prefix}who')} command.`
             },
@@ -66,6 +66,8 @@ const command: BotCommand = {
     exec: (message, args) => {
         switch (args[0]) {
             case 'list':
+                return listAllCommands(message);
+            case undefined:
                 return listAllCommands(message);
             default:
                 return getHelpAboutAnyCommand(message, args[0]);
