@@ -39,9 +39,9 @@ const command: BotCommand = {
     ],
     getHelp: (customPrefix) => createGetHelp(command, customPrefix || process.env.BOT_PREFIX),
     exec: async (message, args) => {
-        const member = await Member.search(message, args);        
-        if (member) return message.reply({ embeds: [await memberMessageEmbed(member)] });
-        return message.reply('Sorry, I could not find any members');
+        const member = await Member.search(message, args.length ? args : [message.author.username]);
+        if (member) return await message.reply({ embeds: [await memberMessageEmbed(member)] });
+        return await message.reply('Sorry, I could not find any members');
     }
 }
 
