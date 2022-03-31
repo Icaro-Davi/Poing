@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, PermissionResolvable } from 'discord.js';
 import { BotUsage } from '../commands';
 import { DiscordBot } from '../config';
 import { splitCommandAndArgs } from '../utils/commands';
@@ -18,22 +18,26 @@ const anyArgumentIsRequired = (args: string[], usage: BotUsage) => {
     return !argsRequiredByIndex.every((requiredIndex, i) => requiredIndex ? i < args.length : true);
 }
 
+const memberDoesNotHavePermissions = (message: Message, allowedPermissions: PermissionResolvable[]) => {
+    return !allowedPermissions.some(permission => message.member?.permissions.has(permission));
+}
+
 export default () =>
-    DiscordBot.Client.get().on('messageCreate', (message) => {
+    DiscordBot.Client.get().on('messageCreate', async (message) => {
         if (itIsANormalMessage(message)) return;
         const command = splitCommandAndArgs(message.content);
         const botCommand = searchBotCommand(command.name);
         if (!botCommand) return;
         try {
             if (botCommand.usage && anyArgumentIsRequired(command.args, botCommand.usage)) {
-                message.reply(`I do not understand what are you order to me, please use ${MD.codeBlock.line(process.env.BOT_PREFIX + 'h ' + command.name)} to learn about this command.`);
+                message.reply(`I do not understand what are you order to me, please use ${MD.codeBlock.line(process.env.BOT_PREFIX + 'help ' + command.name)} to learn about this command.`);
                 return;
             }
-            if (botCommand.allowedPermissions?.length) {
-                if (!botCommand.allowedPermissions?.some(permission => message.member?.permissions.has(permission)))
-                    message.reply('You does not have permission to execute this command.');
+            if (botCommand.allowedPermissions?.length && memberDoesNotHavePermissions(message, botCommand.allowedPermissions)) {
+                message.reply('You does not have permission to execute this command.');
+                return;
             }
-            botCommand.exec(message, command.args);
+            await botCommand.exec(message, command.args);
         } catch (error) {
             console.error(error);
             message.reply(`Sorry, i think i have a bug in that command, i will try to kill it.`);
