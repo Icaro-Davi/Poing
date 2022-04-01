@@ -5,7 +5,7 @@ import { createGetHelp } from "../../utils/messageEmbed";
 // https://www.youtube.com/watch?v=Emq30Kxaps4&ab_channel=dbr
 const command: BotCommand = {
     name: 'remove-messages',
-    category: 'Administration',
+    category: 'Moderation',
     description: 'Remove messages from any channel, discord limit bots to remove messages until 2 weeks ago.',
     aliases: ['rm'],
     usage: [
