@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import startListeningEvents from '../listeners';
+import startListeningEvents from '../events';
 
 class Client {
     private static client: Discord.Client;
