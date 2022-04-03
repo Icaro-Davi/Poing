@@ -10,34 +10,27 @@ const command: BotCommand = {
     allowedPermissions: ['KICK_MEMBERS'],
     usage: [
         [{
-            required: true, arg: 'user',
-            description: `You can use ${MD.codeBlock.line('[mention | username | nickname | memberId]')}`,
-            example: `${MD.codeBlock.line('{prefix}kick @Poing')} - User @Poing will be kicked from the server.`
+            required: true, arg: 'member',
+            description: `You can use ${MD.codeBlock.line('[mention | memberId]')}`,
+            example: `${MD.codeBlock.line('{prefix}kick @Poing')} - User @Poing will be kicked from the server (Please does not kick me ;w;).`
         }],
         [{
-            required: false, arg: 'reason=',
-            description: `Reason for kick the member from the server, ${MD.codeBlock.line('[reason= | --r=]')}.`,
-            example: `${MD.codeBlock.line('{prefix}kick @Poing reason=Poing is jumping through the server.')} - It will kick @Poing with a reason.`
+            required: false, arg: 'reason',
+            description: `Reason for kick the member from the server'.`,
+            example: `${MD.codeBlock.line('{prefix}kick @Poing Poing is jumping through the server.')} - It will kick @Poing with a reason.(Do not do that ;w;)`
         }]
     ],
     getHelp: (customPrefix) => createGetHelp(command, customPrefix),
     exec: async (message, args) => {
-        let argReasonIndex = args.join(' ').search((/(reason=|--r=)/gi));
-        let user = undefined;
-        let reason = undefined;
-        if (argReasonIndex > 0) {
-            user = args.join(' ').slice(0, argReasonIndex).trim();
-            reason = args.join(' ').slice(argReasonIndex).replace(/(reason=|--r=)/gi, '').trim();
-        }
-        const member = await Member.search(message, user ? [user] : args);
+        const member = await Member.search(message, args[0]);
         if (member) {
             if (member.kickable) {
-                const kikedMember = await member.kick(reason);
-                return kikedMember ? message.channel.send(`${kikedMember.user.username} was kicked!`) : false;
+                const kikedMember = await member.kick(args.slice(1).join(' ') || '');
+                return kikedMember ? await message.channel.send(`Bye ${kikedMember.user.username}`) : false;
             }
-            return message.channel.send('I cannot kick this member.');
+            return await message.channel.send('I cannot kick this member.');
         }
-        return message.channel.send('User not found');
+        return await message.channel.send('User not found');
     }
 };
 
