@@ -8,7 +8,6 @@ export type BotArguments = { required: boolean; arg: string, description?: strin
 export type BotUsage = BotArguments[];
 export type BotCommand = {
     name: string;
-    getHelp: BotGetHelp,
     exec: ExecuteCommand;
     category: BotCommandCategory;
     description: string;    

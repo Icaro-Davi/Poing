@@ -1,7 +1,6 @@
 import { BotCommand } from "..";
 import { Member } from "../../application";
 import MD from "../../utils/md";
-import { createGetHelp } from "../../utils/messageEmbed";
 
 const command: BotCommand = {
     name: 'kick',
@@ -20,7 +19,6 @@ const command: BotCommand = {
             example: `${MD.codeBlock.line('{prefix}kick @Poing Poing is jumping through the server.')} - It will kick @Poing with a reason.(Do not do that ;w;)`
         }]
     ],
-    getHelp: (customPrefix) => createGetHelp(command, customPrefix),
     exec: async (message, args) => {
         const member = await Member.search(message, args[0]);
         if (member) {

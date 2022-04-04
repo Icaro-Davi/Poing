@@ -1,7 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { BotCommand } from '..';
 import MD from '../../utils/md';
-import { createGetHelp } from '../../utils/messageEmbed';
 
 const getAllMembers = async (message: Message) => {
     const membersStatusCount = await message.guild?.members.cache
@@ -32,7 +31,6 @@ const command: BotCommand = {
     category: 'Utility',
     description: 'I will return the amount of online members in this server.',
     aliases: ['gms'],
-    getHelp: (customPrefix) => createGetHelp(command, customPrefix),
     exec: (message, args) => {
         getAllMembers(message);
     }

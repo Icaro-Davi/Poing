@@ -5,11 +5,11 @@ import { createGetHelp } from "../../utils/messageEmbed";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
 
-const getHelpAboutAnyCommand = (message: Message, arg: string) => {
+const getHelpAboutAnyCommand = async (message: Message, arg: string) => {
     const commandFromAliases = DiscordBot.Commands.AliasesCollection.get(arg);
     const command = DiscordBot.Commands.Collection.get(commandFromAliases || arg);
-    if (command) return message.reply({ embeds: [command?.getHelp(process.env.BOT_PREFIX)] });
-    return message.reply(`I do not know this argument ${MD.codeBlock.line(arg)}`);
+    if (command) return await message.reply({ embeds: [createGetHelp(command, process.env.BOT_PREFIX || '!')] });
+    return await message.reply(`I do not know this argument ${MD.codeBlock.line(arg)}`);
 }
 
 const listAllCommands = (message: Message) => {
@@ -62,15 +62,14 @@ const command: BotCommand = {
             }
         ]
     ],
-    getHelp: (customPrefix) => createGetHelp(command, customPrefix),
-    exec: (message, args) => {
+    exec: async (message, args) => {
         switch (args[0]) {
             case 'list':
-                return listAllCommands(message);
+                return await listAllCommands(message);
             case undefined:
-                return listAllCommands(message);
+                return await listAllCommands(message);
             default:
-                return getHelpAboutAnyCommand(message, args[0]);
+                return await getHelpAboutAnyCommand(message, args[0]);
         }
     }
 }

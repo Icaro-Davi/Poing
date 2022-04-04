@@ -4,7 +4,6 @@ import moment from 'moment';
 import { BotCommand } from '..';
 import { Member } from '../../application';
 import MD from '../../utils/md';
-import { createGetHelp } from '../../utils/messageEmbed';
 
 const memberMessageEmbed = async (member: GuildMember) => {
     return new MessageEmbed()
@@ -40,7 +39,6 @@ const command: BotCommand = {
             }
         ],
     ],
-    getHelp: (customPrefix) => createGetHelp(command, customPrefix || process.env.BOT_PREFIX),
     exec: async (message, args) => {
         const member = await Member.search(message, args[0] || message.author.id);
         if (member) return await message.reply({ embeds: [await memberMessageEmbed(member)] });
