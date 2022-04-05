@@ -1,0 +1,47 @@
+{
+    "localeLabel": "pt-BR",
+    "category": {
+        "label": "Categoria",
+        "administration": "Administração",
+        "moderation": "Moderação",
+        "utility": "Utilitários"
+    },
+    "messageEmbed": {
+        "getHelp": {
+            "title": "Ajuda do comando: ",
+            "fieldHowToUse": "Como usar",
+            "fieldAliases": "Abreviação",
+            "fieldArguments": "Argumentos",
+            "fieldExamples": "Exemplos"
+        }
+    },
+    "command": {
+        "unban": {
+            "description": "Desbanir um membro do servidor",
+            "usage": {
+                "memberExample": "`{bot.prefix}{defaultCommand.name} @{bot.name}` - Agora {bot.name} pode voltar ao servidor."
+            }
+        },
+        "help": {
+            "description": "Recebe a descrição de algum comando quando usado.",
+            "usage": {
+                "commandExample": "`{bot.prefix}{defaultCommand.name} who` - Irá retornar o manual de como usar o comando `{bot.prefix}who`",
+                "listExample": "`{bot.prefix}{defaultCommand.name} list` - Listarei todos os meus comandos por categoria."
+            }
+        }
+    },
+    "usage": {
+        "member": {
+            "arg": "membro",
+            "description": "A referência de algum membro do servidor, pode ser `[menção | membroId]`"
+        },
+        "command": {
+            "arg": "comando",
+            "description": "A referência de algum comando que está na minha lista."
+        },
+        "listHelp": {
+            "arg": "listar",
+            "description": "Irei listar todos os comandos e suas categorias."
+        }
+    }
+}
