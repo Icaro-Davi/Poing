@@ -1,5 +1,6 @@
 import { MessageEmbed } from 'discord.js';
-import { BotCommand, BotArguments } from '../../commands';
+import { BotCommand, BotArguments, ExecuteCommandOptions } from '../../commands';
+import { replaceVarsInString } from '../../locale';
 import MD from '../md';
 
 const createAsterisk = (isRequired: boolean) => isRequired ? '*' : '';
@@ -39,28 +40,28 @@ const generateExamples = (allArgsOneDepth: BotArguments, customPrefix?: string) 
     return allArgsOneDepth.reduce((prev, current) => current.example ? prev + `${current.example.replaceAll('{prefix}', customPrefix || '!')}\n` : prev, '');
 }
 
-const createGetHelp = (command: BotCommand, customPrefix = process.env.BOT_PREFIX): MessageEmbed => {
+const createGetHelp = (command: BotCommand, options: ExecuteCommandOptions): MessageEmbed => {
     const allArgs = command.usage?.reduce((prev, current) => [...prev, ...current], []);
     return new MessageEmbed()
         .setColor(`#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}`)
-        .setTitle(`:dividers: Help command ${customPrefix}${command.name}`)
+        .setTitle(`:dividers: ${replaceVarsInString('{messageEmbed.getHelp.title}', options.locale)} ${options.bot.prefix}${command.name}`)
         .setDescription(command.description)
         .setFields([
             {
-                name: ':paperclip: How to use',
-                value: MD.codeBlock.line(`${customPrefix}${command.name} ${command.usage ? generateHowToUse(command.usage) : ''}`)
+                name: `:paperclip: ${replaceVarsInString('{messageEmbed.getHelp.fieldHowToUse}', options.locale)}`,
+                value: MD.codeBlock.line(`${options.bot.prefix}${command.name} ${command.usage ? generateHowToUse(command.usage) : ''}`)
             },
             ...command.aliases
-                ? [{ name: ':paperclip: Aliases', value: generateAliases(command.aliases, customPrefix || '') }]
+                ? [{ name: `:paperclip: ${replaceVarsInString('{messageEmbed.getHelp.fieldAliases}', options.locale)}`, value: generateAliases(command.aliases, options.bot.prefix || '') }]
                 : [],
             ...allArgs
-                ? [{ name: ':paperclip: Arguments', value: generateArguments([...allArgs].reverse()) },]
+                ? [{ name: `:paperclip: ${replaceVarsInString('{messageEmbed.getHelp.fieldArguments}', options.locale)}`, value: generateArguments([...allArgs].reverse()) },]
                 : [],
             ...allArgs?.some(arg => arg.example)
-                ? [{ name: ':paperclip: Examples', value: generateExamples(allArgs, customPrefix) }]
+                ? [{ name: `:paperclip: ${replaceVarsInString('{messageEmbed.getHelp.fieldExamples}', options.locale)}`, value: generateExamples(allArgs, options.bot.prefix) }]
                 : []
         ])
-        .setFooter({ text: `Category - ${command.category}` });
+        .setFooter({ text: `${replaceVarsInString('{category.label}', options.locale)} - ${command.category}` });
 }
 
 export default createGetHelp;
