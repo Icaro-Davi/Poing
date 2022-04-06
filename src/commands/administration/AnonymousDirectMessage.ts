@@ -1,6 +1,6 @@
 import { BotCommand } from "..";
 import { Member } from "../../application";
-import { privateMessage } from "../../utils/messageEmbed";
+import { privateMessage } from "../../components/messageEmbed";
 
 const command: BotCommand = {
     name: 'anonymous-direct-message',

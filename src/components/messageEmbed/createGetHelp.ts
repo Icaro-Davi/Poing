@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { BotCommand, BotArguments, ExecuteCommandOptions } from '../../commands';
 import { replaceVarsInString } from '../../locale';
-import MD from '../md';
+import MD from '../../utils/md';
 
 const createAsterisk = (isRequired: boolean) => isRequired ? '*' : '';
 

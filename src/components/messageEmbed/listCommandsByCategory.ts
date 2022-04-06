@@ -2,8 +2,8 @@ import { MessageEmbed } from "discord.js";
 import objectPath from "object-path";
 import { ExecuteCommandOptions } from "../../commands";
 import { DiscordBot } from "../../config";
-import MD from "../md";
-import getPathFromCurlyBrackets from "../regex/getPathFromCurlyBrackets";
+import MD from "../../utils/md";
+import getPathFromCurlyBrackets from "../../utils/regex/getPathFromCurlyBrackets";
 
 const listCommandsByCategory = (options: ExecuteCommandOptions) => {
     const commandsByCategory: { [key: string]: string[] } = {};

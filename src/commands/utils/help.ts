@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 
 import { BotCommand, ExecuteCommandOptions } from "..";
-import { createGetHelp, listCommandsByCategory } from "../../utils/messageEmbed";
+import { createGetHelp, listCommandsByCategory } from "../../components/messageEmbed";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
 import translateCommandToLocale, { LocaleLabel } from "../../locale";
