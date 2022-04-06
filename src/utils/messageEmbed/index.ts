@@ -1,5 +1,9 @@
 import createGetHelp from "./createGetHelp";
+import listCommandsByCategory from "./listCommandsByCategory";
+import privateMessage from "./privateMessage";
 
 export {
-    createGetHelp
+    createGetHelp,
+    listCommandsByCategory,
+    privateMessage
 }

@@ -1,12 +1,10 @@
-import { Message, MessageEmbed } from "discord.js";
-import objectPath from 'object-path';
+import { Message } from "discord.js";
 
 import { BotCommand, ExecuteCommandOptions } from "..";
-import { createGetHelp } from "../../utils/messageEmbed";
+import { createGetHelp, listCommandsByCategory } from "../../utils/messageEmbed";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
-import translateCommandToLocale, { Locale, LocaleLabel } from "../../locale";
-import getPathFromCurlyBrackets from "../../utils/regex/getPathFromCurlyBrackets";
+import translateCommandToLocale, { LocaleLabel } from "../../locale";
 
 const getHelpAboutAnyCommand = async (message: Message, arg: string, options: ExecuteCommandOptions) => {
     const commandFromAliases = DiscordBot.Commands.AliasesCollection.get(arg);
@@ -15,43 +13,7 @@ const getHelpAboutAnyCommand = async (message: Message, arg: string, options: Ex
         const locale = await translateCommandToLocale(defaultCommand, options.locale.localeLabel as LocaleLabel);
         return await message.reply({ embeds: [createGetHelp(locale.botCommand, options)] });
     }
-    return await message.reply(`I do not know this argument ${MD.codeBlock.line(arg)}`);
-}
-
-const listAllCommands = (message: Message, locale: Locale) => {
-    const commandsByCategory: { [key: string]: string[] } = {};
-    DiscordBot.Commands.Collection.forEach(BotCommand => {
-        commandsByCategory[BotCommand.category]
-            ? commandsByCategory[BotCommand.category].push(BotCommand.name)
-            : commandsByCategory[BotCommand.category] = [BotCommand.name]
-    });
-    const getEmojiByCategory = (category: string) => {
-        switch (category) {
-            case '{category.administration}':
-                return ':crown: ';
-            case '{category.utility}':
-                return ':gear: '
-            case '{category.moderation}':
-                return ':tools: ';
-            default:
-                return ''
-        }
-    }
-    const translateCategory = (category: string) => {
-        let paths = getPathFromCurlyBrackets(category);
-        if (paths) category = objectPath.get(locale, paths[0]);
-        return category;
-    }
-    return message.reply({
-        embeds: [
-            new MessageEmbed()
-                .setColor(`#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}`)
-                .setFields(Object.entries(commandsByCategory).map(category => ({
-                    name: `${getEmojiByCategory(category[0])}${translateCategory(category[0])}`,
-                    value: category[1].reduce((prev, current) => prev + ` ${MD.codeBlock.line(current)}`, '')
-                })))
-        ]
-    });
+    return await message.reply(`${options.locale.interaction.iDontKnowThisArgument} ${MD.codeBlock.line(arg)}`);
 }
 
 const command: BotCommand = {
@@ -76,9 +38,9 @@ const command: BotCommand = {
     exec: async (message, args, options) => {
         switch (args[0]) {
             case 'list':
-                return await listAllCommands(message, options.locale);
+                return await message.reply({ embeds: [listCommandsByCategory(options)] });
             case undefined:
-                return await listAllCommands(message, options.locale);
+                return await message.reply({ embeds: [listCommandsByCategory(options)] });
             default:
                 return await getHelpAboutAnyCommand(message, args[0], options);
         }
