@@ -1,4 +1,4 @@
-import { Collection, Message, MessageEmbed, PermissionResolvable } from 'discord.js';
+import { Collection, ColorResolvable, HexColorString, Message, MessageEmbed, PermissionResolvable } from 'discord.js';
 import { Locale } from '../locale';
 
 export type ExecuteCommandOptions = {
@@ -6,7 +6,7 @@ export type ExecuteCommandOptions = {
     bot: {
         name: string;
         prefix: string;
-        hexColor: string;
+        hexColor: ColorResolvable;
     }
 }
 export type ExecuteCommand = (message: Message, args: string[], options: ExecuteCommandOptions) => void;
