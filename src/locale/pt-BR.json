@@ -10,10 +10,48 @@
         "getHelp": {
             "title": "Ajuda do comando: ",
             "fieldHowToUse": "Como usar",
-            "fieldAliases": "Abreviação",
+            "fieldAliases": "Comando abreviado",
             "fieldArguments": "Argumentos",
             "fieldExamples": "Exemplos"
+        },
+        "privateMessage": {
+            "title": "Você recebeu uma mensagem privada",
+            "footer": "Da administração da guild"
+        },
+        "confirmBanishMember": {
+            "title": "Por favor confirme o banimento!",
+            "fieldNameDays": "Dias",
+            "fieldDays": "Deletando mensagens de **{days}** dias.",
+            "fieldReason": "Motivo do banimento"
+        },
+        "messageToBanishedMember": {
+            "title": "Você foi banido",
+            "fieldReason": "Motivo do banimento",
+            "banWithoutReason": "Sem motivo."
         }
+    },
+    "messageActionRow": {
+        "confirmButtons": {
+            "successLabel": "Sim",
+            "dangerLabel": "Não"
+        }
+    },
+    "error": {
+        "unknown": "Desculpe 😢, achei um bug estranho 🪲 irei tentar mata-lo.",
+        "50007": "Não posso enviar mensagem privada para esse membro."
+    },
+    "interaction": {
+        "cannotSendPrivateMessage": "Eu não pude enviar sua mensagem, :C desculpe.",
+        "iDontKnowThisArgument": "Eu não conheço esse argumento",
+        "isDMMessage": "So posso ser usado em servidores.",
+        "memberBanishedCanceled": "Banimento cancelado ❤️",
+        "memberBanishedFromServer": "Banimos ele com sucesso 😈",
+        "memberIsNotBannable": "Esse membro é muito poderoso, não consigo banir ele T-T",
+        "memberNotFound": "Eu não pude encontrar esse membro :c",
+        "mustBeNumber": "Só aceito números.",
+        "needArguments": "Preciso de mais argumentos.",
+        "numberMustBeBetweenTwoValues": "Hmm so aceito números entre {number1} e {number2} UwU.",
+        "youCantUseThisButton": "Este botão possui uma magia muito forte que estar te impedindo de usar!"
     },
     "command": {
         "unban": {
@@ -27,6 +65,20 @@
             "usage": {
                 "commandExample": "`{bot.prefix}{defaultCommand.name} who` - Irá retornar o manual de como usar o comando `{bot.prefix}who`",
                 "listExample": "`{bot.prefix}{defaultCommand.name} list` - Listarei todos os meus comandos por categoria."
+            }
+        },
+        "anonymousDirectMessage": {
+            "description": "Envia uma mensagem anonimamente para um membro do server através de mim.",
+            "usage": {
+                "messageExample": "`{bot.prefix}{defaultCommand.name} @{bot.name} Oi você quer pular pelo meu servidor ?` - Envia uma mensagem privada para @{bot.name}."
+            }
+        },
+        "ban": {
+            "description": "Irei banir um membro do servidor.",
+            "usage": {
+                "memberExample": "`{bot.prefix}ban @{bot.name}` - O membro @{bot.name} foi banido do servidor.",
+                "-daysExample": "`{bot.prefix}ban @{bot.name} -days \"1\"` - O membro @{bot.name} foi banido e suas mensagens de 1 dia foram deletadas.",
+                "-reasonExample": "`{bot.prefix}ban @{bot.name} -reason \"Poing está distraindo os membros do servidor.\"` - O membro {bot.name} foi banido com um motivo."
             }
         }
     },
@@ -42,6 +94,16 @@
         "listHelp": {
             "arg": "listar",
             "description": "Irei listar todos os comandos e suas categorias."
+        },
+        "message": {
+            "arg": "mensagem",
+            "description": "Mensagem que será enviada para o membro."
+        },
+        "-daysBan": {
+            "description": "A flag pode ser usado `[ -days | --d ]`. Número de dias entre `0 e 7` que representa as mensagens que serão deletadas, valor padrão é 0 (nenhuma mensagem será deletada)."
+        },
+        "-reason": {
+            "description": "A flag pode ser usado `[ -reason | --r ]`. Aqui é o motivo no qual você quer banir o membro, se não por eu irei banir sem motivo."
         }
     }
 }
