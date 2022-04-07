@@ -5,6 +5,7 @@ import { replaceVarsInString } from "../../locale";
 import { confirmButtons } from "../../components/messageActionRow";
 import { confirm, PM } from "../../components/messageEmbed";
 import handleError from "../../utils/handleError";
+import { onlyMessageAuthorCanUse } from "../../utils/collectorFlters";
 
 const command: BotCommand = {
     name: 'ban',
@@ -30,8 +31,8 @@ const command: BotCommand = {
     ],
     exec: async (message, args, options) => {
         const member = await Member.search(message, args[0]);
-        if (!member) return await message.channel.send(options.locale.interaction.memberNotFound);
-        if (!member.bannable) return await message.channel.send(options.locale.interaction.memberIsNotBannable);
+        if (!member) return await message.channel.send(options.locale.interaction.member.notFound);
+        if (!member.bannable) return await message.channel.send(options.locale.interaction.member.isNotBannable);
         
         const days = getValuesFromStringFlag(args, ['-days', '--d']);
         const reason = getValuesFromStringFlag(args, ['-reason', '--r']);
@@ -52,15 +53,7 @@ const command: BotCommand = {
             components: [component.row]
         });
 
-        const collector = message.channel.createMessageComponentCollector({
-            filter: async (interaction) => {
-                if (interaction.user.id === message.author.id) return true;
-                await interaction.reply({ ephemeral: true, content: options.locale.interaction.youCantUseThisButton });
-                return false;
-            },
-            max: 1,
-            time: 1000 * 60
-        });
+        const collector = onlyMessageAuthorCanUse(message, options.locale);
 
         collector.on('end', async (buttonInteraction) => {
             try {
@@ -68,7 +61,7 @@ const command: BotCommand = {
                 if (buttonId === component.button.yesId) {
                     let promises = [];
                     promises.push(member.ban({ days: Number(days), reason }));
-                    promises.push(buttonInteraction.first()?.reply(options.locale.interaction.memberBanishedFromServer));
+                    promises.push(buttonInteraction.first()?.reply(options.locale.interaction.member.banishedFromServer));
                     await Promise.all(promises);
                     member.send({
                         embeds: [PM.toBanishedMember({
@@ -88,7 +81,7 @@ const command: BotCommand = {
                 }
                 if (buttonId === component.button.noId) {
                     await interactionMessage.edit({ content: '🎈', embeds: [], components: [] });
-                    await buttonInteraction.first()?.reply(options.locale.interaction.memberBanishedCanceled);
+                    await buttonInteraction.first()?.reply(options.locale.interaction.member.banishedCanceled);
                 }
                 return;
             } catch (error: any) {
