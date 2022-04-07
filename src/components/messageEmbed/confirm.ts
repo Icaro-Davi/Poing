@@ -25,12 +25,13 @@ const banMember = ({ locale, reason, member, days, authorTag, authorUrl, botColo
         .setThumbnail(member.user?.avatarURL() || '')
 }
 
-const kickMember = ({ locale, reason, member, authorTag, authorUrl, botColor }: Options) => {
+const kickMember = ({ locale, reason, member, authorTag, authorUrl, botColor }: Omit<Options, 'days'>) => {
     return new MessageEmbed()
         .setColor(botColor)
         .setAuthor({ name: authorTag, iconURL: authorUrl })
         .setTitle(MD.bold.b(locale.messageEmbed.confirmKickMember.title))
         .setFields([
+            { name: 'Tag', value: member.user.tag },
             ...reason ? [{ name: locale.messageEmbed.confirmKickMember.fieldReason, value: reason }] : []
         ])
         .setThumbnail(member.user?.avatarURL() || '')
