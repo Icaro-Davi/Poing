@@ -5,6 +5,7 @@ import { DiscordBot } from '../config';
 import { splitCommandAndArgs } from '../utils/commands';
 import MD from '../utils/md';
 import translateCommandToLocale from '../locale';
+import handleError from '../utils/handleError';
 
 const itIsANormalMessage = (message: Message) => {
     return (!message.content.startsWith(process.env.BOT_PREFIX || '!') || message.author.bot)
@@ -49,7 +50,10 @@ export default () =>
                 }
             });
         } catch (error) {
-            console.error(error);
-            await message.reply(`Sorry, i think i have a bug in that command, i will try to kill it.`);
+            handleError(error, {
+                errorLocale: 'event/messageCreate',
+                locale: locale.get,
+                message: message
+            });
         }
     });
