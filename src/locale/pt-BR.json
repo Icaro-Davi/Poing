@@ -103,6 +103,13 @@
                 "memberExample": "`{bot.prefix}kick @{bot.name}` - Irei dar kick em um membro.",
                 "reasonExample": "`{bot.prefix}kick @{bot.name} Poing está distraindo os membros do servidor` - Adiciona um motivo para dar kick no @{bot.name}."
             }
+        },
+        "removeMessages": {
+            "description": "Deleto mensagens que foram enviadas em até 2 semanas.",
+            "interaction": "✉️ Deletei {deletedMessageSize} mensagens.",
+            "usage": {
+                "quantityExample": "`{bot.prefix}remove-messages 10` - Remove 10 mensagens."
+            }
         }
     },
     "usage": {
@@ -131,6 +138,10 @@
         "reason": {
             "arg": "motivo",
             "description": "Aqui você adiciona um motivo a ação que estar fazendo."
+        },
+        "quantity": {
+            "arg": "quantidade",
+            "description": "Insira a quantidade desejada."
         }
     }
 }
