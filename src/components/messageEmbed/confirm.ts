@@ -12,7 +12,7 @@ type Options = {
     botColor: ColorResolvable;
 }
 
-const confirmBanishMember = ({ locale, reason, member, days, authorTag, authorUrl, botColor }: Options) => {
+const banMember = ({ locale, reason, member, days, authorTag, authorUrl, botColor }: Options) => {
     return new MessageEmbed()
         .setColor(botColor)
         .setAuthor({ name: authorTag, iconURL: authorUrl })
@@ -25,5 +25,19 @@ const confirmBanishMember = ({ locale, reason, member, days, authorTag, authorUr
         .setThumbnail(member.user?.avatarURL() || '')
 }
 
-export default confirmBanishMember;
+const kickMember = ({ locale, reason, member, authorTag, authorUrl, botColor }: Options) => {
+    return new MessageEmbed()
+        .setColor(botColor)
+        .setAuthor({ name: authorTag, iconURL: authorUrl })
+        .setTitle(MD.bold.b(locale.messageEmbed.confirmKickMember.title))
+        .setFields([
+            ...reason ? [{ name: locale.messageEmbed.confirmKickMember.fieldReason, value: reason }] : []
+        ])
+        .setThumbnail(member.user?.avatarURL() || '')
+}
+
+export default {
+    banMember,
+    kickMember
+};
 
