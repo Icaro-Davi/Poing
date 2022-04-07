@@ -1,6 +1,6 @@
 import { ColorResolvable, Guild, MessageEmbed } from "discord.js"
 import { ExecuteCommandOptions } from "../../commands"
-import { Locale } from "../../locale";
+import { Locale, replaceVarsInString } from "../../locale";
 
 type options = {
     botColor: ColorResolvable;
@@ -13,11 +13,10 @@ type options = {
 const normalMessage = (message: string, guild: Guild, option: ExecuteCommandOptions) => {
     return new MessageEmbed()
         .setColor(option.bot.hexColor)
-        .setTitle(option.locale.messageEmbed.privateMessage.title)
-        .setDescription(message)
+        .setTitle(option.locale.messageEmbed.privateMessage.title.replace('{bot.name}', option.bot.name))
+        .setDescription(replaceVarsInString(option.locale.messageEmbed.privateMessage.description, { message, guild: { name: `[${guild.name}](https://discord.com/channels/${guild.id})` } }))
         .setThumbnail(guild.iconURL() || '')
-        .setFooter({ text: `${option.locale.messageEmbed.privateMessage.footer} ${guild.name}` })
-        .setURL(`https://discord.com/channels/${guild.id}`)
+        .setFooter({ text: option.locale.messageEmbed.privateMessage.footer })
 }
 
 const toBanishedMember = ({ botColor, guildName, iconUrl, locale, reason }: options) => {
