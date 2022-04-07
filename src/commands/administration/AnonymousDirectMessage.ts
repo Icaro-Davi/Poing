@@ -28,7 +28,7 @@ const command: BotCommand = {
             if (resultMessage) return await message.react('✅');
             else await message.reply(options.locale.interaction.cannotSendPrivateMessage);
         }
-        return await message.reply(options.locale.interaction.memberNotFound);
+        return await message.reply(options.locale.interaction.member.notFound);
     }
 }
 
