@@ -1,12 +1,12 @@
 import { BotCommand } from "..";
 import { Member } from "../../application";
-import { privateMessage } from "../../components/messageEmbed";
+import { PM } from "../../components/messageEmbed";
 
 const command: BotCommand = {
     name: 'anonymous-direct-message',
-    category: '{category.administration}', // 'Administration'
+    category: '{category.administration}',
     aliases: ['adm'],
-    description: '{command.anonymousDirectMessage.description}', //'I will send a anonymous message to a member from the server',
+    description: '{command.anonymousDirectMessage.description}',
     allowedPermissions: ['ADMINISTRATOR'],
     usage: [
         [{
@@ -15,8 +15,8 @@ const command: BotCommand = {
         }],
         [{
             required: true, arg: '{usage.message.arg}',
-            description: '{usage.message.description}',// 'Message to send to a server member.',
-            example: '{command.anonymousDirectMessage.usage.messageExample}' //`${MD.codeBlock.line('{prefix}AnonymousDirectMessage @Poing Hello my friend')} - Will send an anonymous message to @Poing`
+            description: '{usage.message.description}',
+            example: '{command.anonymousDirectMessage.usage.messageExample}'
         }]
     ],
     exec: async (message, args, options) => {
@@ -24,7 +24,7 @@ const command: BotCommand = {
         if (args.length < 2) return await message.channel.send(options.locale.interaction.needArguments);
         const member = await Member.search(message, args[0]);
         if (member) {            
-            const resultMessage = await member.send({ embeds: [privateMessage(args.slice(1).join(' '), message.guild, options)] } || '');
+            const resultMessage = await member.send({ embeds: [PM.normalMessage(args.slice(1).join(' '), message.guild, options)] } || '');
             if (resultMessage) return await message.react('✅');
             else await message.reply(options.locale.interaction.cannotSendPrivateMessage);
         }
