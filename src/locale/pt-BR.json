@@ -15,14 +15,19 @@
             "fieldExamples": "Exemplos"
         },
         "privateMessage": {
-            "title": "Você recebeu uma mensagem privada",
-            "footer": "Da administração da guild"
+            "title": "O carteiro {bot.name} chegou!",
+            "description": "**O servidor {guild.name} enviou uma mensagem.**\n\n__{message}__",
+            "footer": "Essa mensagem foi enviada por um dos administradores."
         },
         "confirmBanishMember": {
             "title": "Por favor confirme o banimento!",
             "fieldNameDays": "Dias",
             "fieldDays": "Deletando mensagens de **{days}** dias.",
             "fieldReason": "Motivo do banimento"
+        },
+        "confirmKickMember": {
+            "title": "Por favor confirme o kick!",
+            "fieldReason": "Motivo do kick"
         },
         "messageToBanishedMember": {
             "title": "Você foi banido",
@@ -44,41 +49,59 @@
         "cannotSendPrivateMessage": "Eu não pude enviar sua mensagem, :C desculpe.",
         "iDontKnowThisArgument": "Eu não conheço esse argumento",
         "isDMMessage": "So posso ser usado em servidores.",
-        "memberBanishedCanceled": "Banimento cancelado ❤️",
-        "memberBanishedFromServer": "Banimos ele com sucesso 😈",
-        "memberIsNotBannable": "Esse membro é muito poderoso, não consigo banir ele T-T",
-        "memberNotFound": "Eu não pude encontrar esse membro :c",
         "mustBeNumber": "Só aceito números.",
         "needArguments": "Preciso de mais argumentos.",
         "numberMustBeBetweenTwoValues": "Hmm so aceito números entre {number1} e {number2} UwU.",
-        "youCantUseThisButton": "Este botão possui uma magia muito forte que estar te impedindo de usar!"
+        "youCantUseThisButton": "Este botão possui uma magia muito forte que estar te impedindo de usar!",
+        "member": {
+            "banishedCanceled": "Banimento cancelado ❤️",
+            "banishedFromServer": "Banimos ele com sucesso 😈",
+            "isNotBannable": "Esse membro é muito poderoso, não consigo banir ele T-T",
+            "kickCanceled": "Salvo, não será mais kicado ❤️",
+            "kickFromServer": "KIC-KA-DO muhahahaha 😈",
+            "isNotKickable": "Meu attack não surtiu efeito, não consegui kickar ele.",
+            "notFound": "Eu não pude encontrar esse membro :c"
+        }
     },
     "command": {
         "unban": {
             "description": "Desbanir um membro do servidor",
             "usage": {
-                "memberExample": "`{bot.prefix}{defaultCommand.name} @{bot.name}` - Agora {bot.name} pode voltar ao servidor."
+                "memberExample": "`{bot.prefix}unban @{bot.name}` - Agora {bot.name} pode voltar ao servidor."
             }
         },
         "help": {
             "description": "Recebe a descrição de algum comando quando usado.",
             "usage": {
-                "commandExample": "`{bot.prefix}{defaultCommand.name} who` - Irá retornar o manual de como usar o comando `{bot.prefix}who`",
-                "listExample": "`{bot.prefix}{defaultCommand.name} list` - Listarei todos os meus comandos por categoria."
+                "commandExample": "`{bot.prefix}help who` - Irá retornar o manual de como usar o comando `{bot.prefix}who`",
+                "listExample": "`{bot.prefix}help list` - Listarei todos os meus comandos por categoria."
             }
         },
         "anonymousDirectMessage": {
             "description": "Envia uma mensagem anonimamente para um membro do server através de mim.",
             "usage": {
-                "messageExample": "`{bot.prefix}{defaultCommand.name} @{bot.name} Oi você quer pular pelo meu servidor ?` - Envia uma mensagem privada para @{bot.name}."
+                "messageExample": "`{bot.prefix}anonymous-direct-message @{bot.name} Oi você quer pular pelo meu servidor ?` - Envia uma mensagem privada para @{bot.name}."
             }
         },
         "ban": {
-            "description": "Irei banir um membro do servidor.",
+            "description": "Irei banir um membro do servidor e mandarei uma mensagem privada para o membro banido avisando do banimento.",
+            "error": {
+                "50007": "Não consegui avisar a esse membro que foi banido."
+            },
             "usage": {
                 "memberExample": "`{bot.prefix}ban @{bot.name}` - O membro @{bot.name} foi banido do servidor.",
-                "-daysExample": "`{bot.prefix}ban @{bot.name} -days \"1\"` - O membro @{bot.name} foi banido e suas mensagens de 1 dia foram deletadas.",
+                "-daysExample": "`{bot.prefix}ban @{bot.name} -days \"1\"` - O membro @{bot.name} foi banido e suas ultimas mensagens de 1 dia(s) foram deletada(s).",
                 "-reasonExample": "`{bot.prefix}ban @{bot.name} -reason \"Poing está distraindo os membros do servidor.\"` - O membro {bot.name} foi banido com um motivo."
+            }
+        },
+        "kick": {
+            "description": "Irei tira um membro do servidor e mandarei uma mensagem privada para o membro kickado.",
+            "error": {
+                "50007": "Não consegui avisar a esse membro que foi kickado."
+            },
+            "usage": {
+                "memberExample": "`{bot.prefix}kick @{bot.name}` - Irei dar kick em um membro.",
+                "reasonExample": "`{bot.prefix}kick @{bot.name} Poing está distraindo os membros do servidor` - Adiciona um motivo para dar kick no @{bot.name}."
             }
         }
     },
@@ -103,7 +126,11 @@
             "description": "A flag pode ser usado `[ -days | --d ]`. Número de dias entre `0 e 7` que representa as mensagens que serão deletadas, valor padrão é 0 (nenhuma mensagem será deletada)."
         },
         "-reason": {
-            "description": "A flag pode ser usado `[ -reason | --r ]`. Aqui é o motivo no qual você quer banir o membro, se não por eu irei banir sem motivo."
+            "description": "A flag pode ser usado `[ -reason | --r ]`. Aqui você adiciona um motivo a ação que estar tomando, se não por eu irei fazer tal ação sem motivo."
+        },
+        "reason": {
+            "arg": "motivo",
+            "description": "Aqui você adiciona um motivo a ação que estar fazendo."
         }
     }
 }
