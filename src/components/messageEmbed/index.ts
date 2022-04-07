@@ -1,11 +1,11 @@
-import confirmBanishMember from "./confirmBanishMember";
+import confirm from "./confirm";
 import createGetHelp from "./createGetHelp";
 import listCommandsByCategory from "./listCommandsByCategory";
-import privateMessage from "./privateMessage";
+import PM from "./privateMessage";
 
 export {
-    confirmBanishMember,
+    confirm,
     createGetHelp,
     listCommandsByCategory,
-    privateMessage
+    PM
 }
