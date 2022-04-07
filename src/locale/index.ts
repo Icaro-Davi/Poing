@@ -6,6 +6,7 @@ import getPathFromCurlyBrackets from '../utils/regex/getPathFromCurlyBrackets';
 import defaultLocale from './pt-BR.json';
 
 export type Locale = typeof defaultLocale;
+export type LocaleErroTypes =  keyof typeof defaultLocale.error;
 export type LocaleLabel = 'pt-BR' | 'en-US';
 
 const translateCommandToLocale = async (command: BotCommand, locale: LocaleLabel) => {
