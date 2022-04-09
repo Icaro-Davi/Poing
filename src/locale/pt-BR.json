@@ -53,6 +53,7 @@
         "needArguments": "Preciso de mais argumentos.",
         "numberMustBeBetweenTwoValues": "Hmm so aceito números entre {number1} e {number2} UwU.",
         "youCantUseThisButton": "Este botão possui uma magia muito forte que estar te impedindo de usar!",
+        "iDidntFoundAnything": "Não consegui encontrar nada.",
         "member": {
             "banishedCanceled": "Banimento cancelado ❤️",
             "banishedFromServer": "Banimos ele com sucesso 😈",
@@ -64,12 +65,6 @@
         }
     },
     "command": {
-        "unban": {
-            "description": "Desbanir um membro do servidor",
-            "usage": {
-                "memberExample": "`{bot.prefix}unban @{bot.name}` - Agora {bot.name} pode voltar ao servidor."
-            }
-        },
         "help": {
             "description": "Recebe a descrição de algum comando quando usado.",
             "usage": {
@@ -110,6 +105,27 @@
             "usage": {
                 "quantityExample": "`{bot.prefix}remove-messages 10` - Remove 10 mensagens."
             }
+        },
+        "unban": {
+            "description": "Desbanir um membro do servidor.",
+            "interaction": {
+                "totalOfPages": "Total de páginas: ",
+                "memberUnbaned": "{authorMention} desbaniu o membro {unbanedMember}",
+                "cantUnban": "Não consegui desbanir o membro, desculpa TwT"
+            },
+            "usage": {
+                "list": {
+                    "arg": "list",
+                    "description": "Irei mostrar a lista dos banidos do servidor.",
+                    "example": "`{bot.prefix}unban list` - Lista com todos os banidos."
+                },
+                "member": {
+                    "arg": "membroId",
+                    "description": "Id do usurário que será desbanido.",
+                    "example": "`{bot.prefix}unban 123456789` - Agora {bot.name} pode voltar ao servidor."
+                },
+                "reasonExample": "`{bot.prefix}unban 12356486 Ele pagou propina` - Motivo do desbanimento."
+            }
         }
     },
     "usage": {
@@ -122,7 +138,7 @@
             "description": "A referência de algum comando que está na minha lista."
         },
         "listHelp": {
-            "arg": "listar",
+            "arg": "list",
             "description": "Irei listar todos os comandos e suas categorias."
         },
         "message": {
