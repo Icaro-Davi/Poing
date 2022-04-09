@@ -2,7 +2,7 @@ import { BotCommand } from "..";
 import { Member } from "../../application";
 import { confirmButtons } from "../../components/messageActionRow";
 import { confirm, PM } from "../../components/messageEmbed";
-import { onlyMessageAuthorCanUse } from "../../utils/collectorFlters";
+import { onlyMessageAuthorCanUse } from "../../utils/collectorFilters";
 import handleError from "../../utils/handleError";
 
 const command: BotCommand = {

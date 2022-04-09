@@ -5,7 +5,7 @@ import { replaceVarsInString } from "../../locale";
 import { confirmButtons } from "../../components/messageActionRow";
 import { confirm, PM } from "../../components/messageEmbed";
 import handleError from "../../utils/handleError";
-import { onlyMessageAuthorCanUse } from "../../utils/collectorFlters";
+import { onlyMessageAuthorCanUse } from "../../utils/collectorFilters";
 
 const command: BotCommand = {
     name: 'ban',
