@@ -2,7 +2,7 @@
  * Generate markdown used in discord chat
  */
 const MD = {
-    underline: (text: string) => `_${text}_`,
+    underline: (text: string) => `__${text}__`,
     strikethrough: (text: string) => `~~${text}~~`,
     italic: {
         i: (text: string) => `*${text}*`,
