@@ -12,7 +12,6 @@ const getAllMembers = async (message: Message, options: ExecuteCommandOptions) =
             }
             return prev;
         }, {});
-    console.log(membersStatusCount)
     let onlineMemberText = `${MD.bold.b(`:green_circle: ${options.locale.status.online}:`)} ${membersStatusCount?.online || 0}`;
     let idleMemberText = `${MD.bold.b(`:yellow_circle: ${options.locale.status.idle}:`)} ${membersStatusCount?.idle || 0}`;
     let dndMemberText = `${MD.bold.b(`:red_circle: ${options.locale.status.dnd}:`)} ${membersStatusCount?.dnd || 0}`;
