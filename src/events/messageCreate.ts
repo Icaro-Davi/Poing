@@ -3,9 +3,9 @@ import { Message, PermissionResolvable } from 'discord.js';
 import { BotUsage } from '../commands';
 import { DiscordBot } from '../config';
 import { splitCommandAndArgs } from '../utils/commands';
-import MD from '../utils/md';
 import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
+import { createGetHelp } from '../components/messageEmbed';
 
 const itIsANormalMessage = (message: Message) => {
     return (!message.content.startsWith(process.env.BOT_PREFIX || '!') || message.author.bot)
@@ -32,23 +32,24 @@ export default () =>
         const botCommand = searchBotCommand(command.name);
         if (!botCommand) return;
         const locale = await translateCommandToLocale({ ...botCommand }, 'pt-BR');
+        const options = {
+            locale: locale.get,
+            bot: {
+                name: DiscordBot.Bot.nickname,
+                prefix: DiscordBot.Bot.defaultPrefix,
+                hexColor: DiscordBot.Bot.defaultBotHexColor,
+            }
+        }
         try {
             if (botCommand.usage && anyArgumentIsRequired(command.args, botCommand.usage)) {
-                message.reply(`I do not understand what are you order to me, please use ${MD.codeBlock.line(process.env.BOT_PREFIX + 'help ' + command.name)} to learn about this command.`);
+                await message.reply({ embeds: [createGetHelp(locale.botCommand, options)] });
                 return;
             }
             if (botCommand.allowedPermissions?.length && memberDoesNotHavePermissions(message, botCommand.allowedPermissions)) {
-                message.reply('You does not have permission to execute this command.');
+                await message.reply(options.locale.interaction.youDontHavePermission);
                 return;
             }
-            await locale.botCommand.exec(message, command.args, {
-                locale: locale.get,
-                bot: {
-                    name: DiscordBot.Bot.nickname,
-                    prefix: DiscordBot.Bot.defaultPrefix,
-                    hexColor: DiscordBot.Bot.defaultBotHexColor,
-                }
-            });
+            await locale.botCommand.exec(message, command.args, options);
         } catch (error) {
             handleError(error, {
                 errorLocale: 'event/messageCreate',

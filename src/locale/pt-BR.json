@@ -13,6 +13,12 @@
         "offline": "Offline",
         "invisible": "Invisível"
     },
+    "labels": {
+        "nickname": "Apelido",
+        "joinedServer": "Entrou no servidor",
+        "joinedDiscord": "Entrou no Discord",
+        "roles": "Funções"
+    },
     "messageEmbed": {
         "getHelp": {
             "title": "Ajuda do comando: ",
@@ -64,6 +70,7 @@
         "numberMustBeBetweenTwoValues": "Hmm so aceito números entre {number1} e {number2} UwU.",
         "youCantUseThisButton": "Este botão possui uma magia muito forte que estar te impedindo de usar!",
         "iDidntFoundAnything": "Não consegui encontrar nada.",
+        "youDontHavePermission": "Você não tem permissão para fazer isso.",
         "member": {
             "banishedCanceled": "Banimento cancelado ❤️",
             "banishedFromServer": "Banimos ele com sucesso 😈",
@@ -140,6 +147,20 @@
         },
         "getMembersStatus": {
             "description": "Irá retornar a quantidade de players online, ausente, não pertube e offline."
+        },
+        "ping": {
+            "interaction": {
+                "clientPing": "Ping do cliente:",
+                "serverPing": "@{bot.name} para o API do discord: {ping.server}ms."
+            },
+            "description": "Enviarei para você o tempo de resposta em milissegundos(ms) dos meus serviços."
+        },
+        "userInfo": {
+            "description": "Buscarei informações sobre algum usuário do servidor.",
+            
+            "usage": {
+                "exampleMember": "`{bot.prefix}userinfo @{bot.name}`- Retornarei informações sobre o usuário {bot.name}."
+            }
         }
     },
     "usage": {
