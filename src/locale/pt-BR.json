@@ -6,6 +6,13 @@
         "moderation": "Moderação",
         "utility": "Utilitários"
     },
+    "status": {
+        "online": "Online",
+        "idle": "Ausente",
+        "dnd": "Não pertube",
+        "offline": "Offline",
+        "invisible": "Invisível"
+    },
     "messageEmbed": {
         "getHelp": {
             "title": "Ajuda do comando: ",
@@ -33,6 +40,9 @@
             "title": "Você foi banido",
             "fieldReason": "Motivo do banimento",
             "banWithoutReason": "Sem motivo."
+        },
+        "memberStatus": {
+            "title": "Lista de membros por status"
         }
     },
     "messageActionRow": {
@@ -61,7 +71,8 @@
             "kickCanceled": "Salvo, não será mais kicado ❤️",
             "kickFromServer": "KIC-KA-DO muhahahaha 😈",
             "isNotKickable": "Meu attack não surtiu efeito, não consegui kickar ele.",
-            "notFound": "Eu não pude encontrar esse membro :c"
+            "notFound": "Eu não pude encontrar esse membro :c",
+            "total": "Total de membros"
         }
     },
     "command": {
@@ -126,6 +137,9 @@
                 },
                 "reasonExample": "`{bot.prefix}unban 12356486 Ele pagou propina` - Motivo do desbanimento."
             }
+        },
+        "getMembersStatus": {
+            "description": "Irá retornar a quantidade de players online, ausente, não pertube e offline."
         }
     },
     "usage": {
