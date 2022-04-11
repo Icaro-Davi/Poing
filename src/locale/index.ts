@@ -10,7 +10,7 @@ export type LocaleErroTypes = keyof typeof defaultLocale.error;
 export type LocaleLabel = 'pt-BR' | 'en-US';
 
 const translateCommandToLocale = async (command: BotCommand, locale: LocaleLabel) => {
-    const _locale = await import(`./${locale}.json`) as Locale;    
+    const _locale = await import(`../../locale/${locale}.json`) as Locale;    
     const translatedCommand = navigateToObjectDepthAndTranslate(command, {
         ..._locale,
         defaultCommand: {

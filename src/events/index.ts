@@ -1,10 +1,11 @@
 import fs from 'fs';
+import path from 'path';
 
 const startListeningEvents = () => {
     const ignoreFiles = ['index.ts'];
-    fs.readdirSync('./src/events')
-        .filter(file => file.endsWith('.ts') && !ignoreFiles.some(ignoreFile => ignoreFile === file))
-        .forEach(file => require(`./${file}`).default())
+    fs.readdirSync(path.resolve(`${__dirname}`))
+        .filter(file => file.match(/(.+?)(\.ts|\.js)$/g)?.length && !ignoreFiles.some(ignoreFile => ignoreFile.split('.')[0] === file.split('.')[0]))
+        .forEach(file => require(`./${file}`).default());
 }
 
 export default startListeningEvents;
