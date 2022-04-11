@@ -3,16 +3,16 @@ import objectPath from 'object-path';
 import { BotCommand } from "../commands"
 import { DiscordBot } from '../config/';
 import getPathFromCurlyBrackets from '../utils/regex/getPathFromCurlyBrackets';
-import defaultLocale from './pt-BR.json';
+import defaultLocale from './example.locale.json';
 
 export type Locale = typeof defaultLocale;
-export type LocaleErroTypes =  keyof typeof defaultLocale.error;
+export type LocaleErroTypes = keyof typeof defaultLocale.error;
 export type LocaleLabel = 'pt-BR' | 'en-US';
 
 const translateCommandToLocale = async (command: BotCommand, locale: LocaleLabel) => {
-    const localeJson = (await import(`./${locale}.json`)) as Locale;
+    const _locale = await import(`./${locale}.json`) as Locale;    
     const translatedCommand = navigateToObjectDepthAndTranslate(command, {
-        ...localeJson,
+        ..._locale,
         defaultCommand: {
             name: command.name
         },
@@ -22,7 +22,7 @@ const translateCommandToLocale = async (command: BotCommand, locale: LocaleLabel
         }
     });
     return {
-        get: localeJson,
+        get: _locale,
         botCommand: translatedCommand
     };
 }

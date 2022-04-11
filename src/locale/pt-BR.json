@@ -86,8 +86,12 @@
         "help": {
             "description": "Recebe a descrição de algum comando quando usado.",
             "usage": {
-                "commandExample": "`{bot.prefix}help who` - Irá retornar o manual de como usar o comando `{bot.prefix}who`",
-                "listExample": "`{bot.prefix}help list` - Listarei todos os meus comandos por categoria."
+                "list": {
+                    "arg": "list",
+                    "description": "Irei listar todos os comandos e suas categorias.",
+                    "example": "`{bot.prefix}help list` - Listarei todos os meus comandos por categoria."
+                },
+                "commandExample": "`{bot.prefix}help who` - Irá retornar o manual de como usar o comando `{bot.prefix}who`"
             }
         },
         "anonymousDirectMessage": {
@@ -119,7 +123,9 @@
         },
         "removeMessages": {
             "description": "Deleto mensagens que foram enviadas em até 2 semanas.",
-            "interaction": "✉️ Deletei {deletedMessageSize} mensagens.",
+            "interaction": {
+                "deletedMessages": "✉️ Deletei {deletedMessageSize} mensagens."
+            },
             "usage": {
                 "quantityExample": "`{bot.prefix}remove-messages 10` - Remove 10 mensagens."
             }
@@ -157,7 +163,6 @@
         },
         "userInfo": {
             "description": "Buscarei informações sobre algum usuário do servidor.",
-            
             "usage": {
                 "exampleMember": "`{bot.prefix}userinfo @{bot.name}`- Retornarei informações sobre o usuário {bot.name}."
             }
@@ -171,10 +176,6 @@
         "command": {
             "arg": "comando",
             "description": "A referência de algum comando que está na minha lista."
-        },
-        "listHelp": {
-            "arg": "list",
-            "description": "Irei listar todos os comandos e suas categorias."
         },
         "message": {
             "arg": "mensagem",

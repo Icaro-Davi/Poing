@@ -29,9 +29,9 @@ const command: BotCommand = {
                 example: '{command.help.usage.commandExample}'
             },
             {
-                required: false, arg: '{usage.listHelp.arg}',
-                description: '{usage.listHelp.description}',
-                example: '{command.help.usage.listExample}'
+                required: false, arg: '{command.help.usage.list.arg}',
+                description: '{command.help.usage.list.description}',
+                example: '{command.help.usage.list.example}'
             }
         ]
     ],

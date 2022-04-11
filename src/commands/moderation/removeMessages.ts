@@ -18,7 +18,7 @@ const command: BotCommand = {
         if (Number.isNaN(Number(args[0]))) return await message.channel.send(options.locale.interaction.mustBeNumber);
 
         const deletedMessages = await message.channel.bulkDelete(Number(args[0]), true);
-        return await message.channel.send(options.locale.command.removeMessages.interaction.replace('{deletedMessageSize}', deletedMessages.size.toString()));
+        return await message.channel.send(options.locale.command.removeMessages.interaction.deletedMessages.replace('{deletedMessageSize}', deletedMessages.size.toString()));
     }
 }
 

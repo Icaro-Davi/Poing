@@ -1,0 +1,199 @@
+{
+    "localeLabel": "locale",
+    "category": {
+        "label": "category.lebel",
+        "administration": "category.administration",
+        "moderation": "category.moderation",
+        "utility": "category.utility"
+    },
+    "status": {
+        "online": "status.online",
+        "idle": "status.idle",
+        "dnd": "status.dnd",
+        "offline": "status;offline",
+        "invisible": "status.invisible"
+    },
+    "labels": {
+        "nickname": "status.nickname",
+        "joinedServer": "status.joinedServer",
+        "joinedDiscord": "status.joinedDiscord",
+        "roles": "status.role"
+    },
+    "messageEmbed": {
+        "getHelp": {
+            "title": "messageEmbed.getHelp.titile",
+            "fieldHowToUse": "messageEmbed.getHelp.fieldHowToUse",
+            "fieldAliases": "messageEmbed.getHelp.fieldAliases",
+            "fieldArguments": "messageEmbed.getHelp.fieldArguments",
+            "fieldExamples": "messageEmbed.getHelp.fieldExamples"
+        },
+        "privateMessage": {
+            "title": "messageEmbed.privateMessage.title",
+            "description": "messageEmbed.privateMessage.description",
+            "footer": "messageEmbed.privateMessage.footer"
+        },
+        "confirmBanishMember": {
+            "title": "messageEmbed.confirmBanishMember.title",
+            "fieldNameDays": "messageEmbed.confirmBanishMember.fieldNameDays",
+            "fieldDays": "messageEmbed.confirmBanishMember.fieldDays",
+            "fieldReason": "messageEmbed.confirmBanishMember.fieldReason"
+        },
+        "confirmKickMember": {
+            "title": "messageEmbed.confirmKickMember.title",
+            "fieldReason": "messageEmbed.confirmKickMember.fieldReason"
+        },
+        "messageToBanishedMember": {
+            "title": "messageEmbed.messageToBanishedMember.",
+            "fieldReason": "messageEmbed.messageToBanishedMember.fieldReason",
+            "banWithoutReason": "messageEmbed.messageToBanishedMember.banWithoutReason"
+        },
+        "memberStatus": {
+            "title": "messageEmbed.memberStatus.title"
+        }
+    },
+    "messageActionRow": {
+        "confirmButtons": {
+            "successLabel": "messageActionRow.confirmButtons.successLabel",
+            "dangerLabel": "messageActionRow.confirmButtons.dangerLabel"
+        }
+    },
+    "error": {
+        "unknown": "error.unknow",
+        "50007": "error.50007"
+    },
+    "interaction": {
+        "cannotSendPrivateMessage": "interaction.cannotSendPrivateMessage",
+        "iDontKnowThisArgument": "interaction.iDontKnowThisArgument",
+        "isDMMessage": "interaction.isDMMessage",
+        "mustBeNumber": "interaction.mustBeNumber",
+        "needArguments": "interaction.needArguments",
+        "numberMustBeBetweenTwoValues": "interaction.numberMustBeBetweenTwoValues",
+        "youCantUseThisButton": "interaction.youCantUseThisButton",
+        "iDidntFoundAnything": "interaction.iDidntFoundAnything",
+        "youDontHavePermission": "interaction.youDontHavePermission",
+        "member": {
+            "banishedCanceled": "interaction.member.banishedCanceled",
+            "banishedFromServer": "interaction.member.banishedFromServer",
+            "isNotBannable": "interaction.member.isNotBannable",
+            "kickCanceled": "interaction.member.kickCanceled",
+            "kickFromServer": "interaction.member.kickFromServer",
+            "isNotKickable": "interaction.member.isNotKickable",
+            "notFound": "interaction.member.notFound",
+            "total": "interaction.member.total"
+        }
+    },
+    "command": {
+        "help": {
+            "description": "command.help.description",
+            "usage": {
+                "list": {
+                    "arg": "command.help.usage.list.arg",
+                    "description": "command.help.usage.list.description",
+                    "example": "command.help.usage.list.example"
+                },
+                "commandExample": "command.help.usage.commandExample"
+            }
+        },
+        "anonymousDirectMessage": {
+            "description": "command.anonymousDirectMessage.description",
+            "usage": {
+                "messageExample": "command.anonymousDirectMessage.usage.messageExample"
+            }
+        },
+        "ban": {
+            "description": "command.ban.description",
+            "error": {
+                "50007": "command.ban.error.50007"
+            },
+            "usage": {
+                "memberExample": "command.ban.usage.memberExample",
+                "-daysExample": "command.ban.usage.-daysExample",
+                "-reasonExample": "command.ban.usage.-reasonExample"
+            }
+        },
+        "kick": {
+            "description": "command.kick.description",
+            "error": {
+                "50007": "command.kick.error.50007"
+            },
+            "usage": {
+                "memberExample": "command.kick.usage.memberExample",
+                "reasonExample": "command.kick.usage.reasonExample"
+            }
+        },
+        "removeMessages": {
+            "description": "command.removeMessages.description",
+            "interaction": {
+                "deletedMessages": "command.removeMessages.interaction.deletedMessages"
+            },
+            "usage": {
+                "quantityExample": "command.removeMessages.usage.quantityExample"
+            }
+        },
+        "unban": {
+            "description": "command.unban.description",
+            "reasonExample": "command.unban.reasonExample",
+            "interaction": {
+                "totalOfPages": "command.unban.interaction.totalOfPages",
+                "memberUnbaned": "command.unban.interaction.memberUnbaned",
+                "cantUnban": "command.unban.interaction.cantUnban"
+            },
+            "usage": {
+                "list": {
+                    "arg": "command.unban.usage.list.arg",
+                    "description": "command.unban.usage.list.description",
+                    "example": "command.unban.usage.list.example"
+                },
+                "member": {
+                    "arg": "command.unban.usage.member.arg",
+                    "description": "command.unban.usage.member.description",
+                    "example": "command.unban.usage.member.example"
+                }
+            }
+        },
+        "getMembersStatus": {
+            "description": "command.getMembersStatus.description"
+        },
+        "ping": {
+            "description": "command.ping.description",
+            "interaction": {
+                "clientPing": "command.ping.interaction.clientPing",
+                "serverPing": "command.ping.interaction.serverPing"
+            }
+        },
+        "userInfo": {
+            "description": "command.userInfo.description",
+            "usage": {
+                "exampleMember": "command.userInfo.usage.exampleMember"
+            }
+        }
+    },
+    "usage": {
+        "member": {
+            "arg": "usage.member.arg",
+            "description": "usage.member.description"
+        },
+        "command": {
+            "arg": "usage.command.arg",
+            "description": "usage.command.description"
+        },
+        "message": {
+            "arg": "usage.message.arg",
+            "description": "usage.message.description"
+        },
+        "-daysBan": {
+            "description": "usage.-daysBan.description"
+        },
+        "-reason": {
+            "description": "usage.-reason.description"
+        },
+        "reason": {
+            "arg": "usage.reason.arg",
+            "description": "usage.reason.description"
+        },
+        "quantity": {
+            "arg": "usage.quantity.arg",
+            "description": "usage.quantity.description"
+        }
+    }
+}
