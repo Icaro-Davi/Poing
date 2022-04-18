@@ -6,9 +6,10 @@ import { splitCommandAndArgs } from '../utils/commands';
 import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
 import { createGetHelp } from '../components/messageEmbed';
+import { BotGuild } from '../application';
 
 export const itIsANormalMessage = (message: Message, prefix: string) => {
-    return (!message.content.startsWith(prefix) || message.author.bot);
+    return (!message.content.startsWith(prefix));
 }
 
 export const searchBotCommand = (botCommand: string) => {
@@ -26,17 +27,20 @@ export const memberDoesNotHavePermissions = (message: Message, allowedPermission
 }
 
 export const eventMessageCreate = async (message: Message) => {
-    if (itIsANormalMessage(message, process.env.BOT_PREFIX || '!')) return;
-    const command = splitCommandAndArgs(message.content);
+    if (!message.guildId || message.author.bot) return;
+    const botConf = await BotGuild.getBotConf(message.guildId);
+    const botMention = message.mentions.users.first()?.id === process.env.BOT_ID ? `<@${message.mentions.users.first()?.id}> ` : undefined;
+    if (itIsANormalMessage(message, (botMention ?? botConf.prefix) || DiscordBot.Bot.defaultPrefix)) return;
+    const command = splitCommandAndArgs(message.content, botMention ?? botConf.prefix);
     const botCommand = searchBotCommand(command.name);
     if (!botCommand) return;
-    const locale = await translateCommandToLocale({ ...botCommand }, 'pt-BR');
+    const locale = await translateCommandToLocale({ ...botCommand }, botConf.locale);
     const options = {
         locale: locale.get,
         bot: {
             name: DiscordBot.Bot.nickname,
-            prefix: DiscordBot.Bot.defaultPrefix,
-            hexColor: DiscordBot.Bot.defaultBotHexColor,
+            prefix: botConf.prefix || DiscordBot.Bot.defaultPrefix,
+            hexColor: botConf.embedMessageColor || DiscordBot.Bot.defaultBotHexColor,
         }
     }
     try {
