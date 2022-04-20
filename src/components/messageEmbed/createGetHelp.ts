@@ -43,7 +43,7 @@ const generateExamples = (allArgsOneDepth: BotArguments, customPrefix?: string) 
 const createGetHelp = (command: BotCommand, options: ExecuteCommandOptions): MessageEmbed => {
     const allArgs = command.usage?.reduce((prev, current) => [...prev, ...current], []);
     return new MessageEmbed()
-        .setColor(`#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}`)
+        .setColor(options.bot.hexColor)
         .setTitle(`:dividers: ${replaceVarsInString('{messageEmbed.getHelp.title}', options.locale)} ${options.bot.prefix}${command.name}`)
         .setDescription(command.description)
         .setFields([

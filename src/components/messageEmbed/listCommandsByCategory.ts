@@ -30,7 +30,7 @@ const listCommandsByCategory = (options: ExecuteCommandOptions) => {
         return category;
     }
     return new MessageEmbed()
-        .setColor(`#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}`)
+        .setColor(options.bot.hexColor || `#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}`)
         .setFields(Object.entries(commandsByCategory).map(category => ({
             name: `${getEmojiByCategory(category[0])}${translateCategory(category[0])}`,
             value: category[1].reduce((prev, current) => prev + ` ${MD.codeBlock.line(current)}`, '')
