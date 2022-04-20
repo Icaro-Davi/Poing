@@ -1,25 +1,39 @@
-type GuildMemoryReferences = {
-    id: number;
-    blockWords: string[];
-    bot: {
-        prefix: string;
-        embedMessageColor: string;
-        locale: 'PT-BR' | 'EN-US';    
-    };
+import { ColorResolvable } from "discord.js";
+
+export type BotConf = {
+    prefix: string;
+    embedMessageColor: ColorResolvable;
+    locale: 'pt-BR' | 'en-US';
+}
+
+export type BotMute = {
+    roleId: string;
+    membersTimeout: { memberId: string, mutedTime: number }[];
+}
+
+export type GuildMemoryReferences = {
+    id: string;
+    blockedWords: string[];
+    bot: BotConf;
+    mute: BotMute;
 }
 
 class GuildMemory {
-    private static guilds: { [key: number]: GuildMemoryReferences } = {};
+    private static guilds: { [key: string]: GuildMemoryReferences } = {};
 
-    static get() {
+    static getAll(){
         return this.guilds;
     }
 
-    static add(guild: any) {
+    static get(guildId: string) {
+        return this.guilds[guildId];
+    }
+
+    static add(guild: GuildMemoryReferences) {
         this.guilds[guild.id] = guild;
     }
 
-    static update(guild: any) {
+    static update(guild: GuildMemoryReferences) {
         if (guild.id) {
             this.guilds[guild.id] = guild;
         }
