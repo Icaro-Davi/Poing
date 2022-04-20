@@ -4,8 +4,8 @@ import path from 'path';
 
 import { BotCommand } from '../commands';
 
-export const splitCommandAndArgs = (message: string) => {
-    const args = message.trim().slice(process.env.BOT_PREFIX?.length).split(/ +/);
+export const splitCommandAndArgs = (message: string, botPrefix: string) => {
+    const args = message.trim().slice(botPrefix.length || process.env.BOT_PREFIX!.length).split(/ +/);
     const name = args.shift()?.toLocaleLowerCase() || '';
     return {
         name, args
