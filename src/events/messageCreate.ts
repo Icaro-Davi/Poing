@@ -6,7 +6,7 @@ import { splitCommandAndArgs } from '../utils/commands';
 import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
 import { createGetHelp } from '../components/messageEmbed';
-import { BotGuild } from '../application';
+import { Bot } from '../application';
 
 export const itIsANormalMessage = (message: Message, prefix: string) => {
     return (!message.content.startsWith(prefix));
@@ -28,12 +28,16 @@ export const memberDoesNotHavePermissions = (message: Message, allowedPermission
 
 export const eventMessageCreate = async (message: Message) => {
     if (!message.guildId || message.author.bot) return;
-    const botConf = await BotGuild.getBotConf(message.guildId);
+
+    const botConf = await Bot.getConfigurations(message.guildId);
+
     const botMention = message.mentions.users.first()?.id === process.env.BOT_ID ? `<@${message.mentions.users.first()?.id}> ` : undefined;
     if (itIsANormalMessage(message, (botMention ?? botConf.prefix) || DiscordBot.Bot.defaultPrefix)) return;
+
     const command = splitCommandAndArgs(message.content, botMention ?? botConf.prefix);
     const botCommand = searchBotCommand(command.name);
     if (!botCommand) return;
+
     const locale = await translateCommandToLocale({ ...botCommand }, botConf.locale);
     const options = {
         locale: locale.get,
@@ -43,6 +47,7 @@ export const eventMessageCreate = async (message: Message) => {
             hexColor: botConf.embedMessageColor || DiscordBot.Bot.defaultBotHexColor,
         }
     }
+
     try {
         if (botCommand.usage && anyArgumentIsRequired(command.args, botCommand.usage)) {
             await message.reply({ embeds: [createGetHelp(locale.botCommand, options)] });
