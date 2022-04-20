@@ -1,21 +1,21 @@
 import { Message } from "discord.js";
 import moment from "moment";
 import { BotCommand, ExecuteCommandOptions } from "..";
-import { Member } from "../../application";
-import Guild from "../../application/guild";
+import { Member, Mute } from "../../application";
+import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
 import getValuesFromStringFlag from "../../utils/regex/getValuesFromStringFlag";
 
 export const addMuteRole = async (message: Message, role: string, options: ExecuteCommandOptions) => {
     const guildRole = message.guild?.roles.cache.find(_role => _role.name === role || _role.id === role);
     if (!guildRole) return await message.reply('Role not found');
-    if (await Guild.addMuteRole(message.guildId!, role))
+    if (await Mute.addRole(message.guildId!, role))
         return await message.reply('Role added');
     else await message.reply('cannot register role');
 }
 
 export const MuteGuildMember = async (message: Message, arg: string[], options: ExecuteCommandOptions) => {
-    const mute = await Guild.getRoleMuteId(message.guildId!);
+    const mute = await Mute.getInfo(message.guildId!);
     if (!mute) return await message.reply('Need add a role');
 
     const mutedRole = await message.guild?.roles.cache.some(role => role.id === mute.roleId);
@@ -27,23 +27,32 @@ export const MuteGuildMember = async (message: Message, arg: string[], options: 
 
     if (member.roles.cache.some(role => role.id === mute.roleId)) return await message.reply('This member already muted');
 
+    let muteTime: number = 0;
     if (arg[1]) {
         const timeChar = arg[1].slice(-1);
-        if (Number.isNaN(Number(arg[1]))) return await message.reply(`${options.locale.interaction.mustBeNumber} ${MD.codeBlock.line(arg[1])}`);
-        switch (timeChar) {
+        const timeArg = arg[1].slice(0, -1);
+        if (Number.isNaN(Number(timeArg))) return await message.reply(`${options.locale.interaction.mustBeNumber} ${MD.codeBlock.line(timeArg)}`);
+        switch (timeChar.toLocaleUpperCase()) {
             case 'D':
-                moment.utc().add(Number(arg[1]), 'days').toISOString();
+                if (parseInt(timeArg) > 365) return await message.reply('Cant more than 1 year');
+                muteTime = moment.utc().add(parseInt(timeArg), 'days').valueOf();
                 break;
             case 'H':
-                moment.utc().add(Number(arg[1]), 'hours');
+                if (parseInt(timeArg) > 24) return await message.reply(`${timeArg}H is more than 1 day, please use D.`);
+                muteTime = moment.utc().add(parseInt(timeArg), 'hours').valueOf()
                 break;
             case 'M':
-                moment.utc().add(Number(arg[1]), 'minutes');
+                if (parseInt(timeArg) > 60) return await message.reply(`${timeArg}M is more than 1 hour, please use H.`);
+                muteTime = moment.utc().add(parseInt(timeArg), 'minutes').valueOf();
+                if ((muteTime - moment.utc().valueOf()) < DiscordBot.ScheduleEvent.getLoopTimeMs())
+                    DiscordBot.ScheduleEvent.unmuteCountdown(message.guildId!, member.id, muteTime - moment.utc().valueOf());
                 break;
             default:
-                return await message.reply(`I cant understand ${arg[1]}${timeChar}`);
+                return await message.reply(`I cant understand ${timeArg}${timeChar}`);
         }
     }
+
+    if (!!muteTime) Mute.addMember(message.guildId!, member.id, muteTime);
     return await member.roles.add(mute.roleId);
 }
 
