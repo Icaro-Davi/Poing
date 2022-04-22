@@ -1,82 +1,50 @@
+import mongoose from "mongoose";
 import { DiscordBot } from "../config";
-import { BotMute } from "../config/guildMemory";
-
-type ListOfMutedMembers = { memberId: string; mutedTime: number; guildId: string }[];
+import GuildRepository from "../domain/guild/GuildRepository";
+import ScheduleUnmuteRepository from "../domain/schedule/unmute/ScheduleUnmuteRepository";
 
 class Mute {
 
-    static getInfo(guildId: string) {
+    static async getMuteRoleId(guildId: string) {
         try {
-            return new Promise<BotMute>((res, rej) => {
-                const guildRef = DiscordBot.GuildMemory.get(guildId);
-                setTimeout(res, 200, guildRef.mute);
+            const guild = await GuildRepository.findByIdAndOmitValues(guildId, {
+                bot: {
+                    roles: { muteId: 1 }
+                }
             });
+            return guild?.bot?.roles?.muteId as string | undefined;
         } catch (error) {
-            // cannot search mute definitions.
-            throw new Error('BOT_00002');
+            throw error;
         }
     }
 
-    static addRole(guildId: string, roleId: string) {
+    static async addRole(guildId: string, roleId: string) {
         try {
-            return new Promise<boolean>((res, rej) => {
-                const guildRef = DiscordBot.GuildMemory.get(guildId);
-                DiscordBot.GuildMemory.update({ ...guildRef, mute: { ...guildRef.mute, roleId } });
-                setTimeout(res, 200, true);
-            });
+            await GuildRepository.update(guildId, { $set: { "bot.roles.muteId": roleId } });
+            return true;
         } catch (error) {
-            // Cannot add mute role
-            throw new Error('BOT_00003');
+            throw error;
         }
     }
 
-    static addMember(guildId: string, memberId: string, time: number) {
+    static async addMember(guildId: string, memberId: string, timeout: Date) {
         try {
-            return new Promise<boolean>((res, rej) => {
-                const guildRef = DiscordBot.GuildMemory.get(guildId);
-                DiscordBot.GuildMemory.update({
-                    ...guildRef,
-                    mute: {
-                        ...guildRef.mute,
-                        membersTimeout: [...guildRef.mute.membersTimeout, { memberId, mutedTime: time }]
-                    }
-                });
-                setTimeout(res, 200, true);
-            });
+            return await ScheduleUnmuteRepository.create({ guildId, memberId, timeout });
         } catch (error) {
-            throw new Error('BOT_00004');
+            throw error;
         }
     }
 
-    static async unmute(guildId: string, memberId: string) {
+    static async unmute(scheduleDocId: mongoose.Types.ObjectId, guildId: string, memberId: string) {
+        const guildDoc = await GuildRepository.findByIdAndOmitValues(guildId, { bot: { roles: { muteId: 1 } } });
+        if (!guildDoc?.bot.roles) return false;
+
         const guild = await DiscordBot.Client.get().guilds.fetch(guildId);
         if (!guild) throw new Error('BOT_00100');
 
+        await ScheduleUnmuteRepository.delete(scheduleDocId);
         const member = guild.members.cache.find(member => member.id === memberId);
-        const muteInfo = await this.getInfo(guildId);
-        member?.roles.remove(muteInfo.roleId);
-    }
-
-    static findTimeoutAndUnmute(guildId: string, memberId: string) {
-        return new Promise<boolean>(async (res, rej) => {
-            const guildRef = DiscordBot.GuildMemory.get(guildId);
-            const mutedMemberIndex = guildRef.mute.membersTimeout.findIndex(mutedMembers => mutedMembers.memberId === memberId);
-            if (mutedMemberIndex > -1) {
-                this.unmute(guildId, memberId);
-                guildRef.mute.membersTimeout.splice(mutedMemberIndex, 1);
-                DiscordBot.GuildMemory.update(guildRef);
-                return res(true);
-            }
-            return res(false);
-        });
-    }
-
-    static filterMutedMembersByTime(dateAsMS: number) {
-        return Object.keys(DiscordBot.GuildMemory.getAll()).reduce<ListOfMutedMembers>((prev, key) =>
-            [...prev, ...DiscordBot.GuildMemory.get(key).mute.membersTimeout.reduce<ListOfMutedMembers>((prev, current) =>
-                (current.mutedTime < dateAsMS) ? [...prev, { ...current, guildId: key }] : prev
-                , [])]
-            , []);
+        await member?.roles.remove(guildDoc.bot.roles.muteId);
     }
 
 }
