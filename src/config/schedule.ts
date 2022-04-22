@@ -1,14 +1,17 @@
 import moment from "moment";
-import { Mute } from "../application";
+import mongoose from "mongoose";
+import { MuteApplication } from "../application";
+import ScheduleUnmuteRepository from "../domain/schedule/unmute/ScheduleUnmuteRepository";
 
 type ScheduleMuteEvent = {
+    _id: mongoose.Types.ObjectId;
     guildId: string;
     memberId: string;
-    eventRef: NodeJS.Timeout,
+    eventRef: NodeJS.Timeout;
 }
 
 class ScheduleEvent {
-    private static muteEvents: ScheduleMuteEvent[] = [];
+    private static unmuteEvents: ScheduleMuteEvent[] = [];
     private static mainEventLoop: NodeJS.Timer;
     private static loopTime = 1000 * 60 * 60;
 
@@ -28,36 +31,35 @@ class ScheduleEvent {
         return this.loopTime;
     }
 
-    static unmuteCountdown(guildId: string, memberId: string, time: number) {
-        const muteEvent = this.muteEvents.find(_event => _event.guildId === guildId && _event.memberId === memberId);
-        muteEvent && this.removeMuteEvent(guildId, memberId);
-        this.muteEvents.push({
-            guildId, memberId,
+    static unmuteCountdown(_id: mongoose.Types.ObjectId, guildId: string, memberId: string, time: number) {
+        const muteEvent = this.unmuteEvents.find(_event => _event._id === _id);
+        muteEvent && this.removeMuteEvent(muteEvent._id);
+        this.unmuteEvents.push({
+            guildId, memberId, _id,
             eventRef: setTimeout(() => {
-                Mute.unmute(guildId, memberId).catch(error => console.log(error));
-                this.removeMuteEvent(guildId, memberId);
+                MuteApplication.unmute(_id, guildId, memberId).catch(error => console.log(error));
+                this.removeMuteEvent(_id);
             }, time)
         });
     }
 
-    static removeMuteEvent(guildId: string, memberId: string) {
-        const eventIndex = this.muteEvents.findIndex(event => event.guildId === guildId && event.memberId === memberId);
+    static removeMuteEvent(_id: mongoose.Types.ObjectId) {
+        const eventIndex = this.unmuteEvents.findIndex(event => event._id);
         if (eventIndex > -1) {
-            clearTimeout(this.muteEvents[eventIndex].eventRef);
-            this.muteEvents.splice(eventIndex, 1);
+            clearTimeout(this.unmuteEvents[eventIndex].eventRef);
+            this.unmuteEvents.splice(eventIndex, 1);
             return true;
         }
         return false;
     }
 
-    private static scheduleUnmuteMembersEvents() {
-        Mute.filterMutedMembersByTime(moment.utc().valueOf() + this.loopTime)
-            .forEach(mute => {
-                mute.mutedTime < moment.utc().valueOf()
-                    ? this.removeMuteEvent(mute.guildId, mute.memberId) && Mute.unmute(mute.guildId, mute.memberId).catch(err => console.log(err))
-                    : this.unmuteCountdown(mute.guildId, mute.memberId, mute.mutedTime - moment.utc().valueOf())
+    private static async scheduleUnmuteMembersEvents() {
+        (await ScheduleUnmuteRepository.listByDate(moment(moment.utc().valueOf() + this.loopTime).toDate()))
+            .forEach(mute => {         
+                moment(mute.timeout).valueOf() < moment.utc().valueOf()
+                    ? MuteApplication.unmute(mute._id, mute.guildId, mute.memberId).catch(err => console.log(err))
+                    : this.unmuteCountdown(mute._id, mute.guildId, mute.memberId, moment(mute.timeout).valueOf() - moment.utc().valueOf())
             });
-
     }
 }
 

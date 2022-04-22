@@ -6,7 +6,7 @@ import { splitCommandAndArgs } from '../utils/commands';
 import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
 import { createGetHelp } from '../components/messageEmbed';
-import { Bot } from '../application';
+import { BotApplication } from '../application';
 
 export const itIsANormalMessage = (message: Message, prefix: string) => {
     return (!message.content.startsWith(prefix));
@@ -29,9 +29,9 @@ export const memberDoesNotHavePermissions = (message: Message, allowedPermission
 export const eventMessageCreate = async (message: Message) => {
     if (!message.guildId || message.author.bot) return;
 
-    const botConf = await Bot.getConfigurations(message.guildId);
+    const botConf = await BotApplication.getConfigurations(message.guildId);    
 
-    const botMention = message.mentions.users.first()?.id === process.env.BOT_ID ? `<@${message.mentions.users.first()?.id}> ` : undefined;
+    const botMention = message.mentions.users.first()?.id === message.guild?.me?.id ? `<@${message.mentions.users.first()?.id}> ` : undefined;
     if (itIsANormalMessage(message, (botMention ?? botConf.prefix) || DiscordBot.Bot.defaultPrefix)) return;
 
     const command = splitCommandAndArgs(message.content, botMention ?? botConf.prefix);
@@ -44,7 +44,7 @@ export const eventMessageCreate = async (message: Message) => {
         bot: {
             name: DiscordBot.Bot.nickname,
             prefix: botConf.prefix || DiscordBot.Bot.defaultPrefix,
-            hexColor: botConf.embedMessageColor || DiscordBot.Bot.defaultBotHexColor,
+            hexColor: botConf.messageEmbedHexColor || DiscordBot.Bot.defaultBotHexColor,
         }
     }
 
@@ -59,6 +59,7 @@ export const eventMessageCreate = async (message: Message) => {
         }
         await locale.botCommand.exec(message, command.args, options);
     } catch (error) {
+        console.error(error);
         handleError(error, {
             errorLocale: 'event/messageCreate',
             locale: locale.get,

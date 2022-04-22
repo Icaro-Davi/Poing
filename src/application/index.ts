@@ -1,9 +1,11 @@
-import Bot from './Bot';
-import Member from './member';
-import Mute from './Mute';
+import BotApplication from './Bot';
+import GuildApplication from './Guild';
+import MemberApplication from './member';
+import MuteApplication from './Mute';
 
 export {
-    Bot,
-    Member,
-    Mute
+    BotApplication,
+    GuildApplication,
+    MemberApplication,
+    MuteApplication
 }

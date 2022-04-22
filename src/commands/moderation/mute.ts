@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 import moment from "moment";
 import { BotCommand, ExecuteCommandOptions } from "..";
-import { Member, Mute } from "../../application";
+import { MemberApplication, MuteApplication } from "../../application";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
 import getValuesFromStringFlag from "../../utils/regex/getValuesFromStringFlag";
@@ -9,26 +9,26 @@ import getValuesFromStringFlag from "../../utils/regex/getValuesFromStringFlag";
 export const addMuteRole = async (message: Message, role: string, options: ExecuteCommandOptions) => {
     const guildRole = message.guild?.roles.cache.find(_role => _role.name === role || _role.id === role);
     if (!guildRole) return await message.reply('Role not found');
-    if (await Mute.addRole(message.guildId!, role))
+    if (await MuteApplication.addRole(message.guildId!, guildRole.id))
         return await message.reply('Role added');
     else await message.reply('cannot register role');
 }
 
 export const MuteGuildMember = async (message: Message, arg: string[], options: ExecuteCommandOptions) => {
-    const mute = await Mute.getInfo(message.guildId!);
-    if (!mute) return await message.reply('Need add a role');
+    const muteRoleId = await MuteApplication.getMuteRoleId(message.guildId!);
+    if (!muteRoleId) return await message.reply(options.locale.command.mute.interaction.needMuteRoleId);
 
-    const mutedRole = await message.guild?.roles.cache.some(role => role.id === mute.roleId);
-    if (!mutedRole) return await message.reply('Need register a role');
+    const muteRole = await message.guild?.roles.cache.find(role => role.id === muteRoleId);
+    if (!muteRole) return await message.reply('Need register a role');
 
-    const member = await Member.search(message, arg[0]);
+    const member = await MemberApplication.search(message, arg[0]);
     if (!member) return await message.reply(options.locale.interaction.member.notFound);
-    if (member.permissions.has('ADMINISTRATOR')) return await message.reply('cannot ban, is admin');
+    if (member.permissions.has('ADMINISTRATOR')) return await message.reply('This member is a god in this server, sorry!');
 
-    if (member.roles.cache.some(role => role.id === mute.roleId)) return await message.reply('This member already muted');
+    if (member.roles.cache.some(role => role.id === muteRole.id)) return await message.reply('This member already muted');
 
     let muteTime: number = 0;
-    if (arg[1]) {
+    if (arg[1] && arg[1].match(/^[\d]+(?:D|M|H)$/gi)) {
         const timeChar = arg[1].slice(-1);
         const timeArg = arg[1].slice(0, -1);
         if (Number.isNaN(Number(timeArg))) return await message.reply(`${options.locale.interaction.mustBeNumber} ${MD.codeBlock.line(timeArg)}`);
@@ -44,16 +44,18 @@ export const MuteGuildMember = async (message: Message, arg: string[], options: 
             case 'M':
                 if (parseInt(timeArg) > 60) return await message.reply(`${timeArg}M is more than 1 hour, please use H.`);
                 muteTime = moment.utc().add(parseInt(timeArg), 'minutes').valueOf();
-                if ((muteTime - moment.utc().valueOf()) < DiscordBot.ScheduleEvent.getLoopTimeMs())
-                    DiscordBot.ScheduleEvent.unmuteCountdown(message.guildId!, member.id, muteTime - moment.utc().valueOf());
                 break;
             default:
                 return await message.reply(`I cant understand ${timeArg}${timeChar}`);
         }
     }
 
-    if (!!muteTime) Mute.addMember(message.guildId!, member.id, muteTime);
-    return await member.roles.add(mute.roleId);
+    if (muteTime) {
+        const muteDoc = await MuteApplication.addMember(message.guildId!, member.id, moment(muteTime).toDate());
+        if ((muteTime - moment.utc().valueOf()) < DiscordBot.ScheduleEvent.getLoopTimeMs())
+            DiscordBot.ScheduleEvent.unmuteCountdown(muteDoc._id, message.guildId!, member.id, muteTime - moment.utc().valueOf());
+    }
+    return await member.roles.add(muteRole, muteTime ? arg.slice(2).join(' ').trim() : arg.slice(1).join(' ').trim() || 'No Reason');
 }
 
 const command: BotCommand = {
@@ -73,6 +75,11 @@ const command: BotCommand = {
         }],
         [{
             required: false, arg: 'time',
+            description: '',
+            example: ''
+        }],
+        [{
+            required: false, arg: 'reason',
             description: '',
             example: ''
         }]
