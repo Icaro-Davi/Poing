@@ -2,7 +2,7 @@ import { GuildMember, MessageEmbed } from 'discord.js';
 import moment from 'moment';
 
 import { BotCommand, ExecuteCommandOptions } from '..';
-import { Member } from '../../application';
+import { MemberApplication } from '../../application';
 import MD from '../../utils/md';
 
 const memberMessageEmbed = async (member: GuildMember, options: ExecuteCommandOptions) => {
@@ -35,7 +35,7 @@ const command: BotCommand = {
         ],
     ],
     exec: async (message, args, options) => {
-        const member = await Member.search(message, args[0] || message.author.id);
+        const member = await MemberApplication.search(message, args[0] || message.author.id);
         if (member) return await message.reply({ embeds: [await memberMessageEmbed(member, options)] });
         return await message.reply(options.locale.interaction.member.notFound);
     }

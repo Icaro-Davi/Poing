@@ -1,5 +1,5 @@
 import { BotCommand } from "..";
-import { Member } from "../../application";
+import { MemberApplication } from "../../application";
 import { confirmButtons } from "../../components/messageActionRow";
 import { confirm, PM } from "../../components/messageEmbed";
 import { onlyMessageAuthorCanUse } from "../../utils/collectorFilters";
@@ -23,7 +23,7 @@ const command: BotCommand = {
         }]
     ],
     exec: async (message, args, options) => {
-        const member = await Member.search(message, args[0]);
+        const member = await MemberApplication.search(message, args[0]);
         if (!member) return await message.channel.send(options.locale.interaction.member.notFound);
         if (!member.kickable) return await message.channel.send(options.locale.interaction.member.isNotKickable);
 
