@@ -11,7 +11,7 @@ const command: BotCommand = {
         const resultMessage = await message.reply({
             embeds: [
                 new MessageEmbed()
-                    .setColor(`#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}`)
+                    .setColor(options.bot.hexColor)
                     .setTitle(':small_orange_diamond: Ping')
             ]
         });
