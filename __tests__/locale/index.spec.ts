@@ -1,7 +1,7 @@
 import LocaleExample from '../../src/locale/example.locale.json';
 import fs from 'fs';
 import path from 'path';
-import { Locale, replaceVarsInString } from '../../src/locale';
+import { Locale } from '../../src/locale';
 
 describe('Test Locale Files', () => {
     it('All locale .json should exact same of example.locale.json', async () => {
@@ -11,13 +11,9 @@ describe('Test Locale Files', () => {
         const searchDiferenceBetweenLocaleFilesAndExample = (LocaleExample: any, locale: any, fileName: string): boolean => {
             const verify = (key: string) => {
                 if (typeof LocaleExample[key] === 'string') {
-                    const result = replaceVarsInString(LocaleExample[key] as string, { locale });
-                    if (result)
-                        return true;
-                    else {
-                        console.error(LocaleExample[key], 'does not exists in file:', fileName);
-                        return false;
-                    }
+                    if (locale[key]) return true;
+                    console.error(key, LocaleExample[key], 'does not exists in file:', fileName);
+                    return false;
                 }
                 if (Array.isArray(LocaleExample[key])) {
                     console.error('Needs implements test for array type');
@@ -33,6 +29,7 @@ describe('Test Locale Files', () => {
                     }
                     return searchDiferenceBetweenLocaleFilesAndExample(LocaleExample[key], locale[key], fileName);
                 }
+                console.error('Is not an type in test please verify this');
                 return false;
             }
             return Object.keys(LocaleExample).map(verify).every(_boolean => _boolean);
