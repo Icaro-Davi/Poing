@@ -1,45 +1,47 @@
 import { BotCommand } from "..";
 import { MemberApplication } from "../../application";
 import getValuesFromStringFlag from "../../utils/regex/getValuesFromStringFlag";
-import { replaceVarsInString } from "../../locale";
 import { confirmButtons } from "../../components/messageActionRow";
 import { confirm, PM } from "../../components/messageEmbed";
 import handleError from "../../utils/handleError";
 import { onlyMessageAuthorCanUse } from "../../utils/collectorFilters";
+import locale from '../../locale/example.locale.json';
 
 const command: BotCommand = {
     name: 'ban',
-    category: '{category.moderation}',
-    description: '{command.ban.description}',
+    category: locale.category.moderation,
+    description: locale.command.ban.description,
     allowedPermissions: ['BAN_MEMBERS'],
     usage: [
         [{
-            required: true, arg: '{usage.member.arg}',
-            description: '{usage.member.description}',
-            example: '{command.ban.usage.memberExample}'
+            required: true, arg: locale.usage.argument.member.arg,
+            description: locale.usage.argument.member.description,
+            example: locale.command.ban.usage.memberExample
         }],
         [{
             required: false, arg: '-days',
-            description: '{usage.-daysBan.description}',
-            example: '{command.ban.usage.-daysExample}'
+            description: locale.usage.flag['-daysBan'].description,
+            example: locale.command.ban.usage['-daysExample']
         }],
         [{
             required: false, arg: '-reason',
-            description: '{usage.-reason.description}',
-            example: '{command.ban.usage.-reasonExample}'
+            description: locale.usage.flag['-reason'].description,
+            example: locale.command.ban.usage['-reasonExample']
         }]
     ],
     exec: async (message, args, options) => {
         const member = await MemberApplication.search(message, args[0]);
-        if (!member) return await message.channel.send(options.locale.interaction.member.notFound);
-        if (!member.bannable) return await message.channel.send(options.locale.interaction.member.isNotBannable);
-        
+        if (!member) return { content: options.locale.interaction.member.notFound };
+        if (!member.bannable) return { content: options.locale.command.ban.interaction.isNotBannable };
+
         const days = getValuesFromStringFlag(args, ['-days', '--d']);
         const reason = getValuesFromStringFlag(args, ['-reason', '--r']);
 
         if (days) {
-            if (Number.isNaN(days)) return await message.channel.send(`[-days | --d] - ${options.locale.interaction.mustBeNumber}`);
-            else if (Number(days) > 7 || Number(days) < 0) return await message.channel.send(replaceVarsInString(`[-days | --d] - ${options.locale.interaction.numberMustBeBetweenTwoValues}`, { number1: 0, number2: 7 }));
+            if (Number.isNaN(days))
+                return { content: options.locale.interaction.mustBeNumber, vars: { flagDays: '`[-days | --d]` - ' } };
+            else if (Number(days) > 7 || Number(days) < 0)
+                return { content: options.locale.interaction.numberMustBeBetweenTwoValues, vars: { number1: '0', number2: '7', flagDays: '`[-days | --d]` - ' } };
         }
 
         const component = confirmButtons({ locale: options.locale });
@@ -61,7 +63,7 @@ const command: BotCommand = {
                 if (buttonId === component.button.yesId) {
                     let promises = [];
                     promises.push(member.ban({ days: Number(days), reason }));
-                    promises.push(buttonInteraction.first()?.reply(options.locale.interaction.member.banishedFromServer));
+                    promises.push(buttonInteraction.first()?.reply(options.locale.command.ban.interaction.banishedFromServer));
                     await Promise.all(promises);
                     member.send({
                         embeds: [PM.toBanishedMember({
@@ -74,14 +76,14 @@ const command: BotCommand = {
                             errorLocale: '/command/moderation/ban',
                             locale: options.locale,
                             message: message,
-                            customMessage: error.code === '50007' ? options.locale.command.ban.error[50007] : '' 
+                            customMessage: error.code === '50007' ? options.locale.command.ban.error[50007] : ''
                         });
                     });
                     await interactionMessage.edit({ content: '🔨', embeds: [] });
                 }
                 if (buttonId === component.button.noId) {
                     await interactionMessage.edit({ content: '🎈', embeds: [], components: [] });
-                    await buttonInteraction.first()?.reply(options.locale.interaction.member.banishedCanceled);
+                    await buttonInteraction.first()?.reply(options.locale.command.ban.interaction.banishedCanceled);
                 }
                 return;
             } catch (error: any) {

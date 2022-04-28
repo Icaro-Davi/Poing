@@ -1,11 +1,12 @@
 import { MessageEmbed } from "discord.js";
 import { BotCommand } from "..";
 import { replaceVarsInString } from "../../locale";
+import locale from '../../locale/example.locale.json';
 
 const command: BotCommand = {
     name: 'ping',
-    category: '{category.utility}',
-    description: '{command.ping.description}',
+    category: locale.category.utility,
+    description: locale.command.ping.description,
     aliases: ['p'],
     exec: async (message, args, options) => {
         const resultMessage = await message.reply({

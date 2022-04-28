@@ -4,28 +4,29 @@ import { confirmButtons } from "../../components/messageActionRow";
 import { confirm, PM } from "../../components/messageEmbed";
 import { onlyMessageAuthorCanUse } from "../../utils/collectorFilters";
 import handleError from "../../utils/handleError";
+import locale from '../../locale/example.locale.json';
 
 const command: BotCommand = {
     name: 'kick',
-    category: '{category.moderation}',
-    description: '{command.kick.description}',
+    category: locale.category.moderation,
+    description: locale.command.kick.description,
     allowedPermissions: ['KICK_MEMBERS'],
     usage: [
         [{
-            required: true, arg: '{usage.member.arg}',
-            description: '{usage.member.description}',
-            example: '{command.kick.usage.memberExample}'
+            required: true, arg: locale.usage.argument.member.arg,
+            description: locale.usage.argument.member.description,
+            example: locale.command.kick.usage.memberExample
         }],
         [{
-            required: false, arg: '{usage.reason.arg}',
-            description: '{usage.reason.description}',
-            example: '{command.kick.usage.reasonExample}'
+            required: false, arg: locale.usage.argument.reason.arg,
+            description: locale.usage.argument.reason.description,
+            example: locale.command.kick.usage.reasonExample
         }]
     ],
     exec: async (message, args, options) => {
         const member = await MemberApplication.search(message, args[0]);
-        if (!member) return await message.channel.send(options.locale.interaction.member.notFound);
-        if (!member.kickable) return await message.channel.send(options.locale.interaction.member.isNotKickable);
+        if (!member) return { content: options.locale.interaction.member.notFound };
+        if (!member.kickable) return { content: options.locale.interaction.member.isNotKickable };
 
         const reason = args.slice(1).join(' ');
         const component = confirmButtons({ locale: options.locale });

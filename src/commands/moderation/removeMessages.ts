@@ -1,24 +1,30 @@
 import { BotCommand } from "..";
+import locale from '../../locale/example.locale.json';
 
 const command: BotCommand = {
     name: 'remove-messages',
-    category: '{category.moderation}',
-    description: '{command.removeMessages.description}',
+    category: locale.category.moderation,
+    description: locale.command.removeMessages.description,
     aliases: ['rm'],
     usage: [
         [{
-            required: true, arg: '{usage.quantity.arg}',
-            description: '{usage.quantity.description}',
-            example: '{command.removeMessages.usage.quantityExample}'
+            required: true, arg: locale.usage.argument.quantity.arg,
+            description: locale.usage.argument.quantity.description,
+            example: locale.command.removeMessages.usage.quantityExample
         }]
     ],
     allowedPermissions: ['MANAGE_MESSAGES'],
-    exec: async (message, args, options) => {        
-        if (message.channel.type == 'DM') return false;
-        if (Number.isNaN(Number(args[0]))) return await message.channel.send(options.locale.interaction.mustBeNumber);
+    exec: async (message, args, options) => {
+        if (message.channel.type == 'DM') return;
+        if (Number.isNaN(Number(args[0]))) return await { content: options.locale.interaction.mustBeNumber };
 
         const deletedMessages = await message.channel.bulkDelete(Number(args[0]), true);
-        return await message.channel.send(options.locale.command.removeMessages.interaction.deletedMessages.replace('{deletedMessageSize}', deletedMessages.size.toString()));
+        return {
+            content: options.locale.command.removeMessages.interaction.deletedMessages,
+            vars: {
+                deletedMessageSize: deletedMessages.size.toString()
+            }
+        };
     }
 }
 

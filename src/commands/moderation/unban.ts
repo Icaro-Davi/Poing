@@ -2,9 +2,9 @@ import { GuildBan, Message } from "discord.js";
 import { BotCommand, ExecuteCommandOptions } from "..";
 import { createPaginationButtons } from "../../components/messageActionRow";
 import { paginationOfBannedMembers } from "../../components/messageEmbed";
-import { replaceVarsInString } from "../../locale";
 import { onlyWithPermission } from "../../utils/collectorFilters";
 import handleError from "../../utils/handleError";
+import locale from '../../locale/example.locale.json';
 
 const getPaginationOfBannedMembers = (bannedMembers: GuildBan[]) => {
     return bannedMembers.reduce<{ tag: string; id: string }[][]>((prev, current, i) => {
@@ -72,38 +72,42 @@ const argumentList = async (message: Message, bannedMembers: { tag: string, id: 
 
 const command: BotCommand = {
     name: 'unban',
-    category: '{category.moderation}',
-    description: '{command.unban.description}',
+    category: locale.category.moderation,
+    description: locale.command.unban.description,
     allowedPermissions: ['BAN_MEMBERS'],
     usage: [
         [{
-            required: true, arg: '{command.unban.usage.member.arg}',
-            description: `{command.unban.usage.member.description}.`,
-            example: `{command.unban.usage.member.example}`
+            required: true, arg: locale.command.unban.usage.member.arg,
+            description: locale.command.unban.usage.member.description,
+            example: locale.command.unban.usage.member.example
         }, {
-            required: false, arg: '{command.unban.usage.list.arg}',
-            description: '{command.unban.usage.list.description}', example: '{command.unban.usage.list.example}'
+            required: false, arg: locale.command.unban.usage.list.arg,
+            description: locale.command.unban.usage.list.description,
+            example: locale.command.unban.usage.list.example
         }],
         [{
-            required: false, arg: '{usage.reason.arg}',
-            description: '{usage.reason.description}',
-            example: '{command.unban.usage.reasonExample}'
+            required: false, arg: locale.usage.argument.reason.arg,
+            description: locale.usage.argument.reason.description,
+            example: locale.command.unban.usage.reasonExample
         }]
     ],
     exec: async (message, args, options) => {
         if (args[0].toLocaleLowerCase() === 'list') {
             const bannedMembers = await message.guild?.bans.fetch();
             const bannedMemberByPages = bannedMembers && getPaginationOfBannedMembers(bannedMembers.toJSON());
-            if (!bannedMemberByPages) return await message.channel.send(options.locale.interaction.iDidntFoundAnything);
-            return argumentList(message, bannedMemberByPages, bannedMembers.size, options);
+            if (!bannedMemberByPages) return await { content: options.locale.interaction.iDidntFoundAnything };
+            return await argumentList(message, bannedMemberByPages, bannedMembers.size, options);
         }
 
-        if (Number.isNaN(Number(args[0]))) return message.channel.send(options.locale.interaction.mustBeNumber);
+        if (Number.isNaN(Number(args[0]))) return { content: options.locale.interaction.mustBeNumber };
         const memberBanned = await message.guild?.bans.fetch(args[0]);
-        if (!memberBanned) return message.channel.send(options.locale.interaction.member.notFound);
+        if (!memberBanned) return { content: options.locale.interaction.member.notFound };
         const user = await message.guild?.bans.remove(memberBanned.user, args.slice(1).join(' ') || '');
-        if (!user) return await message.reply(options.locale.command.unban.interaction.cantUnban);
-        await message.reply(replaceVarsInString(options.locale.command.unban.interaction.memberUnbaned, { unbanedMember: user, authorMention: `<@${message.author.id}>` }));
+        if (!user) return { content: options.locale.command.unban.interaction.cantUnban };
+        return {
+            content: options.locale.command.unban.interaction.memberUnbaned,
+            vars: { unbanedMember: user, authorMention: `<@${message.author.id}>` }
+        };
     }
 }
 

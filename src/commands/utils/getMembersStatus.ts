@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { BotCommand, ExecuteCommandOptions } from '..';
 import MD from '../../utils/md';
+import locale from '../../locale/example.locale.json';
 
 const getAllMembers = async (message: Message, options: ExecuteCommandOptions) => {
     const membersStatusCount = (await message.guild?.members.fetch())?.toJSON()
@@ -17,23 +18,20 @@ const getAllMembers = async (message: Message, options: ExecuteCommandOptions) =
     let dndMemberText = `${MD.bold.b(`:red_circle: ${options.locale.status.dnd}:`)} ${membersStatusCount?.dnd || 0}`;
     let offlineMemberText = `${MD.bold.b(`:white_circle: ${options.locale.status.offline}:`)} ${membersStatusCount?.offline || 0}`;
     let totalMemberText = `${MD.bold.b(`:blue_circle: ${options.locale.interaction.member.total}:`)} ${message.guild?.memberCount || 0}`;
-    message.reply({
-        embeds: [
-            new MessageEmbed()
-                .setColor(options.bot.hexColor)
-                .setTitle(options.locale.messageEmbed.memberStatus.title)
-                .setDescription(`${onlineMemberText}\n${idleMemberText}\n${dndMemberText}\n${offlineMemberText}\n${totalMemberText}`)
-        ]
-    });
+    return new MessageEmbed()
+        .setColor(options.bot.hexColor)
+        .setTitle(options.locale.messageEmbed.memberStatus.title)
+        .setDescription(`${onlineMemberText}\n${idleMemberText}\n${dndMemberText}\n${offlineMemberText}\n${totalMemberText}`)
+
 }
 
 const command: BotCommand = {
     name: 'get-members-status',
-    category: '{category.utility}',
-    description: '{command.getMembersStatus.description}',
+    category: locale.category.utility,
+    description: locale.command.getMembersStatus.description,
     aliases: ['gms'],
-    exec: (message, args, options) => {
-        getAllMembers(message, options);
+    exec: async (message, args, options) => {
+        return { content: await getAllMembers(message, options), type: 'embed' };
     }
 }
 
