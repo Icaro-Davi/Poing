@@ -2,7 +2,7 @@ import { Message, PermissionResolvable } from 'discord.js';
 
 import { BotUsage } from '../commands';
 import { DiscordBot } from '../config';
-import { splitCommandAndArgs } from '../utils/commands';
+import { handleCommandsAfterExecution, splitCommandAndArgs } from '../utils/commands';
 import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
 import { createGetHelp } from '../components/messageEmbed';
@@ -29,7 +29,7 @@ export const memberDoesNotHavePermissions = (message: Message, allowedPermission
 export const eventMessageCreate = async (message: Message) => {
     if (!message.guildId || message.author.bot) return;
 
-    const botConf = await BotApplication.getConfigurations(message.guildId);    
+    const botConf = await BotApplication.getConfigurations(message.guildId);
 
     const botMention = message.mentions.users.first()?.id === message.guild?.me?.id ? `<@${message.mentions.users.first()?.id}> ` : undefined;
     if (itIsANormalMessage(message, (botMention ?? botConf.prefix) || DiscordBot.Bot.defaultPrefix)) return;
@@ -57,7 +57,14 @@ export const eventMessageCreate = async (message: Message) => {
             await message.reply(options.locale.interaction.youDontHavePermission);
             return;
         }
-        await locale.botCommand.exec(message, command.args, options);
+        const returnMessageOptions = await locale.botCommand.exec(message, command.args, options)
+        await handleCommandsAfterExecution({
+            ...returnMessageOptions, message,
+            vars: {
+                ...returnMessageOptions?.vars ? returnMessageOptions.vars : {},
+                ...options,
+            }
+        });
     } catch (error) {
         console.error(error);
         handleError(error, {
