@@ -44,4 +44,4 @@ describe('Event Create Message', () => {
         const aliasesCommand = searchBotCommand(randomAliasesKey);
         expect(aliasesCommand?.name).toBe(randomAliasesKey);
     });
-}); 
+});
