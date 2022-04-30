@@ -1,199 +1,246 @@
 {
-    "localeLabel": "locale",
+    "localeLabel": "{locale.localeLabel}",
     "category": {
-        "label": "category.lebel",
-        "administration": "category.administration",
-        "moderation": "category.moderation",
-        "utility": "category.utility"
+        "label": "{locale.category.lebel}",
+        "administration": "{locale.category.administration}",
+        "moderation": "{locale.category.moderation}",
+        "utility": "{locale.category.utility}"
     },
     "status": {
-        "online": "status.online",
-        "idle": "status.idle",
-        "dnd": "status.dnd",
-        "offline": "status;offline",
-        "invisible": "status.invisible"
+        "online": "{locale.status.online}",
+        "idle": "{locale.status.idle}",
+        "dnd": "{locale.status.dnd}",
+        "offline": "{locale.status.offline}",
+        "invisible": "{locale.status.invisible}"
     },
     "labels": {
-        "nickname": "status.nickname",
-        "joinedServer": "status.joinedServer",
-        "joinedDiscord": "status.joinedDiscord",
-        "roles": "status.role"
+        "nickname": "{locale.status.nickname}",
+        "joinedServer": "{locale.status.joinedServer}",
+        "joinedDiscord": "{locale.status.joinedDiscord}",
+        "roles": "{locale.status.role}"
     },
     "messageEmbed": {
         "getHelp": {
-            "title": "messageEmbed.getHelp.titile",
-            "fieldHowToUse": "messageEmbed.getHelp.fieldHowToUse",
-            "fieldAliases": "messageEmbed.getHelp.fieldAliases",
-            "fieldArguments": "messageEmbed.getHelp.fieldArguments",
-            "fieldExamples": "messageEmbed.getHelp.fieldExamples"
+            "title": "{locale.messageEmbed.getHelp.titile}",
+            "fieldHowToUse": "{locale.messageEmbed.getHelp.fieldHowToUse}",
+            "fieldAliases": "{locale.messageEmbed.getHelp.fieldAliases}",
+            "fieldArguments": "{locale.messageEmbed.getHelp.fieldArguments}",
+            "fieldExamples": "{locale.messageEmbed.getHelp.fieldExamples}"
         },
         "privateMessage": {
-            "title": "messageEmbed.privateMessage.title",
-            "description": "messageEmbed.privateMessage.description",
-            "footer": "messageEmbed.privateMessage.footer"
+            "title": "{locale.messageEmbed.privateMessage.title}",
+            "description": "{locale.messageEmbed.privateMessage.description}",
+            "footer": "{locale.messageEmbed.privateMessage.footer}"
         },
         "confirmBanishMember": {
-            "title": "messageEmbed.confirmBanishMember.title",
-            "fieldNameDays": "messageEmbed.confirmBanishMember.fieldNameDays",
-            "fieldDays": "messageEmbed.confirmBanishMember.fieldDays",
-            "fieldReason": "messageEmbed.confirmBanishMember.fieldReason"
+            "title": "{locale.messageEmbed.confirmBanishMember.title}",
+            "fieldNameDays": "{locale.messageEmbed.confirmBanishMember.fieldNameDays}",
+            "fieldDays": "{locale.messageEmbed.confirmBanishMember.fieldDays}",
+            "fieldReason": "{locale.messageEmbed.confirmBanishMember.fieldReason}"
         },
         "confirmKickMember": {
-            "title": "messageEmbed.confirmKickMember.title",
-            "fieldReason": "messageEmbed.confirmKickMember.fieldReason"
+            "title": "{locale.messageEmbed.confirmKickMember.title}",
+            "fieldReason": "{locale.messageEmbed.confirmKickMember.fieldReason}"
         },
         "messageToBanishedMember": {
-            "title": "messageEmbed.messageToBanishedMember.",
-            "fieldReason": "messageEmbed.messageToBanishedMember.fieldReason",
-            "banWithoutReason": "messageEmbed.messageToBanishedMember.banWithoutReason"
+            "title": "{locale.messageEmbed.messageToBanishedMember.}",
+            "fieldReason": "{locale.messageEmbed.messageToBanishedMember.fieldReason}",
+            "banWithoutReason": "{locale.messageEmbed.messageToBanishedMember.banWithoutReason}"
         },
         "memberStatus": {
-            "title": "messageEmbed.memberStatus.title"
+            "title": "{locale.messageEmbed.memberStatus.title}"
         }
     },
     "messageActionRow": {
         "confirmButtons": {
-            "successLabel": "messageActionRow.confirmButtons.successLabel",
-            "dangerLabel": "messageActionRow.confirmButtons.dangerLabel"
+            "successLabel": "{locale.messageActionRow.confirmButtons.successLabel}",
+            "dangerLabel": "{locale.messageActionRow.confirmButtons.dangerLabel}"
         }
     },
     "error": {
-        "unknown": "error.unknow",
-        "50007": "error.50007"
+        "unknown": "{locale.error.unknow}",
+        "50007": "{locale.error.50007}",
+        "50013": "{locale.error.50013}"
     },
     "interaction": {
-        "cannotSendPrivateMessage": "interaction.cannotSendPrivateMessage",
-        "iDontKnowThisArgument": "interaction.iDontKnowThisArgument",
-        "isDMMessage": "interaction.isDMMessage",
-        "mustBeNumber": "interaction.mustBeNumber",
-        "needArguments": "interaction.needArguments",
-        "numberMustBeBetweenTwoValues": "interaction.numberMustBeBetweenTwoValues",
-        "youCantUseThisButton": "interaction.youCantUseThisButton",
-        "iDidntFoundAnything": "interaction.iDidntFoundAnything",
-        "youDontHavePermission": "interaction.youDontHavePermission",
+        "cannotSendPrivateMessage": "{locale.interaction.cannotSendPrivateMessage}",
+        "iDontKnowThisArgument": "{locale.interaction.iDontKnowThisArgument}[arg]",
+        "isDMMessage": "{locale.interaction.isDMMessage}",
+        "mustBeNumber": "{locale.interaction.mustBeNumber}",
+        "needArguments": "{locale.interaction.needArguments}",
+        "numberMustBeBetweenTwoValues": "{locale.interaction.numberMustBeBetweenTwoValues}",
+        "youCantUseThisButton": "{locale.interaction.youCantUseThisButton}",
+        "iDidntFoundAnything": "{locale.interaction.iDidntFoundAnything}",
+        "youDontHavePermission": "{locale.interaction.youDontHavePermission}",
+        "needARole": "{locale.interaction.needARole}",
         "member": {
-            "banishedCanceled": "interaction.member.banishedCanceled",
-            "banishedFromServer": "interaction.member.banishedFromServer",
-            "isNotBannable": "interaction.member.isNotBannable",
-            "kickCanceled": "interaction.member.kickCanceled",
-            "kickFromServer": "interaction.member.kickFromServer",
-            "isNotKickable": "interaction.member.isNotKickable",
-            "notFound": "interaction.member.notFound",
-            "total": "interaction.member.total"
+            "kickCanceled": "{locale.interaction.member.kickCanceled}",
+            "kickFromServer": "{locale.interaction.member.kickFromServer}",
+            "isNotKickable": "{locale.interaction.member.isNotKickable}",
+            "notFound": "{locale.interaction.member.notFound}",
+            "total": "{locale.interaction.member.total}"
         }
     },
     "command": {
         "help": {
-            "description": "command.help.description",
+            "description": "{locale.command.help.description}",
             "usage": {
                 "list": {
-                    "arg": "command.help.usage.list.arg",
-                    "description": "command.help.usage.list.description",
-                    "example": "command.help.usage.list.example"
+                    "arg": "{locale.command.help.usage.list.arg}",
+                    "description": "{locale.command.help.usage.list.description}",
+                    "example": "{locale.command.help.usage.list.example}"
                 },
-                "commandExample": "command.help.usage.commandExample"
+                "commandExample": "{locale.command.help.usage.commandExample}"
             }
         },
         "anonymousDirectMessage": {
-            "description": "command.anonymousDirectMessage.description",
+            "description": "{locale.command.anonymousDirectMessage.description}",
             "usage": {
-                "messageExample": "command.anonymousDirectMessage.usage.messageExample"
+                "messageExample": "{locale.command.anonymousDirectMessage.usage.messageExample}"
             }
         },
         "ban": {
-            "description": "command.ban.description",
+            "description": "{locale.command.ban.description}",
             "error": {
-                "50007": "command.ban.error.50007"
+                "50007": "{locale.command.ban.error.50007}"
+            },
+            "interaction": {
+                "isNotBannable": "{locale.command.ban.interaction.member.isNotBannable}",
+                "banishedCanceled": "{locale.command.ban.interaction.member.banishedCanceled}",
+                "banishedFromServer": "{locale.command.ban.interaction.member.banishedFromServer}"
             },
             "usage": {
-                "memberExample": "command.ban.usage.memberExample",
-                "-daysExample": "command.ban.usage.-daysExample",
-                "-reasonExample": "command.ban.usage.-reasonExample"
+                "memberExample": "{locale.command.ban.usage.memberExample}",
+                "-daysExample": "{locale.command.ban.usage.-daysExample}",
+                "-reasonExample": "{locale.command.ban.usage.-reasonExample}"
             }
         },
         "kick": {
-            "description": "command.kick.description",
+            "description": "{locale.command.kick.description}",
             "error": {
-                "50007": "command.kick.error.50007"
+                "50007": "{locale.command.kick.error.50007}"
             },
             "usage": {
-                "memberExample": "command.kick.usage.memberExample",
-                "reasonExample": "command.kick.usage.reasonExample"
+                "memberExample": "{locale.command.kick.usage.memberExample}",
+                "reasonExample": "{locale.command.kick.usage.reasonExample}"
             }
         },
         "removeMessages": {
-            "description": "command.removeMessages.description",
+            "description": "{locale.command.removeMessages.description}",
             "interaction": {
-                "deletedMessages": "command.removeMessages.interaction.deletedMessages"
+                "deletedMessages": "{locale.command.removeMessages.interaction.deletedMessages}"
             },
             "usage": {
-                "quantityExample": "command.removeMessages.usage.quantityExample"
+                "quantityExample": "{locale.command.removeMessages.usage.quantityExample}"
             }
         },
         "unban": {
-            "description": "command.unban.description",
-            "reasonExample": "command.unban.reasonExample",
+            "description": "{locale.command.unban.description}",
             "interaction": {
-                "totalOfPages": "command.unban.interaction.totalOfPages",
-                "memberUnbaned": "command.unban.interaction.memberUnbaned",
-                "cantUnban": "command.unban.interaction.cantUnban"
+                "totalOfPages": "{locale.command.unban.interaction.totalOfPages}",
+                "memberUnbaned": "{locale.command.unban.interaction.memberUnbaned}",
+                "cantUnban": "{locale.command.unban.interaction.cantUnban}"
             },
             "usage": {
                 "list": {
-                    "arg": "command.unban.usage.list.arg",
-                    "description": "command.unban.usage.list.description",
-                    "example": "command.unban.usage.list.example"
+                    "arg": "{locale.command.unban.usage.list.arg}",
+                    "description": "{locale.command.unban.usage.list.description}",
+                    "example": "{locale.command.unban.usage.list.example}"
                 },
                 "member": {
-                    "arg": "command.unban.usage.member.arg",
-                    "description": "command.unban.usage.member.description",
-                    "example": "command.unban.usage.member.example"
-                }
+                    "arg": "{locale.command.unban.usage.member.arg}",
+                    "description": "{locale.command.unban.usage.member.description}",
+                    "example": "{locale.command.unban.usage.member.example}"
+                },
+                "reasonExample": "{locale.command.unban.reasonExample}"
             }
         },
         "getMembersStatus": {
-            "description": "command.getMembersStatus.description"
+            "description": "{locale.command.getMembersStatus.description}"
         },
         "ping": {
-            "description": "command.ping.description",
+            "description": "{locale.command.ping.description}",
             "interaction": {
-                "clientPing": "command.ping.interaction.clientPing",
-                "serverPing": "command.ping.interaction.serverPing"
+                "clientPing": "{locale.command.ping.interaction.clientPing}",
+                "serverPing": "{locale.command.ping.interaction.serverPing}"
             }
         },
         "userInfo": {
-            "description": "command.userInfo.description",
+            "description": "{locale.command.userInfo.description}",
             "usage": {
-                "exampleMember": "command.userInfo.usage.exampleMember"
+                "exampleMember": "{locale.command.userInfo.usage.exampleMember}"
+            }
+        },
+        "mute": {
+            "description": "{locale.command.mute.description}",
+            "interaction": {
+                "mutedSuccessful": "{locale.command.mute.interaction.mutedSuccessful}[memberMutedName, author, duration]",
+                "memberAlreadyMuted": "{locale.command.mute.interaction.memberAlreadyMuted}",
+                "needMuteRoleId": "{locale.command.mute.interaction.add}",
+                "muteRoleAdded": "{locale.command.mute.interaction.muteRoleAdded}",
+                "cannotRegisterRole": "{locale.command.mute.interaction.cannotRegisterRole}",
+                "roleNotFound": "{locale.command.mute.interaction.roleNotFound}",
+                "needRegisterRole": "{locale.command.mute.interaction.needRegisterRole}",
+                "cannotMuteAdmin": "{locale.command.mute.interaction.cannotMuteAdmin}",
+                "arg": {
+                    "time": {
+                        "day": "{locale.command.mute.interaction.arg.time.day}",
+                        "hour": "{locale.command.mute.interaction.arg.time.hour}[timeArg]",
+                        "minute": "{locale.command.mute.interaction.arg.time.minute}[timeArg]",
+                        "idk": "{locale.command.mute.interaction.arg.time.idk}[timeArg, timeChar]"
+                    }
+                }
+            },
+            "usage": {
+                "reason": {
+                    "arg": "{locale.command.mute.usage.reason.arg}",
+                    "description": "{locale.command.mute.usage.reason.description}",
+                    "example": "{locale.command.mute.usage.reason.example}"
+                },
+                "-addRole": {
+                    "description": "{locale.command.mute.usage.-addRole.description}",
+                    "example": "{locale.command.mute.usage.-addRole.example}"
+                },
+                "exampleMember": "{locale.command.mute.usage.exampleMember}",
+                "exampleFlagAddRole": "{locale.command.mute.usage.exampleFlagAddRole}",
+                "exampleTime": "{locale.command.mute.usage.exampleTime}"
             }
         }
     },
     "usage": {
-        "member": {
-            "arg": "usage.member.arg",
-            "description": "usage.member.description"
+        "flag": {
+            "-daysBan": {
+                "description": "{locale.usage.flag.-daysBan.description}"
+            },
+            "-reason": {
+                "description": "{locale.usage.flag.-reason.description}"
+            }
         },
-        "command": {
-            "arg": "usage.command.arg",
-            "description": "usage.command.description"
-        },
-        "message": {
-            "arg": "usage.message.arg",
-            "description": "usage.message.description"
-        },
-        "-daysBan": {
-            "description": "usage.-daysBan.description"
-        },
-        "-reason": {
-            "description": "usage.-reason.description"
-        },
-        "reason": {
-            "arg": "usage.reason.arg",
-            "description": "usage.reason.description"
-        },
-        "quantity": {
-            "arg": "usage.quantity.arg",
-            "description": "usage.quantity.description"
+        "argument": {
+            "member": {
+                "arg": "{locale.usage.argument.member.arg}",
+                "description": "{locale.usage.argument.member.description}"
+            },
+            "command": {
+                "arg": "{locale.usage.argument.command.arg}",
+                "description": "{locale.usage.argument.command.description}"
+            },
+            "message": {
+                "arg": "{locale.usage.argument.message.arg}",
+                "description": "{locale.usage.argument.message.description}"
+            },
+            "reason": {
+                "arg": "{locale.usage.argument.reason.arg}",
+                "description": "{locale.usage.argument.reason.description}"
+            },
+            "quantity": {
+                "arg": "{locale.usage.argument.quantity.arg}",
+                "description": "{locale.usage.argument.quantity.description}"
+            },
+            "time": {
+                "arg": "{locale.usage.argument.argument.time.arg}",
+                "description": "{locale.usage.argument.argument.time.description}"
+            }
         }
     }
 }

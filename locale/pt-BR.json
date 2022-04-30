@@ -17,7 +17,7 @@
         "nickname": "Apelido",
         "joinedServer": "Entrou no servidor",
         "joinedDiscord": "Entrou no Discord",
-        "roles": "Funções"
+        "roles": "Cargos"
     },
     "messageEmbed": {
         "getHelp": {
@@ -59,7 +59,8 @@
     },
     "error": {
         "unknown": "Desculpe 😢, achei um bug estranho 🪲 irei tentar mata-lo.",
-        "50007": "Não posso enviar mensagem privada para esse membro."
+        "50007": "Não posso enviar mensagem privada para esse membro.",
+        "50013": "Verifique se tenho habilitado essa permissão no meu cargo, ou tente também mover meu cargo em uma posição mais alta na hierarquia da lista de cargos."
     },
     "interaction": {
         "cannotSendPrivateMessage": "Eu não pude enviar sua mensagem, :C desculpe.",
@@ -71,10 +72,8 @@
         "youCantUseThisButton": "Este botão possui uma magia muito forte que estar te impedindo de usar!",
         "iDidntFoundAnything": "Não consegui encontrar nada.",
         "youDontHavePermission": "Você não tem permissão para fazer isso.",
+        "needARole": "Preciso que o servidor tenha um cargo chamado {role}.",
         "member": {
-            "banishedCanceled": "Banimento cancelado ❤️",
-            "banishedFromServer": "Banimos ele com sucesso 😈",
-            "isNotBannable": "Esse membro é muito poderoso, não consigo banir ele T-T",
             "kickCanceled": "Salvo, não será mais kicado ❤️",
             "kickFromServer": "KIC-KA-DO muhahahaha 😈",
             "isNotKickable": "Meu attack não surtiu efeito, não consegui kickar ele.",
@@ -104,6 +103,11 @@
             "description": "Irei banir um membro do servidor e mandarei uma mensagem privada para o membro banido avisando do banimento.",
             "error": {
                 "50007": "Não consegui avisar a esse membro que foi banido."
+            },
+            "interaction": {
+                "isNotBannable": "Esse membro é muito poderoso, não consigo banir ele T-T",
+                "banishedCanceled": "Banimento cancelado ❤️",
+                "banishedFromServer": "Banimos ele com sucesso 😈"
             },
             "usage": {
                 "memberExample": "`{bot.prefix}ban @{bot.name}` - O membro @{bot.name} foi banido do servidor.",
@@ -166,34 +170,77 @@
             "usage": {
                 "exampleMember": "`{bot.prefix}userinfo @{bot.name}`- Retornarei informações sobre o usuário {bot.name}."
             }
+        },
+        "mute": {
+            "description": "Muta um membro do servidor",
+            "interaction": {
+                "mutedSuccessful": "O membro {memberMutedName} foi mutado por {author} e acabará em {duration}",
+                "memberAlreadyMuted": "Adicione o cargo que será usado para mutar usando `{bot.prefix}mute -RegisterRole \"id do cargo\"`",
+                "needMuteRoleId": "Precisa me falar um cargo que eu possa \"Mutar\", use `!mute --a \"Nome do cargo | Id do cargo\"` para adicionar um.",
+                "muteRoleAdded": "Irei lembrar esse caro :3 até você me falar outro",
+                "cannotRegisterRole": "Não consegui registrar esse cargo.",
+                "roleNotFound": "Não encontrei esse cargo no servidor.",
+                "needRegisterRole": "Precisa registrar um cargo, use `!help mute`",
+                "cannotMuteAdmin": "Não consigo... esse membro... o poder dele é sem limites D:",
+                "arg": {
+                    "time": {
+                        "day": "Não pode ser maior que 365 dias.",
+                        "hour": "`{timeArg}` - Não pode ser maior que 24 hora.",
+                        "minute": "{timeArg} - Não pode ser maior que 1 hora.",
+                        "idk": "Não consegui entender {timeArg}{timeChar}"
+                    }
+                }
+            },
+            "usage": {
+                "reason": {
+                    "arg": "razão",
+                    "description": "Razão para mutar o membro",
+                    "example": "`{bot.prefix}mute @{bot.name}` - Vai mutar o {bot.name} por tempo indeterminado."
+                },
+                "-addRole": {
+                    "description": "A flag pode ser usado `[ -addrole | --a ]`. Aqui você adiciona um cargo que pode ser o nome ou o ID, quando um membro for mutado usarei esse cargo como punição.",
+                    "example": "`{bot.prefix}mute --addrole \"Muted\"`. Registra o cargo \"Muted\" assim eu irei usar para mutar os membros do servidor hehe."
+                },
+                "exampleMember": "`{bot.prefix}mute @{bot.name}` - Muta o membro.",
+                "exampleTime": "`{bot.prefix}mute @{bot.name} 10M` - O membro @{bot.name} foi banido por 10 Minutos.",
+                "exampleFlagAddRole": "`{bot.prefix}mute -addRole \"Mutado\"` - Adiciona o cargo mutado para ser usado no comando `{bot.prefix}mute`"
+            }
         }
     },
     "usage": {
-        "member": {
-            "arg": "membro",
-            "description": "A referência de algum membro do servidor, pode ser `[menção | membroId]`"
+        "flag": {
+            "-daysBan": {
+                "description": "A flag pode ser usado `[ -days | --d ]`. Número de dias entre `0 e 7` que representa as mensagens que serão deletadas, valor padrão é 0 (nenhuma mensagem será deletada)."
+            },
+            "-reason": {
+                "description": "A flag pode ser usado `[ -reason | --r ]`. Aqui você adiciona um motivo a ação que estar tomando, se não por eu irei fazer tal ação sem motivo."
+            }
         },
-        "command": {
-            "arg": "comando",
-            "description": "A referência de algum comando que está na minha lista."
-        },
-        "message": {
-            "arg": "mensagem",
-            "description": "Mensagem que será enviada para o membro."
-        },
-        "-daysBan": {
-            "description": "A flag pode ser usado `[ -days | --d ]`. Número de dias entre `0 e 7` que representa as mensagens que serão deletadas, valor padrão é 0 (nenhuma mensagem será deletada)."
-        },
-        "-reason": {
-            "description": "A flag pode ser usado `[ -reason | --r ]`. Aqui você adiciona um motivo a ação que estar tomando, se não por eu irei fazer tal ação sem motivo."
-        },
-        "reason": {
-            "arg": "motivo",
-            "description": "Aqui você adiciona um motivo a ação que estar fazendo."
-        },
-        "quantity": {
-            "arg": "quantidade",
-            "description": "Insira a quantidade desejada."
+        "argument": {
+            "member": {
+                "arg": "membro",
+                "description": "A referência de algum membro do servidor, pode ser `[menção | membroId]`."
+            },
+            "command": {
+                "arg": "comando",
+                "description": "A referência de algum comando que está na minha lista."
+            },
+            "message": {
+                "arg": "mensagem",
+                "description": "Mensagem que será enviada para o membro."
+            },
+            "reason": {
+                "arg": "motivo",
+                "description": "Aqui você adiciona um motivo a ação que estar fazendo."
+            },
+            "quantity": {
+                "arg": "quantidade",
+                "description": "Insira a quantidade desejada."
+            },
+            "time": {
+                "arg": "tempo",
+                "description": "A duração pode ser usado informando um número e em seguida com M para minutos, H para horas e D para dias."
+            }
         }
     }
 }
