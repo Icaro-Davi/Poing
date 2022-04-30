@@ -10,9 +10,9 @@ export type LocaleErroTypes = keyof typeof defaultLocale.error;
 export type LocaleLabel = 'pt-BR' | 'en-US';
 
 const translateCommandToLocale = async (command: BotCommand, locale: LocaleLabel) => {
-    const _locale = await import(`../../locale/${locale}.json`) as Locale;    
+    const _locale = await import(`../../locale/${locale}.json`) as Locale;
     const translatedCommand = navigateToObjectDepthAndTranslate(command, {
-        ..._locale,
+        locale: _locale,
         defaultCommand: {
             name: command.name
         },
@@ -30,8 +30,9 @@ const translateCommandToLocale = async (command: BotCommand, locale: LocaleLabel
 export const replaceVarsInString = (str: string, vars: any): string => {
     const paths = getPathFromCurlyBrackets(str);
     if (paths) {
-        str = paths.reduce((prev, path) => {
-            return prev.replaceAll(`{${path}}`, objectPath.get(vars, path));
+        str = paths.reduce<string>((prev, path, index) => {
+            const value = objectPath.get(vars, path);
+            return value ? prev.replaceAll(`{${path}}`, value) : prev.replaceAll(`{${path}}`, `[${paths[index]}]`);
         }, str);
         return replaceVarsInString(str, vars);
     }
