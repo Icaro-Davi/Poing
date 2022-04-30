@@ -1,5 +1,6 @@
-import { Collection, ColorResolvable, HexColorString, Message, MessageEmbed, PermissionResolvable } from 'discord.js';
+import { Collection, ColorResolvable, Message, MessageEmbed, PermissionResolvable } from 'discord.js';
 import { Locale } from '../locale';
+import { CommandHandler } from '../utils/commands';
 
 export type ExecuteCommandOptions = {
     locale: Locale;
@@ -9,7 +10,9 @@ export type ExecuteCommandOptions = {
         hexColor: ColorResolvable;
     }
 }
-export type ExecuteCommand = (message: Message, args: string[], options: ExecuteCommandOptions) => void;
+
+export type ExecuteCommandReturn = Promise<Partial<Omit<CommandHandler, 'message'>> | void>;
+export type ExecuteCommand = (message: Message, args: string[], options: ExecuteCommandOptions) => ExecuteCommandReturn;
 export type BotCommands = Collection<string, BotCommand>;
 export type BotCommandCategory = 'Administration'| 'Moderation' | 'Utility';
 export type BotGetHelp = (customPrefix?: string) => MessageEmbed;
@@ -19,8 +22,8 @@ export type BotCommand = {
     name: string;
     exec: ExecuteCommand;
     category: BotCommandCategory | string;
-    description: string;    
+    description: string;
     allowedPermissions?: PermissionResolvable[];
     usage?: BotUsage;
-    aliases?: string[];   
+    aliases?: string[];
 }
