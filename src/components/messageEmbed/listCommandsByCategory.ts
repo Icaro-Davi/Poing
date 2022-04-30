@@ -1,9 +1,9 @@
 import { MessageEmbed } from "discord.js";
-import objectPath from "object-path";
 import { ExecuteCommandOptions } from "../../commands";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
-import getPathFromCurlyBrackets from "../../utils/regex/getPathFromCurlyBrackets";
+import locale from "../../locale/example.locale.json";
+import { replaceVarsInString } from "../../locale";
 
 const listCommandsByCategory = (options: ExecuteCommandOptions) => {
     const commandsByCategory: { [key: string]: string[] } = {};
@@ -14,19 +14,18 @@ const listCommandsByCategory = (options: ExecuteCommandOptions) => {
     });
     const getEmojiByCategory = (category: string) => {
         switch (category) {
-            case '{category.administration}':
+            case locale.category.administration:
                 return ':crown: ';
-            case '{category.utility}':
+            case locale.category.moderation:
                 return ':gear: '
-            case '{category.moderation}':
+            case locale.category.utility:
                 return ':tools: ';
             default:
                 return ''
         }
     }
     const translateCategory = (category: string) => {
-        let paths = getPathFromCurlyBrackets(category);
-        if (paths) category = objectPath.get(options.locale, paths[0]);
+        category = replaceVarsInString(category, { locale: options.locale });
         return category;
     }
     return new MessageEmbed()
@@ -34,7 +33,7 @@ const listCommandsByCategory = (options: ExecuteCommandOptions) => {
         .setFields(Object.entries(commandsByCategory).map(category => ({
             name: `${getEmojiByCategory(category[0])}${translateCategory(category[0])}`,
             value: category[1].reduce((prev, current) => prev + ` ${MD.codeBlock.line(current)}`, '')
-        })))
+        })));
 }
 
 export default listCommandsByCategory;
