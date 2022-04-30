@@ -1,8 +1,9 @@
-import DiscordJS from 'discord.js';
+import DiscordJS, { Message, MessageEmbed, MessageOptions, ReplyMessageOptions } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 
 import { BotCommand } from '../commands';
+import { replaceVarsInString } from '../locale';
 
 export const splitCommandAndArgs = (message: string, botPrefix: string) => {
     const args = message.trim().slice(botPrefix.length || process.env.BOT_PREFIX!.length).split(/ +/);
@@ -16,6 +17,7 @@ export const getAllBotCommands = () => {
     const clientCommands = new DiscordJS.Collection<string, BotCommand>();
     const aliasesCommandsKey = new DiscordJS.Collection<string, string>();
     const commandPaths = searchCommandsFiles(path.resolve(`${__dirname}/../commands`), path.resolve(`${__dirname}/../commands/`));
+
     for (const path of commandPaths) {
         const command = require(path).default as BotCommand;
         clientCommands.set(command.name, command);
@@ -37,4 +39,26 @@ export const searchCommandsFiles = (dir: string, returnWithInitialPath = './') =
     }
     const commandPaths = getPaths(dir, []).map(_path => path.resolve(`${returnWithInitialPath}/${_path.split('/').slice(2).join('/')}`));
     return commandPaths;
+}
+
+export type CommandHandler = {
+    message: Message;
+    vars: any;
+    content?: string | MessageEmbed;
+    type?: 'message' | 'embed';
+    use?: 'reply' | 'send';
+    ignore?: boolean;
+}
+
+export const handleCommandsAfterExecution = async ({ ignore, content, message, type = 'message', use = 'reply', vars }: CommandHandler) => {
+    if (ignore || !content) return;
+    const exec = {
+        send: (a: any) => message.channel.send(a),
+        reply: (a: any) => message.reply(a)
+    }
+    const _type = {
+        embed: () => ({ embeds: [content] }) as MessageOptions | ReplyMessageOptions,
+        message: () => replaceVarsInString(content as string, vars) || content
+    }
+    await exec[use](_type[type]());
 }
