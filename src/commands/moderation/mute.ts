@@ -8,7 +8,7 @@ import getValuesFromStringFlag from "../../utils/regex/getValuesFromStringFlag";
 import locale from '../../locale/example.locale.json';
 
 export const addMuteRole = async (message: Message, role: string, options: ExecuteCommandOptions) => {
-    const guildRole = message.guild?.roles.cache.find(_role => _role.name === role || _role.id === role);
+    const guildRole = message.mentions.roles.first() ?? message.guild?.roles.cache.find(_role => _role.name === role || _role.id === role);
     if (!guildRole) return options.locale.command.mute.interaction.roleNotFound;
     if (await MuteApplication.addRole(message.guildId!, guildRole.id))
         return options.locale.command.mute.interaction.muteRoleAdded;
@@ -58,6 +58,7 @@ export const MuteGuildMember = async (message: Message, arg: string[], options: 
     }
 
     await member.roles.add(muteRole, muteTime ? arg.slice(2).join(' ').trim() : arg.slice(1).join(' ').trim() || 'No Reason');
+
     return {
         content: options.locale.command.mute.interaction.mutedSuccessful,
         vars: {
