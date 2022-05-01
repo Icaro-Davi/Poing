@@ -41,6 +41,14 @@ class ScheduleUnmuteRepository {
             throw new Error('[errorScheduleUnmuteRepositoryDelete]');
         }
     }
+
+    static async findByGuildIdAndMemberId(guildId: string, memberId: string) {
+        try {
+            return await ScheduleUnmuteSchema.findOne({ guildId, memberId }).lean();
+        } catch (error) {
+            throw new Error('[errorScheduleUnmuteRepositoryFindByGuildIdAndMemberId]');
+        }
+    }
 }
 
 export default ScheduleUnmuteRepository;

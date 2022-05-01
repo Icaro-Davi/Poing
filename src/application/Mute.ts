@@ -47,6 +47,10 @@ class Mute {
         await member?.roles.remove(guildDoc.bot.roles.muteId);
     }
 
+    static async findMutedMember(guildId: string, memberId: string){
+        return await ScheduleUnmuteRepository.findByGuildIdAndMemberId(guildId, memberId);
+    }
+
 }
 
 export default Mute;
