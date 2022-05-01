@@ -17,7 +17,9 @@
         "nickname": "{locale.status.nickname}",
         "joinedServer": "{locale.status.joinedServer}",
         "joinedDiscord": "{locale.status.joinedDiscord}",
-        "roles": "{locale.status.role}"
+        "roles": "{locale.status.role}",
+        "muted": "{locale.status.muted}",
+        "unmute": "{locale.status.unmute}"
     },
     "messageEmbed": {
         "getHelp": {
@@ -152,7 +154,7 @@
                     "description": "{locale.command.unban.usage.member.description}",
                     "example": "{locale.command.unban.usage.member.example}"
                 },
-                "reasonExample": "{locale.command.unban.reasonExample}"
+                "reasonExample": "{locale.command.unban.usage.reasonExample}"
             }
         },
         "getMembersStatus": {
@@ -238,8 +240,8 @@
                 "description": "{locale.usage.argument.quantity.description}"
             },
             "time": {
-                "arg": "{locale.usage.argument.argument.time.arg}",
-                "description": "{locale.usage.argument.argument.time.description}"
+                "arg": "{locale.usage.argument.time.arg}",
+                "description": "{locale.usage.argument.time.description}"
             }
         }
     }
