@@ -1,5 +1,5 @@
 import { BotCommand, ExecuteCommandOptions, ExecuteCommandReturn } from "..";
-import { createGetHelp, listCommandsByCategory } from "../../components/messageEmbed";
+import { createGetHelp, list } from "../../components/messageEmbed";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
 import translateCommandToLocale, { LocaleLabel } from "../../locale";
@@ -37,9 +37,9 @@ const command: BotCommand = {
     exec: async (message, args, options) => {
         switch (args[0]) {
             case 'list':
-                return { content: listCommandsByCategory(options), type: 'embed' };
+                return { content: list.commandsByCategory(options), type: 'embed' };
             case undefined:
-                return { content: listCommandsByCategory(options), type: 'embed' };
+                return { content: list.commandsByCategory(options), type: 'embed' };
             default:
                 return await getHelpAboutAnyCommand(args[0], options);
         }

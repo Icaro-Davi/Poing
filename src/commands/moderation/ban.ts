@@ -24,7 +24,7 @@ const command: BotCommand = {
             example: locale.command.ban.usage['-daysExample']
         }],
         [{
-            required: false, arg: '-reason',
+            required: false, arg: '-reason', // Remove flag reason and add reason argument, if dont have -days get all string after else cut -days
             description: locale.usage.flag['-reason'].description,
             example: locale.command.ban.usage['-reasonExample']
         }]

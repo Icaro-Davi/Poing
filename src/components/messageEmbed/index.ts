@@ -1,13 +1,13 @@
 import confirm from "./confirm";
 import createGetHelp from "./createGetHelp";
-import listCommandsByCategory from "./listCommandsByCategory";
+import list from "./list";
 import paginationOfBannedMembers from "./paginationOfBannedMembers";
 import PM from "./privateMessage";
 
 export {
     confirm,
     createGetHelp,
-    listCommandsByCategory,
+    list,
     paginationOfBannedMembers,
     PM
 }

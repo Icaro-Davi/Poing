@@ -4,8 +4,10 @@ import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
 import locale from "../../locale/example.locale.json";
 import { replaceVarsInString } from "../../locale";
+import { MutedMember } from "../../application/Mute";
+import moment from "moment";
 
-const listCommandsByCategory = (options: ExecuteCommandOptions) => {
+const commandsByCategory = (options: ExecuteCommandOptions) => {
     const commandsByCategory: { [key: string]: string[] } = {};
     DiscordBot.Commands.Collection.forEach(BotCommand => {
         commandsByCategory[BotCommand.category]
@@ -36,4 +38,13 @@ const listCommandsByCategory = (options: ExecuteCommandOptions) => {
         })));
 }
 
-export default listCommandsByCategory;
+const mutedMembers = (mutedGuildMembers: MutedMember[], options: ExecuteCommandOptions) => {
+    return new MessageEmbed()
+        .setColor(options.bot.hexColor)
+        .setDescription(mutedGuildMembers.reduce((str, member) => `${str}\n${MD.underline(`🤫${options.locale.labels.name}:`)} ${MD.codeBlock.line(member.name)} ${MD.underline(`⌛${options.locale.labels.ends}:`)} ${MD.codeBlock.line(moment(member.timeout).locale(options.locale.localeLabel).fromNow())}`, ''));
+}
+
+export default {
+    commandsByCategory,
+    mutedMembers
+};
