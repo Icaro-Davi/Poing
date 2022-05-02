@@ -33,6 +33,14 @@ class ScheduleUnmuteRepository {
         }
     }
 
+    static async listByGuildId(guildId: string, limit = 50) {
+        try {
+            return await ScheduleUnmuteSchema.find({ guildId }).sort({ timeout: 'asc' }).limit(limit).lean();
+        } catch (error) {
+            throw new Error('[errorScheduleUnmuteRepositoryListByGuildId]');
+        }
+    }
+
     static async delete(_id: mongoose.Types.ObjectId) {
         try {
             await ScheduleUnmuteSchema.findByIdAndDelete(_id);

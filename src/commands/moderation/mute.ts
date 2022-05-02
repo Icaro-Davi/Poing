@@ -1,11 +1,13 @@
 import { Message } from "discord.js";
-import moment from "moment";
-import { BotCommand, ExecuteCommandOptions } from "..";
+import moment, { Moment } from "moment";
+import { BotCommand, ExecuteCommandOptions, ExecuteCommandReturn } from "..";
 import { MemberApplication, MuteApplication } from "../../application";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
 import getValuesFromStringFlag from "../../utils/regex/getValuesFromStringFlag";
 import locale from '../../locale/example.locale.json';
+import Mute from "../../application/Mute";
+import { list } from "../../components/messageEmbed";
 
 export const addMuteRole = async (message: Message, role: string, options: ExecuteCommandOptions) => {
     const guildRole = message.mentions.roles.first() ?? message.guild?.roles.cache.find(_role => _role.name === role || _role.id === role);
@@ -28,7 +30,7 @@ export const MuteGuildMember = async (message: Message, arg: string[], options: 
 
     if (member.roles.cache.some(role => role.id === muteRole.id)) return { content: options.locale.command.mute.interaction.memberAlreadyMuted };
 
-    let muteTime: number = 0;
+    let muteTime: Moment | undefined;
     if (arg[1] && arg[1].match(/^[\d]+(?:D|M|H)$/gi)) {
         const timeChar = arg[1].slice(-1);
         const timeArg = arg[1].slice(0, -1);
@@ -36,15 +38,15 @@ export const MuteGuildMember = async (message: Message, arg: string[], options: 
         switch (timeChar.toLocaleUpperCase()) {
             case 'D':
                 if (parseInt(timeArg) > 365) return { content: options.locale.command.mute.interaction.arg.time.day };
-                muteTime = moment.utc().add(parseInt(timeArg), 'days').valueOf();
+                muteTime = moment.utc().add(parseInt(timeArg), 'days');
                 break;
             case 'H':
                 if (parseInt(timeArg) > 24) return { content: options.locale.command.mute.interaction.arg.time.hour, vars: { timeArg } };
-                muteTime = moment.utc().add(parseInt(timeArg), 'hours').valueOf()
+                muteTime = moment.utc().add(parseInt(timeArg), 'hours');
                 break;
             case 'M':
                 if (parseInt(timeArg) > 60) return { content: options.locale.command.mute.interaction.arg.time.minute, vars: { timeArg } };
-                muteTime = moment.utc().add(parseInt(timeArg), 'minutes').valueOf();
+                muteTime = moment.utc().add(parseInt(timeArg), 'minutes');
                 break;
             default:
                 return { content: options.locale.command.mute.interaction.arg.time.idk, vars: { timeArg, timeChar } };
@@ -53,8 +55,8 @@ export const MuteGuildMember = async (message: Message, arg: string[], options: 
 
     if (muteTime) {
         const muteDoc = await MuteApplication.addMember(message.guildId!, member.id, moment(muteTime).toDate());
-        if ((muteTime - moment.utc().valueOf()) < DiscordBot.ScheduleEvent.getLoopTimeMs())
-            DiscordBot.ScheduleEvent.unmuteCountdown(muteDoc._id, message.guildId!, member.id, muteTime - moment.utc().valueOf());
+        if ((muteTime.valueOf() - moment.utc().valueOf()) < DiscordBot.ScheduleEvent.getLoopTimeMs())
+            DiscordBot.ScheduleEvent.unmuteCountdown(muteDoc._id, message.guildId!, member.id, muteTime.valueOf() - moment.utc().valueOf());
     }
 
     await member.roles.add(muteRole, muteTime ? arg.slice(2).join(' ').trim() : arg.slice(1).join(' ').trim() || 'No Reason');
@@ -64,9 +66,14 @@ export const MuteGuildMember = async (message: Message, arg: string[], options: 
         vars: {
             memberMutedName: `<@${member.id}>`,
             author: `<@${message.author.id}>`,
-            duration: muteTime ? arg[1] : '♾️'
+            duration: muteTime ? muteTime.locale(options.locale.localeLabel).fromNow() : '♾️'
         }
     };
+}
+
+export const listMutedMembers = async (message: Message, options: ExecuteCommandOptions): ExecuteCommandReturn => {
+    const membersMuted = await Mute.listMutedMembers(message);
+    return { content: list.mutedMembers(membersMuted, options), type: 'embed' };
 }
 
 const command: BotCommand = {
@@ -83,6 +90,10 @@ const command: BotCommand = {
             required: false, arg: '-addrole',
             description: locale.command.mute.usage['-addRole'].description,
             example: locale.command.mute.usage['-addRole'].example
+        }, {
+            required: false, arg: '-list',
+            description: locale.command.mute.usage['-list'].description,
+            example: locale.command.mute.usage['-list'].example
         }],
         [{
             required: false, arg: locale.usage.argument.time.arg,
@@ -98,6 +109,9 @@ const command: BotCommand = {
     exec: async (message, arg, options) => {
         const addRole = getValuesFromStringFlag(arg, ['-addrole', '--a']);
         if (addRole) return { content: await addMuteRole(message, addRole, options) };
+
+        if (arg[0].toLocaleLowerCase() === '-list' || arg[0].toLocaleLowerCase() === '--l')
+            return await listMutedMembers(message, options);
 
         if (!Number.isNaN(Number(arg[0])) || message.mentions.users.first())
             return await MuteGuildMember(message, arg, options);
