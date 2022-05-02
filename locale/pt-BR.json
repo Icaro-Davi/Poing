@@ -15,6 +15,8 @@
     },
     "labels": {
         "nickname": "Apelido",
+        "name": "Nome",
+        "ends": "Acaba",
         "joinedServer": "Entrou no servidor",
         "joinedDiscord": "Entrou no Discord",
         "roles": "Cargos",
@@ -176,7 +178,7 @@
         "mute": {
             "description": "Muta um membro do servidor",
             "interaction": {
-                "mutedSuccessful": "O membro {memberMutedName} foi mutado por {author} e acabará em {duration}",
+                "mutedSuccessful": "O membro {memberMutedName} foi mutado por {author} e acabará {duration}.",
                 "memberAlreadyMuted": "Adicione o cargo que será usado para mutar usando `{bot.prefix}mute -RegisterRole \"id do cargo\"`",
                 "needMuteRoleId": "Precisa me falar um cargo que eu possa \"Mutar\", use `!mute --a \"Nome do cargo | Id do cargo | @Cargo\"` para adicionar um.",
                 "muteRoleAdded": "Irei lembrar esse caro :3 até você me falar outro",
@@ -202,6 +204,10 @@
                 "-addRole": {
                     "description": "A flag pode ser usado `[ -addrole | --a ]`. Aqui você adiciona um cargo que pode ser o nome, ID ou menção do Cargo `\" @Cargo \"`, quando um membro for mutado usarei esse cargo como punição.",
                     "example": "`{bot.prefix}mute --addrole \"Muted\"`. Registra o cargo \"Muted\" assim eu irei usar para mutar os membros do servidor hehe."
+                },
+                "-list": {
+                    "description": "Lista os 50 membros mais próximos de acabar a punição.",
+                    "example": "`{bot.prefix}mute -list` - Lista os membros por [Nome] | [Tempo para acabar punição]"
                 },
                 "exampleMember": "`{bot.prefix}mute @{bot.name}` - Muta o membro.",
                 "exampleTime": "`{bot.prefix}mute @{bot.name} 10M` - O membro @{bot.name} foi banido por 10 Minutos.",

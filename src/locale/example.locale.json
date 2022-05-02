@@ -15,6 +15,8 @@
     },
     "labels": {
         "nickname": "{locale.status.nickname}",
+        "name": "{locale.status.name}",
+        "ends": "{locale.status.ends}",
         "joinedServer": "{locale.status.joinedServer}",
         "joinedDiscord": "{locale.status.joinedDiscord}",
         "roles": "{locale.status.role}",
@@ -202,6 +204,10 @@
                 "-addRole": {
                     "description": "{locale.command.mute.usage.-addRole.description}",
                     "example": "{locale.command.mute.usage.-addRole.example}"
+                },
+                "-list": {
+                    "description": "{locale.command.mute.usage.-list.description}",
+                    "example": "{locale.command.mute.usage.-list.example}"
                 },
                 "exampleMember": "{locale.command.mute.usage.exampleMember}",
                 "exampleFlagAddRole": "{locale.command.mute.usage.exampleFlagAddRole}",
