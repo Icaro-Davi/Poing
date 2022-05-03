@@ -1,7 +1,6 @@
 import { Message } from "discord.js";
 import { DiscordBot } from "../../src/config";
 import { itIsANormalMessage, searchBotCommand } from "../../src/events/messageCreate";
-import { getAllBotCommands, splitCommandAndArgs } from "../../src/utils/commands";
 
 
 describe('Event Create Message', () => {
@@ -23,20 +22,19 @@ describe('Event Create Message', () => {
     });
     it('Should remove prefix, cut message content and get command and list of arguments', () => {
         message.content = `!command arg1 arg2`;
-        const botCommand = splitCommandAndArgs(message.content, '!');
+        const botCommand = DiscordBot.Commands.splitArgs(message.content, '!');
         expect(botCommand.name).toBe('command');
         expect(botCommand.args).toBeInstanceOf(Array);
         expect(botCommand.args.length).toBe(2);
     });
     it('Should search a command', () => {
         DiscordBot.Commands.start();
-        const commands = getAllBotCommands();
 
-        const randomCommandNumber = Math.round(Math.random() * (1 - commands.clientCommands.size) + 1);
-        const randomAliasesNumber = Math.round(Math.random() * (1 - commands.aliasesCommandsKey.size) + 1);
+        const randomCommandNumber = Math.round(Math.random() * (1 - DiscordBot.Commands.Collection.size) + 1);
+        const randomAliasesNumber = Math.round(Math.random() * (1 - DiscordBot.Commands.AliasesCollection.size) + 1);
 
-        const randomCommandKey = commands.clientCommands.keyAt(randomCommandNumber) as string;
-        const randomAliasesKey = commands.clientCommands.keyAt(randomAliasesNumber) as string;
+        const randomCommandKey = DiscordBot.Commands.Collection.keyAt(randomCommandNumber) as string;
+        const randomAliasesKey = DiscordBot.Commands.AliasesCollection.keyAt(randomAliasesNumber) as string;
 
         const botCommand = searchBotCommand(randomCommandKey);
         expect(botCommand?.name).toBe(randomCommandKey);

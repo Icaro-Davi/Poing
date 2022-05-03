@@ -2,7 +2,6 @@ import { Message, PermissionResolvable } from 'discord.js';
 
 import { BotUsage } from '../commands';
 import { DiscordBot } from '../config';
-import { handleCommandsAfterExecution, splitCommandAndArgs } from '../utils/commands';
 import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
 import { createGetHelp } from '../components/messageEmbed';
@@ -34,7 +33,7 @@ export const eventMessageCreate = async (message: Message) => {
     const botMention = message.mentions.users.first()?.id === message.guild?.me?.id ? `<@${message.mentions.users.first()?.id}> ` : undefined;
     if (itIsANormalMessage(message, (botMention ?? botConf.prefix) || DiscordBot.Bot.defaultPrefix)) return;
 
-    const command = splitCommandAndArgs(message.content, botMention ?? botConf.prefix);
+    const command = DiscordBot.Commands.splitArgs(message.content, botMention ?? botConf.prefix);
     const botCommand = searchBotCommand(command.name);
     if (!botCommand) return;
 
@@ -58,7 +57,7 @@ export const eventMessageCreate = async (message: Message) => {
             return;
         }
         const returnMessageOptions = await locale.botCommand.exec(message, command.args, options)
-        await handleCommandsAfterExecution({
+        await DiscordBot.Commands.handleMessage({
             ...returnMessageOptions, message,
             vars: {
                 ...returnMessageOptions?.vars ? returnMessageOptions.vars : {},

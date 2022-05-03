@@ -6,4 +6,8 @@ export default () =>
         //     if(interaction.customId === 'yes' || interaction.customId === 'no')
         //         await interaction.reply('Done!');
         // }
+
+        if (interaction.isCommand()) {
+            console.log(interaction)
+        }
     });
