@@ -67,6 +67,7 @@
         "50013": "Verifique se tenho habilitado essa permissão no meu cargo, ou tente também mover meu cargo em uma posição mais alta na hierarquia da lista de cargos."
     },
     "interaction": {
+        "welcomeGuild": "Olá, me chamo {bot.name}, espero lhe ajudar na sua guild :3\nConfira a lista de magias secretas usando {bot.@mention} help ou !help",
         "cannotSendPrivateMessage": "Eu não pude enviar sua mensagem, :C desculpe.",
         "iDontKnowThisArgument": "Eu não conheço esse argumento",
         "isDMMessage": "So posso ser usado em servidores.",

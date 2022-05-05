@@ -67,6 +67,7 @@
         "50013": "{locale.error.50013}"
     },
     "interaction": {
+        "welcomeGuild": "{locale.interaction.welcomeGuild}[@BotMention]",
         "cannotSendPrivateMessage": "{locale.interaction.cannotSendPrivateMessage}",
         "iDontKnowThisArgument": "{locale.interaction.iDontKnowThisArgument}[arg]",
         "isDMMessage": "{locale.interaction.isDMMessage}",

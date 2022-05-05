@@ -67,9 +67,10 @@
         "50013": "Make sure I have this permission enabled on my job title, or also try moving my job higher in the job list hierarchy."
     },
     "interaction": {
+        "welcomeGuild": "Hello you invite me to join in your guild, i hope to help you :3\nIf you wanna see my commands just use {bot.@mention} help or !help",
         "cannotSendPrivateMessage": "I could't send your message, 😢sorry.",
         "iDontKnowThisArgument": "I don't know this argument",
-        "isDMMessage": "Can only be used on servers.",
+        "isDMMessage": "Can only be used on guilds.",
         "mustBeNumber": "I only accept numbers.",
         "needArguments": "I need more arguments.",
         "numberMustBeBetweenTwoValues": "I only accept numbers between {number1} and {number2} UwU.",
