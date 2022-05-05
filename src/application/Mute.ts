@@ -40,7 +40,7 @@ class Mute {
 
     static async unmute(scheduleDocId: mongoose.Types.ObjectId, guildId: string, memberId: string) {
         const guildDoc = await GuildRepository.findByIdAndOmitValues(guildId, { bot: { roles: { muteId: 1 } } });
-        if (!guildDoc?.bot.roles) return false;
+        if (!guildDoc?.bot?.roles) return false;
 
         const guild = await DiscordBot.Client.get().guilds.fetch(guildId);
         if (!guild) throw new Error('BOT_00100');
