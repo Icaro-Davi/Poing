@@ -33,13 +33,13 @@
         },
         "privateMessage": {
             "title": "{locale.messageEmbed.privateMessage.title}",
-            "description": "{locale.messageEmbed.privateMessage.description}",
+            "description": "{locale.messageEmbed.privateMessage.description}[guild.name, message]",
             "footer": "{locale.messageEmbed.privateMessage.footer}"
         },
         "confirmBanishMember": {
             "title": "{locale.messageEmbed.confirmBanishMember.title}",
             "fieldNameDays": "{locale.messageEmbed.confirmBanishMember.fieldNameDays}",
-            "fieldDays": "{locale.messageEmbed.confirmBanishMember.fieldDays}",
+            "fieldDays": "{locale.messageEmbed.confirmBanishMember.fieldDays}[days]",
             "fieldReason": "{locale.messageEmbed.confirmBanishMember.fieldReason}"
         },
         "confirmKickMember": {
@@ -72,11 +72,11 @@
         "isDMMessage": "{locale.interaction.isDMMessage}",
         "mustBeNumber": "{locale.interaction.mustBeNumber}",
         "needArguments": "{locale.interaction.needArguments}",
-        "numberMustBeBetweenTwoValues": "{locale.interaction.numberMustBeBetweenTwoValues}",
+        "numberMustBeBetweenTwoValues": "{locale.interaction.numberMustBeBetweenTwoValues}[number1, number2]",
         "youCantUseThisButton": "{locale.interaction.youCantUseThisButton}",
         "iDidntFoundAnything": "{locale.interaction.iDidntFoundAnything}",
         "youDontHavePermission": "{locale.interaction.youDontHavePermission}",
-        "needARole": "{locale.interaction.needARole}",
+        "needARole": "{locale.interaction.needARole}[role]",
         "member": {
             "kickCanceled": "{locale.interaction.member.kickCanceled}",
             "kickFromServer": "{locale.interaction.member.kickFromServer}",
@@ -92,15 +92,15 @@
                 "list": {
                     "arg": "{locale.command.help.usage.list.arg}",
                     "description": "{locale.command.help.usage.list.description}",
-                    "example": "{locale.command.help.usage.list.example}"
+                    "example": "{locale.command.help.usage.list.example}[bot]"
                 },
-                "commandExample": "{locale.command.help.usage.commandExample}"
+                "commandExample": "{locale.command.help.usage.commandExample}[bot]"
             }
         },
         "anonymousDirectMessage": {
             "description": "{locale.command.anonymousDirectMessage.description}",
             "usage": {
-                "messageExample": "{locale.command.anonymousDirectMessage.usage.messageExample}"
+                "messageExample": "{locale.command.anonymousDirectMessage.usage.messageExample}[bot]"
             }
         },
         "ban": {
@@ -114,9 +114,9 @@
                 "banishedFromServer": "{locale.command.ban.interaction.member.banishedFromServer}"
             },
             "usage": {
-                "memberExample": "{locale.command.ban.usage.memberExample}",
-                "-daysExample": "{locale.command.ban.usage.-daysExample}",
-                "-reasonExample": "{locale.command.ban.usage.-reasonExample}"
+                "memberExample": "{locale.command.ban.usage.memberExample}[bot]",
+                "-daysExample": "{locale.command.ban.usage.-daysExample}[bot]",
+                "-reasonExample": "{locale.command.ban.usage.-reasonExample}[bot]"
             }
         },
         "kick": {
@@ -125,36 +125,36 @@
                 "50007": "{locale.command.kick.error.50007}"
             },
             "usage": {
-                "memberExample": "{locale.command.kick.usage.memberExample}",
-                "reasonExample": "{locale.command.kick.usage.reasonExample}"
+                "memberExample": "{locale.command.kick.usage.memberExample}[bot]",
+                "reasonExample": "{locale.command.kick.usage.reasonExample}[bot]"
             }
         },
         "removeMessages": {
             "description": "{locale.command.removeMessages.description}",
             "interaction": {
-                "deletedMessages": "{locale.command.removeMessages.interaction.deletedMessages}"
+                "deletedMessages": "{locale.command.removeMessages.interaction.deletedMessages}[deletedMessageSize]"
             },
             "usage": {
-                "quantityExample": "{locale.command.removeMessages.usage.quantityExample}"
+                "quantityExample": "{locale.command.removeMessages.usage.quantityExample}[bot]"
             }
         },
         "unban": {
             "description": "{locale.command.unban.description}",
             "interaction": {
                 "totalOfPages": "{locale.command.unban.interaction.totalOfPages}",
-                "memberUnbaned": "{locale.command.unban.interaction.memberUnbaned}",
+                "memberUnbaned": "{locale.command.unban.interaction.memberUnbaned}[authorMention, unbanedMember]",
                 "cantUnban": "{locale.command.unban.interaction.cantUnban}"
             },
             "usage": {
                 "list": {
                     "arg": "{locale.command.unban.usage.list.arg}",
                     "description": "{locale.command.unban.usage.list.description}",
-                    "example": "{locale.command.unban.usage.list.example}"
+                    "example": "{locale.command.unban.usage.list.example}[bot]"
                 },
                 "member": {
                     "arg": "{locale.command.unban.usage.member.arg}",
                     "description": "{locale.command.unban.usage.member.description}",
-                    "example": "{locale.command.unban.usage.member.example}"
+                    "example": "{locale.command.unban.usage.member.example}[bot]"
                 },
                 "reasonExample": "{locale.command.unban.usage.reasonExample}"
             }
@@ -166,13 +166,13 @@
             "description": "{locale.command.ping.description}",
             "interaction": {
                 "clientPing": "{locale.command.ping.interaction.clientPing}",
-                "serverPing": "{locale.command.ping.interaction.serverPing}"
+                "serverPing": "{locale.command.ping.interaction.serverPing}[bot, ping.server]"
             }
         },
         "userInfo": {
             "description": "{locale.command.userInfo.description}",
             "usage": {
-                "exampleMember": "{locale.command.userInfo.usage.exampleMember}"
+                "exampleMember": "{locale.command.userInfo.usage.exampleMember}[bot]"
             }
         },
         "mute": {
@@ -199,19 +199,19 @@
                 "reason": {
                     "arg": "{locale.command.mute.usage.reason.arg}",
                     "description": "{locale.command.mute.usage.reason.description}",
-                    "example": "{locale.command.mute.usage.reason.example}"
+                    "example": "{locale.command.mute.usage.reason.example}[bot]"
                 },
                 "-addRole": {
                     "description": "{locale.command.mute.usage.-addRole.description}",
-                    "example": "{locale.command.mute.usage.-addRole.example}"
+                    "example": "{locale.command.mute.usage.-addRole.example}[bot]"
                 },
                 "-list": {
                     "description": "{locale.command.mute.usage.-list.description}",
-                    "example": "{locale.command.mute.usage.-list.example}"
+                    "example": "{locale.command.mute.usage.-list.example}[bot]"
                 },
-                "exampleMember": "{locale.command.mute.usage.exampleMember}",
-                "exampleFlagAddRole": "{locale.command.mute.usage.exampleFlagAddRole}",
-                "exampleTime": "{locale.command.mute.usage.exampleTime}"
+                "exampleMember": "{locale.command.mute.usage.exampleMember}[bot]",
+                "exampleFlagAddRole": "{locale.command.mute.usage.exampleFlagAddRole}[bot]",
+                "exampleTime": "{locale.command.mute.usage.exampleTime}[bot]"
             }
         }
     },
