@@ -39,7 +39,12 @@ describe('Event Create Message', () => {
         const botCommand = searchBotCommand(randomCommandKey);
         expect(botCommand?.name).toBe(randomCommandKey);
 
-        const aliasesCommand = searchBotCommand(randomAliasesKey);
-        expect(aliasesCommand?.name).toBe(randomAliasesKey);
+        const commandByAliases = DiscordBot.Commands.AliasesCollection.get(randomAliasesKey);
+        expect(!!commandByAliases).toBeTruthy();
+
+        if (commandByAliases) {
+            const aliasesCommand = searchBotCommand(commandByAliases);
+            expect(aliasesCommand && aliasesCommand.aliases && aliasesCommand.aliases.some(aliases => aliases === randomAliasesKey)).toBeTruthy();
+        }
     });
 });
