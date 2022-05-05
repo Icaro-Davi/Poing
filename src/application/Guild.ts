@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import { DiscordBot } from "../config";
 import GuildRepository from "../domain/guild/GuildRepository.mongo";
+import ScheduleUnmuteRepository from "../domain/schedule/unmute/ScheduleUnmuteRepository.mongo";
 
 class Guild {
     static async create(guildId: string) {
@@ -15,13 +17,20 @@ class Guild {
         } catch (error) {
             throw error;
         }
-    }    
+    }
 
-    static async delete(guildId: string){
+    static async delete(guildId: string) {
+        const session = await mongoose.startSession();
         try {
-            await GuildRepository.delete(guildId);
+            session.startTransaction();
+            await ScheduleUnmuteRepository.deleteManyByGuildId(guildId, session);
+            await GuildRepository.delete(guildId, session);
+            await session.commitTransaction();
         } catch (error) {
+            await session.abortTransaction();
             throw error;
+        } finally {
+            session.endSession();
         }
     }
 

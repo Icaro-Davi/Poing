@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 import ScheduleUnmuteSchema, { IScheduleUnmute } from "./ScheduleUnmute.schema";
 
 class ScheduleUnmuteRepository {
@@ -55,6 +55,14 @@ class ScheduleUnmuteRepository {
             return await ScheduleUnmuteSchema.findOne({ guildId, memberId }).lean();
         } catch (error) {
             throw new Error('[errorScheduleUnmuteRepositoryFindByGuildIdAndMemberId]');
+        }
+    }
+
+    static async deleteManyByGuildId(guildId: string, session?: ClientSession) {
+        try {
+            return await ScheduleUnmuteSchema.deleteMany({ guildId }, session ? { session } : {});
+        } catch (error) {
+            throw new Error('[errorScheduleUnmuteRepositoryDeleteManyByGuildId]');
         }
     }
 }

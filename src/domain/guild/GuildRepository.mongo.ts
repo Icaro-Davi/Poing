@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { ClientSession } from 'mongoose';
 import { Modify } from '../../utils/typescript.funcs';
 import { IBotRolesSchema, IBotSchema } from '../bot/Bot.schema';
 import Guild, { IGuildSchema } from './Guild.schema';
@@ -48,11 +48,10 @@ class GuildRepository {
         }
     }
 
-    static async delete(guildId: string) {
+    static async delete(guildId: string, session?: ClientSession) {
         try {
-            await Guild.findByIdAndDelete(guildId);
+            await Guild.findByIdAndDelete(guildId, session ? { session } : {});
         } catch (error) {
-            console.error(error);
             throw new Error('[errorGuildDelete]');
         }
     }
