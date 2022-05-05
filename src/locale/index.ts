@@ -1,4 +1,6 @@
 import objectPath from 'object-path';
+import fs from 'fs';
+import path from 'path';
 
 import { BotCommand } from "../commands"
 import { DiscordBot } from '../config/';
@@ -9,20 +11,28 @@ export type Locale = typeof defaultLocale;
 export type LocaleErroTypes = keyof typeof defaultLocale.error;
 export type LocaleLabel = 'pt-BR' | 'en-US';
 
+export const getInitialLocaleVars = async ({ optionalVars, locale }: { optionalVars?: object, locale?: LocaleLabel }) => ({
+    bot: {
+        name: DiscordBot.Bot.nickname,
+        prefix: DiscordBot.Bot.defaultPrefix,
+        '@mention': `<@${DiscordBot.Bot.ID}>`
+    },
+    ...locale ? { locale: await getLocale(locale) } : {},
+    ...optionalVars ? optionalVars : {},
+});
+
 const translateCommandToLocale = async (command: BotCommand, locale: LocaleLabel) => {
-    const _locale = await import(`../../locale/${locale}.json`) as Locale;
-    const translatedCommand = navigateToObjectDepthAndTranslate(command, {
-        locale: _locale,
-        defaultCommand: {
-            name: command.name
+    const defaultLocaleVars = await getInitialLocaleVars({
+        optionalVars: {
+            defaultCommand: {
+                name: command.name
+            },
         },
-        bot: {
-            name: DiscordBot.Bot.nickname,
-            prefix: DiscordBot.Bot.defaultPrefix,
-        }
+        locale
     });
+    const translatedCommand = navigateToObjectDepthAndTranslate(command, defaultLocaleVars);
     return {
-        get: _locale,
+        get: defaultLocaleVars.locale!,
         botCommand: translatedCommand
     };
 }
@@ -60,6 +70,15 @@ export const navigateToObjectDepthAndTranslate = (command: any, locale: any) => 
         }, initialValue);
     }
     return translateCommands(command, {}) as BotCommand;
+}
+
+export const getAvailableLocales = () => {
+    return fs.readdirSync(path.resolve(`${__dirname}/../../locale`)).map(locale => locale.replace('.json', '')) as LocaleLabel[];
+}
+
+export const getLocale = async (locale: LocaleLabel) => {
+    const _locale = await import(`../../locale/${locale}.json`) as Locale;
+    return _locale;
 }
 
 export default translateCommandToLocale;
