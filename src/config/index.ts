@@ -1,13 +1,13 @@
 import Bot from './Bot';
 import Client from './client';
-import Commands from './commands';
+import Command from './command';
 import Database from './database';
 import ScheduleEvent from './schedule';
 
 const DiscordBot = {
     Bot,
     Client,
-    Commands,
+    Command,
     Database,
     ScheduleEvent
 };

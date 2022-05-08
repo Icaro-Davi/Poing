@@ -1,9 +1,10 @@
 import { ColorResolvable } from "discord.js";
 
 class Bot {
-    public static defaultPrefix = process.env.BOT_PREFIX || '!';
-    public static defaultBotHexColor: ColorResolvable = `#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}` || '#FFFFFF';
-    public static nickname = process.env.BOT_NAME || 'Poing';
+    public static readonly defaultPrefix = process.env.BOT_PREFIX || '!';
+    public static readonly defaultBotHexColor: ColorResolvable = `#${process.env.BOT_MESSAGE_EMBED_HEX_COLOR}` || '#FFFFFF';
+    public static readonly nickname = process.env.BOT_NAME || 'Poing';
+    public static readonly ID = process.env.BOT_ID;
 }
 
 export default Bot;

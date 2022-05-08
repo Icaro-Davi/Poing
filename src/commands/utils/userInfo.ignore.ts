@@ -1,7 +1,7 @@
 import { GuildMember, MessageEmbed } from 'discord.js';
 import moment from 'moment';
 
-import { BotCommand, ExecuteCommandOptions } from '..';
+import { BotCommand, ExecuteCommandOptions } from '../index.types';
 import { MemberApplication } from '../../application';
 import MD from '../../utils/md';
 import locale from '../../locale/example.locale.json';
@@ -34,16 +34,16 @@ const command: BotCommand = {
     usage: [
         [
             {
-                required: false, arg: locale.usage.argument.member.arg,
+                required: false, name: locale.usage.argument.member.arg,
                 description: locale.usage.argument.member.description,
                 example: locale.command.userInfo.usage.exampleMember
             }
         ],
     ],
-    exec: async (message, args, options) => {
-        const member = await MemberApplication.search(message, args[0] || message.author.id);
-        if (!member) return { content: options.locale.interaction.member.notFound, type: 'embed' };
-        return { content: await memberMessageEmbed(member, options), type: 'embed' };
+    execDefault: async (message, args, options) => {
+        // const member = await MemberApplication.search(message, args[0] || message.author.id);
+        // if (!member) return { content: options.locale.interaction.member.notFound, type: 'embed' };
+        // return { content: await memberMessageEmbed(member, options), type: 'embed' };
     }
 }
 

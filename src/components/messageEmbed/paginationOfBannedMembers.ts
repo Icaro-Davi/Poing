@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { ExecuteCommandOptions } from "../../commands";
+import { ExecuteCommandOptions } from "../../commands/index.types";
 
 const paginationOfBannedMembers = (pagination: { bannedMembers: { tag: string, id: string }[][], total: number, maxIndex: number, currentPage: number }, options: ExecuteCommandOptions) => {
     return new MessageEmbed()

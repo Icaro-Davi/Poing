@@ -1,5 +1,5 @@
 import { GuildBan, Message } from "discord.js";
-import { BotCommand, ExecuteCommandOptions } from "..";
+import { BotCommand, ExecuteCommandOptions } from "../index.types";
 import { createPaginationButtons } from "../../components/messageActionRow";
 import { paginationOfBannedMembers } from "../../components/messageEmbed";
 import { onlyWithPermission } from "../../utils/collectorFilters";
@@ -77,21 +77,21 @@ const command: BotCommand = {
     allowedPermissions: ['BAN_MEMBERS'],
     usage: [
         [{
-            required: true, arg: locale.command.unban.usage.member.arg,
+            required: true, name: locale.command.unban.usage.member.arg,
             description: locale.command.unban.usage.member.description,
             example: locale.command.unban.usage.member.example
         }, {
-            required: false, arg: locale.command.unban.usage.list.arg,
+            required: false, name: locale.command.unban.usage.list.arg,
             description: locale.command.unban.usage.list.description,
             example: locale.command.unban.usage.list.example
         }],
         [{
-            required: false, arg: locale.usage.argument.reason.arg,
+            required: false, name: locale.usage.argument.reason.arg,
             description: locale.usage.argument.reason.description,
             example: locale.command.unban.usage.reasonExample
         }]
     ],
-    exec: async (message, args, options) => {
+    execDefault: async (message, args, options) => {
         if (args[0].toLocaleLowerCase() === 'list') {
             const bannedMembers = await message.guild?.bans.fetch();
             const bannedMemberByPages = bannedMembers && getPaginationOfBannedMembers(bannedMembers.toJSON());

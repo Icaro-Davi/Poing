@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import moment, { Moment } from "moment";
-import { BotCommand, ExecuteCommandOptions, ExecuteCommandReturn } from "..";
+import { BotCommand, ExecuteCommandOptions, ExecuteCommandReturn } from "../index.types";
 import { MemberApplication, MuteApplication } from "../../application";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
@@ -83,30 +83,30 @@ const command: BotCommand = {
     allowedPermissions: ['MUTE_MEMBERS'],
     usage: [
         [{
-            required: true, arg: locale.usage.argument.member.arg,
+            required: true, name: locale.usage.argument.member.arg,
             description: locale.usage.argument.member.description,
             example: locale.command.mute.usage.exampleMember
         }, {
-            required: false, arg: '-addrole',
+            required: false, name: '-addrole',
             description: locale.command.mute.usage['-addRole'].description,
             example: locale.command.mute.usage['-addRole'].example
         }, {
-            required: false, arg: '-list',
+            required: false, name: '-list',
             description: locale.command.mute.usage['-list'].description,
             example: locale.command.mute.usage['-list'].example
         }],
         [{
-            required: false, arg: locale.usage.argument.time.arg,
+            required: false, name: locale.usage.argument.time.arg,
             description: locale.usage.argument.time.description,
             example: locale.command.mute.usage.exampleTime
         }],
         [{
-            required: false, arg: locale.command.mute.usage.reason.arg,
+            required: false, name: locale.command.mute.usage.reason.arg,
             description: locale.command.mute.usage.reason.description,
             example: locale.command.mute.usage.reason.example
         }]
     ],
-    exec: async (message, arg, options) => {
+    execDefault: async (message, arg, options) => {
         const addRole = getValuesFromStringFlag(arg, ['-addrole', '--a']);
         if (addRole) return { content: await addMuteRole(message, addRole, options) };
 

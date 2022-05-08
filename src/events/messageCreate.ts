@@ -1,76 +1,32 @@
-import { Message, PermissionResolvable } from 'discord.js';
+import { Message } from 'discord.js';
 
-import { BotUsage } from '../commands';
 import { DiscordBot } from '../config';
-import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
-import { createGetHelp } from '../components/messageEmbed';
-import { BotApplication } from '../application';
-
-export const itIsANormalMessage = (message: Message, prefix: string) => {
-    return (!message.content.startsWith(prefix));
-}
-
-export const searchBotCommand = (botCommand: string) => {
-    const commandFromAliases = DiscordBot.Commands.AliasesCollection.get(botCommand);
-    return DiscordBot.Commands.Collection.get(commandFromAliases || botCommand);
-}
-
-export const anyArgumentIsRequired = (args: string[], usage: BotUsage) => {
-    const argsRequiredByIndex = usage.map(args => args.reduce((prev, current) => prev + Number(current.required), 0));
-    return !argsRequiredByIndex.every((requiredIndex, i) => requiredIndex ? i < args.length : true);
-}
-
-export const memberDoesNotHavePermissions = (message: Message, allowedPermissions: PermissionResolvable[]) => {
-    return !allowedPermissions.some(permission => message.member?.permissions.has(permission));
-}
+import getCommand from '../commands/command.default';
 
 export const eventMessageCreate = async (message: Message) => {
-    if (!message.guildId || message.author.bot) return;
-
-    const botConf = await BotApplication.getConfigurations(message.guildId);
-
-    const botMention = message.mentions.users.first()?.id === message.guild?.me?.id ? `<@${message.mentions.users.first()?.id}> ` : undefined;
-    if (itIsANormalMessage(message, (botMention ?? botConf.prefix) || DiscordBot.Bot.defaultPrefix)) return;
-
-    const command = DiscordBot.Commands.splitArgs(message.content, botMention ?? botConf.prefix);
-    const botCommand = searchBotCommand(command.name);
-    if (!botCommand) return;
-
-    const locale = await translateCommandToLocale({ ...botCommand }, botConf.locale);
-    const options = {
-        locale: locale.get,
-        bot: {
-            name: DiscordBot.Bot.nickname,
-            prefix: botConf.prefix || DiscordBot.Bot.defaultPrefix,
-            hexColor: botConf.messageEmbedHexColor || DiscordBot.Bot.defaultBotHexColor,
-        }
-    }
-
+    const Command = await getCommand(message);
     try {
-        if (botCommand.usage && anyArgumentIsRequired(command.args, botCommand.usage)) {
-            await message.reply({ embeds: [createGetHelp(locale.botCommand, options)] });
-            return;
-        }
-        if (botCommand.allowedPermissions?.length && memberDoesNotHavePermissions(message, botCommand.allowedPermissions)) {
-            await message.reply(options.locale.interaction.youDontHavePermission);
-            return;
-        }
-        const returnMessageOptions = await locale.botCommand.exec(message, command.args, options)
-        await DiscordBot.Commands.handleMessage({
+        if (!Command) return;
+        const { args, command, options } = Command;
+
+        const returnMessageOptions = await command?.execDefault(message, args, options);
+
+        await DiscordBot.Command.handleMessage({
             ...returnMessageOptions, message,
             vars: {
                 ...returnMessageOptions?.vars ? returnMessageOptions.vars : {},
                 ...options,
             }
         });
+
     } catch (error) {
-        console.error(error);
-        handleError(error, {
+        console.log(error);
+        Command?.options.locale ? handleError(error, {
             errorLocale: 'event/messageCreate',
-            locale: locale.get,
+            locale: Command.options.locale,
             message: message
-        });
+        }) : console.error(error);
     }
 }
 

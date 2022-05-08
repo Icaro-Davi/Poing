@@ -1,4 +1,6 @@
-{
+import { Locale } from "../src/locale";
+
+const en_US: Locale = {
     "localeLabel": "en-US",
     "category": {
         "label": "Category",
@@ -71,9 +73,7 @@
         "cannotSendPrivateMessage": "I could't send your message, 😢sorry.",
         "iDontKnowThisArgument": "I don't know this argument",
         "isDMMessage": "Can only be used on guilds.",
-        "mustBeNumber": "I only accept numbers.",
         "needArguments": "I need more arguments.",
-        "numberMustBeBetweenTwoValues": "I only accept numbers between {number1} and {number2} UwU.",
         "youCantUseThisButton": "This button has a powerful magic that prevents you from using it!",
         "iDidntFoundAnything": "I couldn't find anything.",
         "youDontHavePermission": "You are not allowed to do it.",
@@ -107,17 +107,26 @@
         "ban": {
             "description": "I will ban a guild member.",
             "error": {
-                "50007": "Unable to notify member of your ban."
+                "50007": "Unable to notify member of your ban.",
+                "mustBeNumber": "I only accept numbers.",
+                "numberMustBeBetweenTwoValues": "I only accept numbers between 1 and 7 UwU."
             },
             "interaction": {
                 "isNotBannable": "This member is sooooo powerful, i can't ban him 😭",
                 "banishedCanceled": "Cancelled ❤️",
-                "banishedFromServer": "We successful banned him 😈"
+                "banishedFromServer": "Banned 😈",
+                "bannedWithNoReason": "No Reason"
             },
             "usage": {
-                "memberExample": "`{bot.prefix}ban @{bot.name}` - Member @{bot.name} has been banned from the guild.",
-                "-daysExample": "`{bot.prefix}ban @{bot.name} -days \"1\"` - Member @{bot.name} has been banned and his last messages for 1 day(s) have been deleted.",
-                "-reasonExample": "`{bot.prefix}ban @{bot.name} -reason \"Poing is distracting guild members.\"` - Add a reason for the ban."
+                "days": {
+                    "description": "Number of days between \"1 and 7\" representing messages to be deleted, default value is 0.",
+                    "example": "`{bot.prefix}ban @{bot.name} --days \"1\"` - You can use the flag [--days | -d] and the quantity of days between quotes."
+                },
+                "reason": {
+                    "description": "The reason for the ban.",
+                    "example": "`{bot.prefix}ban @{bot.name} --reason \"Poing is distracting guild members.\"` - You can use [--reason | -r] and the reason of ban between quotes."
+                },
+                "memberExample": "`{bot.prefix}ban @{bot.name}` - Member can use `[@Mention | MemberID]` as reference.",
             }
         },
         "kick": {
@@ -218,17 +227,13 @@
     },
     "usage": {
         "flag": {
-            "-daysBan": {
-                "description": "The flag can be used `[ -days | --d ]`. Number of days between `0 and 7` representing messages to be deleted, default value is 0 (no messages will be deleted)."
-            },
             "-reason": {
                 "description": "The flag can be used `[ -reason | --r ]`. Here you add a reason for the action you are taking, otherwise I will do such an action \"no reason\"."
             }
         },
         "argument": {
             "member": {
-                "arg": "member",
-                "description": "A referência de algum membro da guild, pode ser `[Mention | MemberID]`."
+                "description": "Reference of any member."
             },
             "command": {
                 "arg": "command",
@@ -253,3 +258,5 @@
         }
     }
 }
+
+export default en_US;

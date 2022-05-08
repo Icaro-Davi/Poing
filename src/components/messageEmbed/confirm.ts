@@ -19,7 +19,7 @@ const banMember = ({ locale, reason, member, days, authorTag, authorUrl, botColo
         .setTitle(MD.bold.b(locale.messageEmbed.confirmBanishMember.title))
         .setFields([
             { name: 'Tag', value: member.user.tag },
-            { name: locale.messageEmbed.confirmBanishMember.fieldNameDays, value: replaceVarsInString(locale.messageEmbed.confirmBanishMember.fieldDays, { days: days || 0 }) },
+            ...days ? [{ name: locale.messageEmbed.confirmBanishMember.fieldNameDays, value: replaceVarsInString(locale.messageEmbed.confirmBanishMember.fieldDays, { days: days }) }] : [],
             ...reason ? [{ name: locale.messageEmbed.confirmBanishMember.fieldReason, value: reason }] : []
         ])
         .setThumbnail(member.user?.avatarURL() || '')

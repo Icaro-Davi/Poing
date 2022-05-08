@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { BotCommand } from "..";
+import { BotCommand } from "../index.types";
 import { replaceVarsInString } from "../../locale";
 import locale from '../../locale/example.locale.json';
 
@@ -8,7 +8,7 @@ const command: BotCommand = {
     category: locale.category.utility,
     description: locale.command.ping.description,
     aliases: ['p'],
-    exec: async (message, args, options) => {
+    execDefault: async (message, args, options) => {
         const resultMessage = await message.reply({
             embeds: [
                 new MessageEmbed()

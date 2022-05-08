@@ -23,7 +23,7 @@ class GuildRepository {
 
     static async findById(guildId: string) {
         try {
-            return await Guild.findById(guildId);
+            return await Guild.findById(guildId).lean();
         } catch (error) {
             console.error(error);
             throw new Error('[errorGuildFindById]');

@@ -1,13 +1,12 @@
+import { Interaction } from "discord.js";
+import execSlashCommand from "../commands/command.slash";
 import { DiscordBot } from "../config/";
 
-export default () =>
-    DiscordBot.Client.get().on('interactionCreate', async (interaction) => {
-        // if(interaction.isButton()){
-        //     if(interaction.customId === 'yes' || interaction.customId === 'no')
-        //         await interaction.reply('Done!');
-        // }
+const onInteractionCreate = async (interaction: Interaction) => {
+    if (interaction.user.bot) return;
+    if (interaction.isCommand()) {
+        await execSlashCommand(interaction);
+    }
+}
 
-        if (interaction.isCommand()) {
-            console.log(interaction)
-        }
-    });
+export default () => DiscordBot.Client.get().on('interactionCreate', onInteractionCreate);

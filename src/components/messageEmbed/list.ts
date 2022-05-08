@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { ExecuteCommandOptions } from "../../commands";
+import { ExecuteCommandOptions } from "../../commands/index.types";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
 import locale from "../../locale/example.locale.json";
@@ -9,7 +9,7 @@ import moment from "moment";
 
 const commandsByCategory = (options: ExecuteCommandOptions) => {
     const commandsByCategory: { [key: string]: string[] } = {};
-    DiscordBot.Commands.Collection.forEach(BotCommand => {
+    DiscordBot.Command.Collection.forEach(BotCommand => {
         commandsByCategory[BotCommand.category]
             ? commandsByCategory[BotCommand.category].push(BotCommand.name)
             : commandsByCategory[BotCommand.category] = [BotCommand.name]

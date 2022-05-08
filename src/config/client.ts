@@ -20,7 +20,7 @@ class Client {
         startListeningEvents();
         await DiscordBot.Database.start();
         await this.client.login(process.env.BOT_TOKEN);
-        DiscordBot.Commands.start();
+        DiscordBot.Command.start();
     }
 
     static get = () => this.client;

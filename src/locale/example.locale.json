@@ -71,9 +71,7 @@
         "cannotSendPrivateMessage": "{locale.interaction.cannotSendPrivateMessage}",
         "iDontKnowThisArgument": "{locale.interaction.iDontKnowThisArgument}[arg]",
         "isDMMessage": "{locale.interaction.isDMMessage}",
-        "mustBeNumber": "{locale.interaction.mustBeNumber}",
         "needArguments": "{locale.interaction.needArguments}",
-        "numberMustBeBetweenTwoValues": "{locale.interaction.numberMustBeBetweenTwoValues}[number1, number2]",
         "youCantUseThisButton": "{locale.interaction.youCantUseThisButton}",
         "iDidntFoundAnything": "{locale.interaction.iDidntFoundAnything}",
         "youDontHavePermission": "{locale.interaction.youDontHavePermission}",
@@ -107,17 +105,26 @@
         "ban": {
             "description": "{locale.command.ban.description}",
             "error": {
-                "50007": "{locale.command.ban.error.50007}"
+                "50007": "{locale.command.ban.error.50007}",
+                "mustBeNumber": "{locale.interaction.mustBeNumber}",
+                "numberMustBeBetweenTwoValues": "{locale.interaction.numberMustBeBetweenTwoValues}[number1, number2]"
             },
             "interaction": {
                 "isNotBannable": "{locale.command.ban.interaction.member.isNotBannable}",
                 "banishedCanceled": "{locale.command.ban.interaction.member.banishedCanceled}",
-                "banishedFromServer": "{locale.command.ban.interaction.member.banishedFromServer}"
+                "banishedFromServer": "{locale.command.ban.interaction.member.banishedFromServer}",
+                "bannedWithNoReason": "{locale.command.ban.interaction.member.bannedWithNoReason}"
             },
             "usage": {
-                "memberExample": "{locale.command.ban.usage.memberExample}[bot]",
-                "-daysExample": "{locale.command.ban.usage.-daysExample}[bot]",
-                "-reasonExample": "{locale.command.ban.usage.-reasonExample}[bot]"
+                "days": {
+                    "description": "{locale.command.ban.usage.days.description}[bot]",
+                    "example": "{locale.command.ban.usage.days.example}[bot]"
+                },
+                "reason": {
+                    "description": "{locale.command.ban.usage.reason.description}[bot]",
+                    "example": "{locale.command.ban.usage.reason.example}[bot]"
+                },
+                "memberExample": "{locale.command.ban.usage.memberExample}[bot]"
             }
         },
         "kick": {
@@ -218,16 +225,12 @@
     },
     "usage": {
         "flag": {
-            "-daysBan": {
-                "description": "{locale.usage.flag.-daysBan.description}"
-            },
             "-reason": {
                 "description": "{locale.usage.flag.-reason.description}"
             }
         },
         "argument": {
             "member": {
-                "arg": "{locale.usage.argument.member.arg}",
                 "description": "{locale.usage.argument.member.description}"
             },
             "command": {

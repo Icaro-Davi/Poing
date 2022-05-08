@@ -1,5 +1,5 @@
 import { ColorResolvable, Guild, MessageEmbed } from "discord.js"
-import { ExecuteCommandOptions } from "../../commands"
+import { ExecuteCommandOptions } from "../../commands/index.types"
 import { Locale, replaceVarsInString } from "../../locale";
 
 type options = {

@@ -1,4 +1,4 @@
-import { BotCommand } from "..";
+import { BotCommand } from "../index.types";
 import { MemberApplication } from "../../application";
 import { confirmButtons } from "../../components/messageActionRow";
 import { confirm, PM } from "../../components/messageEmbed";
@@ -13,17 +13,17 @@ const command: BotCommand = {
     allowedPermissions: ['KICK_MEMBERS'],
     usage: [
         [{
-            required: true, arg: locale.usage.argument.member.arg,
+            required: true, name: locale.usage.argument.member.arg,
             description: locale.usage.argument.member.description,
             example: locale.command.kick.usage.memberExample
         }],
         [{
-            required: false, arg: locale.usage.argument.reason.arg,
+            required: false, name: locale.usage.argument.reason.arg,
             description: locale.usage.argument.reason.description,
             example: locale.command.kick.usage.reasonExample
         }]
     ],
-    exec: async (message, args, options) => {
+    execDefault: async (message, args, options) => {
         const member = await MemberApplication.search(message, args[0]);
         if (!member) return { content: options.locale.interaction.member.notFound };
         if (!member.kickable) return { content: options.locale.interaction.member.isNotKickable };

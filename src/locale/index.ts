@@ -2,7 +2,7 @@ import objectPath from 'object-path';
 import fs from 'fs';
 import path from 'path';
 
-import { BotCommand } from "../commands"
+import { BotCommand } from "../commands/index.types"
 import { DiscordBot } from '../config/';
 import getPathFromCurlyBrackets from '../utils/regex/getPathFromCurlyBrackets';
 import defaultLocale from './example.locale.json';
@@ -15,7 +15,8 @@ export const getInitialLocaleVars = async ({ optionalVars, locale }: { optionalV
     bot: {
         name: DiscordBot.Bot.nickname,
         prefix: DiscordBot.Bot.defaultPrefix,
-        '@mention': `<@${DiscordBot.Bot.ID}>`
+        '@mention': `<@${DiscordBot.Bot.ID}>`,
+        hexColor: DiscordBot.Bot.defaultBotHexColor
     },
     ...locale ? { locale: await getLocale(locale) } : {},
     ...optionalVars ? optionalVars : {},
@@ -32,8 +33,9 @@ const translateCommandToLocale = async (command: BotCommand, locale: LocaleLabel
     });
     const translatedCommand = navigateToObjectDepthAndTranslate(command, defaultLocaleVars);
     return {
-        get: defaultLocaleVars.locale!,
-        botCommand: translatedCommand
+        locale: defaultLocaleVars.locale!,
+        botCommand: translatedCommand,
+        bot: defaultLocaleVars.bot
     };
 }
 
@@ -61,7 +63,7 @@ export const navigateToObjectDepthAndTranslate = (command: any, locale: any) => 
                     prev[current] = translateCommands(command[current], {});
                     return prev;
                 case 'string':
-                    prev[current] = replaceVarsInString(command[current], locale);
+                    prev[current] = replaceVarsInString(command[current].replace(/\[.+\]/gi, ''), locale);
                     return prev;
                 default:
                     prev[current] = command[current];
@@ -77,7 +79,7 @@ export const getAvailableLocales = () => {
 }
 
 export const getLocale = async (locale: LocaleLabel) => {
-    const _locale = await import(`../../locale/${locale}.json`) as Locale;
+    const _locale = (await import(`../../locale/${locale}`)).default as Locale;
     return _locale;
 }
 

@@ -1,4 +1,4 @@
-import { BotCommand } from "..";
+import { BotCommand } from "../index.types";
 import locale from '../../locale/example.locale.json';
 
 const command: BotCommand = {
@@ -8,13 +8,13 @@ const command: BotCommand = {
     aliases: ['rm'],
     usage: [
         [{
-            required: true, arg: locale.usage.argument.quantity.arg,
+            required: true, name: locale.usage.argument.quantity.arg,
             description: locale.usage.argument.quantity.description,
             example: locale.command.removeMessages.usage.quantityExample
         }]
     ],
     allowedPermissions: ['MANAGE_MESSAGES'],
-    exec: async (message, args, options) => {
+    execDefault: async (message, args, options) => {
         if (message.channel.type == 'DM') return;
         if (Number.isNaN(Number(args[0]))) return await { content: options.locale.interaction.mustBeNumber };
 

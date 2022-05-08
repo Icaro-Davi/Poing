@@ -1,11 +1,11 @@
-import { Message, PermissionResolvable } from "discord.js";
+import { CommandInteraction, GuildMember, Message, PermissionResolvable, User } from "discord.js";
 import { Locale } from "../locale";
 
-const onlyMessageAuthorCanUse = (message: Message, locale: Locale) => {
-    return message.channel.createMessageComponentCollector({
+const onlyMessageAuthorCanUse = (message: Message | CommandInteraction, options: { locale: Locale, author: GuildMember | User, ephemeral?: boolean }) => {
+    return message.channel!.createMessageComponentCollector({
         filter: async (interaction) => {
-            if (interaction.user.id === message.author.id) return true;
-            await interaction.reply({ ephemeral: true, content: locale.interaction.youCantUseThisButton });
+            if (interaction.user.id === options.author.id) return true;
+            await interaction.reply({ ephemeral: options.ephemeral, content: options.locale.interaction.youCantUseThisButton });
             return false;
         },
         max: 1,
@@ -13,13 +13,13 @@ const onlyMessageAuthorCanUse = (message: Message, locale: Locale) => {
     });
 }
 
-const onlyWithPermission = (message: Message, locale: Locale, permissions: PermissionResolvable) => {
-    return message.channel.createMessageComponentCollector({
+const onlyWithPermission = (message: Message | CommandInteraction, options: { locale: Locale, permissions: PermissionResolvable, ephemeral?: boolean }) => {
+    return message.channel!.createMessageComponentCollector({
         filter: (interaction) => {
-            if (interaction.memberPermissions.has(permissions)) {
+            if (interaction.memberPermissions.has(options.permissions)) {
                 return true;
             } else {
-                interaction.reply({ ephemeral: true, content: locale.interaction.youCantUseThisButton });
+                interaction.reply({ ephemeral: options.ephemeral, content: options.locale.interaction.youCantUseThisButton });
                 return false;
             }
         },

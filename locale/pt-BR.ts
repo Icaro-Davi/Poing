@@ -1,4 +1,6 @@
-{
+import { Locale } from "../src/locale";
+
+const pt_BR: Locale = {
     "localeLabel": "pt-BR",
     "category": {
         "label": "Categoria",
@@ -71,9 +73,7 @@
         "cannotSendPrivateMessage": "Eu não pude enviar sua mensagem, :C desculpe.",
         "iDontKnowThisArgument": "Eu não conheço esse argumento",
         "isDMMessage": "So posso ser usado em servidores.",
-        "mustBeNumber": "Só aceito números.",
         "needArguments": "Preciso de mais argumentos.",
-        "numberMustBeBetweenTwoValues": "Hmm so aceito números entre {number1} e {number2} UwU.",
         "youCantUseThisButton": "Este botão possui uma magia muito forte que estar te impedindo de usar!",
         "iDidntFoundAnything": "Não consegui encontrar nada.",
         "youDontHavePermission": "Você não tem permissão para fazer isso.",
@@ -107,17 +107,26 @@
         "ban": {
             "description": "Irei banir um membro do servidor e mandarei uma mensagem privada para o membro banido avisando do banimento.",
             "error": {
-                "50007": "Não consegui avisar a esse membro que foi banido."
+                "50007": "Não consegui avisar a esse membro que foi banido.",
+                "mustBeNumber": "Só aceito números.",
+                "numberMustBeBetweenTwoValues": "Hmm so aceito números entre 1 e 7 UwU.",
             },
             "interaction": {
                 "isNotBannable": "Esse membro é muito poderoso, não consigo banir ele T-T",
                 "banishedCanceled": "Banimento cancelado ❤️",
-                "banishedFromServer": "Banimos ele com sucesso 😈"
+                "banishedFromServer": "Banido 😈",
+                "bannedWithNoReason": "Sem Motivo."
             },
             "usage": {
-                "memberExample": "`{bot.prefix}ban @{bot.name}` - O membro @{bot.name} foi banido do servidor.",
-                "-daysExample": "`{bot.prefix}ban @{bot.name} -days \"1\"` - O membro @{bot.name} foi banido e suas ultimas mensagens de 1 dia(s) foram deletada(s).",
-                "-reasonExample": "`{bot.prefix}ban @{bot.name} -reason \"Poing está distraindo os membros do servidor.\"` - O membro {bot.name} foi banido com um motivo."
+                "days": {
+                    "description": "Número de dias entre \"1 e 7\" que representa as mensagens que serão deletadas, valor padrão é 0.",
+                    "example": "`{bot.prefix}ban @{bot.name} --days \"7\" ` - A flag de days pode ser usada `[ -d | --days ]` em seguida o valor entre aspas duplas."
+                },
+                "reason": {
+                    "description": "A razão do banimento.",
+                    "example": "`{bot.prefix}ban @{bot.name} -reason \"Poing está distraindo os membros do servidor.\"` - O membro {bot.name} foi banido com um motivo.",
+                },
+                "memberExample": "`{bot.prefix}ban @{bot.name}` - Member @{bot.name} has been banned from the guild.",
             }
         },
         "kick": {
@@ -218,16 +227,12 @@
     },
     "usage": {
         "flag": {
-            "-daysBan": {
-                "description": "A flag pode ser usado `[ -days | --d ]`. Número de dias entre `0 e 7` que representa as mensagens que serão deletadas, valor padrão é 0 (nenhuma mensagem será deletada)."
-            },
             "-reason": {
                 "description": "A flag pode ser usado `[ -reason | --r ]`. Aqui você adiciona um motivo a ação que estar tomando, se não por eu irei fazer tal ação sem motivo."
             }
         },
         "argument": {
             "member": {
-                "arg": "membro",
                 "description": "A referência de algum membro do servidor, pode ser `[menção | membroId]`."
             },
             "command": {
@@ -253,3 +258,5 @@
         }
     }
 }
+
+export default pt_BR;

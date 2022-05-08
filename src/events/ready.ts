@@ -3,6 +3,7 @@ import { DiscordBot } from '../config';
 
 export default () =>
     DiscordBot.Client.get().on('ready', () => {
+        DiscordBot.Command.loadSlashCommands();
         DiscordBot.Client.get().user?.setActivity(`Call me baby @${DiscordBot.Bot.nickname} help`, {
             type: 'LISTENING',
             name: 'Poing Poing Poing',
@@ -13,7 +14,7 @@ export default () =>
         console.log(`\n\n\n-- I'm listening all :3`);
         console.log('--- Default Prefix:', process.env.BOT_PREFIX);
         console.log('--- Bot Name:', process.env.BOT_NAME);
-        console.log('--- Quantity of Commands:', DiscordBot.Commands.Collection.size);
+        console.log('--- Quantity of Commands:', DiscordBot.Command.Collection.size);
         console.log('--- Guilds:', DiscordBot.Client.get().guilds.cache.size);
         // console.log('--- Loaded Commands:', '\x1b[34m', commands.map(path => `[${path.split(/(?:\\|\/)/g).pop()?.replace(/(?:\.ts|\.js)/, '')}]`).join(' '), '\x1b[0m');
         console.log('--- Schedule Events', DiscordBot.ScheduleEvent.start() ? 'Online' : 'Offline');

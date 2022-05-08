@@ -1,6 +1,6 @@
 import BotApplication from './Bot';
 import GuildApplication from './Guild';
-import MemberApplication from './member';
+import MemberApplication from './Member';
 import MuteApplication from './Mute';
 
 export {

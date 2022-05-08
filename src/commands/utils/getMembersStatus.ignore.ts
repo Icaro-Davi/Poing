@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { BotCommand, ExecuteCommandOptions } from '..';
+import { BotCommand, ExecuteCommandOptions } from '../index.types';
 import MD from '../../utils/md';
 import locale from '../../locale/example.locale.json';
 
@@ -30,7 +30,7 @@ const command: BotCommand = {
     category: locale.category.utility,
     description: locale.command.getMembersStatus.description,
     aliases: ['gms'],
-    exec: async (message, args, options) => {
+    execDefault: async (message, args, options) => {
         return { content: await getAllMembers(message, options), type: 'embed' };
     }
 }

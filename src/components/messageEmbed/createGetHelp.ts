@@ -1,24 +1,25 @@
 import { MessageEmbed } from 'discord.js';
-import { BotCommand, BotArguments, ExecuteCommandOptions } from '../../commands';
+import { BotCommand, BotArgument, ExecuteCommandOptions, BotUsage } from '../../commands/index.types';
 import { replaceVarsInString } from '../../locale';
 import MD from '../../utils/md';
 
 const createAsterisk = (isRequired: boolean) => isRequired ? '*' : '';
+const createFlag = (isFlag: boolean) => isFlag ? '--' : ''
 
-const generateArguments = (allArgsOneDepth: BotArguments) => {
-    const createText = (arg: string, required: boolean, description?: string) => {
-        return `\n${MD.codeBlock.line(`[${arg}]${createAsterisk(required)}`)}${description ? ' - ' + description : ''}`;
+const generateArguments = (allArgsOneDepth: BotArgument[]) => {
+    const createText = (arg: string, required: boolean, isFlag: boolean, description?: string) => {
+        return `\n${MD.codeBlock.line(`[${createFlag(isFlag)}${arg}]${createAsterisk(required)}`)}${description ? ' - ' + description : ''}`;
     }
     return allArgsOneDepth.reduce((prev, current) =>
-        createText(current.arg, current.required, current.description) + prev, '');
+        createText(current.name, current.required, current.isFlag!!, current.description) + prev, '');
 }
 
 const generateAliases = (aliases: string[], customPrefix: string) =>
     MD.bold.b(MD.codeBlock.line(aliases.map(aliases => `${customPrefix}${aliases}`).join(' - ')))
 
-const generateHowToUse = (usage: BotArguments[]) => {
-    const createArgumentByIndex = (options: { arg: string, currentIndex: number, lastIndex: number, required: boolean }) => {
-        const formattedArg = `(${options.arg})${createAsterisk(options.required)}`;
+const generateHowToUse = (usage: BotUsage) => {
+    const createArgumentByIndex = (options: { name: string, currentIndex: number, lastIndex: number, required: boolean }) => {
+        const formattedArg = `(${options.name})${createAsterisk(options.required)}`;
         if (!options.lastIndex) return `[${formattedArg}] `;
         switch (options.currentIndex) {
             case 0:
@@ -36,8 +37,8 @@ const generateHowToUse = (usage: BotArguments[]) => {
     }, '').trim();
 }
 
-const generateExamples = (allArgsOneDepth: BotArguments, customPrefix?: string) => {
-    return allArgsOneDepth.reduce((prev, current) => current.example ? prev + `${current.example.replaceAll('{prefix}', customPrefix || '!')}\n` : prev, '');
+const generateExamples = (allArgsOneDepth: BotArgument[]) => {
+    return allArgsOneDepth.reduce((prev, current) => current.example ? prev + `${current.example}\n` : prev, '');
 }
 
 const createGetHelp = (command: BotCommand, options: ExecuteCommandOptions): MessageEmbed => {
@@ -58,7 +59,7 @@ const createGetHelp = (command: BotCommand, options: ExecuteCommandOptions): Mes
                 ? [{ name: `:paperclip: ${replaceVarsInString('{messageEmbed.getHelp.fieldArguments}', options.locale)}`, value: generateArguments([...allArgs].reverse()) },]
                 : [],
             ...allArgs?.some(arg => arg.example)
-                ? [{ name: `:paperclip: ${replaceVarsInString('{messageEmbed.getHelp.fieldExamples}', options.locale)}`, value: generateExamples(allArgs, options.bot.prefix) }]
+                ? [{ name: `:paperclip: ${replaceVarsInString('{messageEmbed.getHelp.fieldExamples}', options.locale)}`, value: generateExamples(allArgs) }]
                 : []
         ])
         .setFooter({ text: `${replaceVarsInString('{category.label}', options.locale)} - ${command.category}` });
