@@ -1,4 +1,4 @@
-import Discord, { Message, MessageEmbed, MessageOptions, ReplyMessageOptions, CommandInteraction } from 'discord.js';
+import Discord, { Message, MessageEmbed, MessageOptions, ReplyMessageOptions, CommandInteraction, ApplicationCommandDataResolvable, ApplicationCommandOptionData } from 'discord.js';
 import path from 'path';
 import { BotCommand } from '../commands/index.types';
 import fs from 'fs';
@@ -16,60 +16,63 @@ export type CommandHandler = {
 }
 
 class Commands {
-    public static Collection: Discord.Collection<string, BotCommand>;
-    public static AliasesCollection: Discord.Collection<string, string>;
+    public static readonly Collection: Discord.Collection<string, BotCommand> = new Discord.Collection<string, BotCommand>();
+    public static readonly AliasesCollection: Discord.Collection<string, string> = new Discord.Collection<string, string>();
+    private static listOfFuncsToExecAfterCommandsLoad: Function[] = [];
 
-    static start = () => {
-        this.startPrefixCommands();
+    static start = async () => {
+        await this.loadCommands();
+        this.listOfFuncsToExecAfterCommandsLoad.forEach(fn => fn(this.Collection));
     }
 
-    private static startPrefixCommands() {
-        const { aliasesCommandsKey, clientCommands } = this.loadCommands();
-        this.Collection = clientCommands;
-        this.AliasesCollection = aliasesCommandsKey;
-    }
-
-    private static loadCommands() {
-        const searchCommandsFiles = (dir: string, initialPath: string) => {
-            const getPaths = (path: string, paths: string[]) => {
-                fs.readdirSync(path).forEach(file => {
-                    if (file.match(/(?:\..+\.(?:t|j)?s)$/gi)) return;
-                    if (fs.lstatSync(`${path}/${file}`).isFile()) paths.push(`/${path}/${file}`);
-                    if (fs.lstatSync(`${path}/${file}`).isDirectory()) return getPaths(`${path}/${file}`, paths);
-                });
-                return paths;
-            }
-            const commandPaths = getPaths(dir, []).map(_path => path.resolve(`${initialPath}/${_path.split('/').slice(2).join('/')}`));
-            return commandPaths;
-        }
-
-        const clientCommands = new Discord.Collection<string, BotCommand>();
-        const aliasesCommandsKey = new Discord.Collection<string, string>();
-        const commandPaths = searchCommandsFiles(path.resolve(`${__dirname}/../commands`), path.resolve(`${__dirname}/../commands/`));
-
-        for (const path of commandPaths) {
-            const command = require(path).default as BotCommand;
-            clientCommands.set(command.name, command);
-            command.aliases?.forEach(aliases => {
-                aliasesCommandsKey.set(aliases, command.name);
-            });
-        }
-        return { clientCommands, aliasesCommandsKey };
+    public static onLoad(cb: (commands: Discord.Collection<string, BotCommand>) => void) {
+        if (cb) this.listOfFuncsToExecAfterCommandsLoad.push(cb);
     }
 
     static async loadSlashCommands() {
         const commands = DiscordBot.Client.get().application?.commands;
         this.Collection.forEach(botCommand => {
             (async () => {
-                if (!botCommand.slashCommand) return;
+                if (!botCommand.execSlash) return;
                 botCommand = (await translateCommandToLocale(botCommand, 'en-US')).botCommand;
                 const descriptionLength = 100 - botCommand.category.length - 6;
                 commands?.create({
                     name: botCommand.name,
                     description: `[${botCommand.category}] ${botCommand.description.slice(0, descriptionLength)}${botCommand.description.length > descriptionLength ? '...' : ''}`,
-                    options: botCommand.slashCommand
+                    options: botCommand?.slashCommand
                 });
             })();
+        });
+    }
+
+    private static searchCommandsFiles(dir: string, initialPath: string) {
+        const getPaths = (path: string, paths: string[]) => {
+            fs.readdirSync(path).forEach(file => {
+                if (file.match(/(?:\..+\.(?:t|j)?s)$/gi)) return;
+                if (fs.lstatSync(`${path}/${file}`).isFile()) paths.push(`/${path}/${file}`);
+                if (fs.lstatSync(`${path}/${file}`).isDirectory()) return getPaths(`${path}/${file}`, paths);
+            });
+            return paths;
+        }
+        const commandPaths = getPaths(dir, []).map(_path => path.resolve(`${initialPath}/${_path.split('/').slice(2).join('/')}`));
+        return commandPaths;
+    }
+
+    private static loadCommands() {
+        const commandPaths = this.searchCommandsFiles(path.resolve(`${__dirname}/../commands`), path.resolve(`${__dirname}/../commands/`));
+        return new Promise((resolve, reject) => {
+            try {
+                for (const path of commandPaths) {
+                    const command = require(path).default as BotCommand;
+                    this.Collection.set(command.name, command);
+                    command.aliases?.forEach(aliases => {
+                        this.AliasesCollection.set(aliases, command.name);
+                    });
+                }
+                resolve(true);
+            } catch (error) {
+                reject(false);
+            }
         });
     }
 
