@@ -1,18 +1,17 @@
-import { GuildMember } from "discord.js";
 import { ExecuteSlashCommand } from "../../index.types";
 import { argument } from "./command.args";
 import { sendDirectMessage } from "./sendMessage.func";
 
 const slashCommand: ExecuteSlashCommand = async (interaction, options) => {
-    const mention = interaction.options.getMentionable(argument.MEMBER.name) as GuildMember;
+    const user = interaction.options.getUser(argument.MEMBER.name);
     const anonymousMessage = interaction.options.getString(argument.MESSAGE.name);
 
-    if (!mention) return;
+    if (!user) return;
     if (!anonymousMessage) return;
 
     const answer = await sendDirectMessage({
         anonymousMessage,
-        mention,
+        mention: interaction.guild?.members.cache.find(member => member.id === user?.id),
         guild: interaction.guild!,
         options,
         ephemeral: true

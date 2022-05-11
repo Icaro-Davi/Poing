@@ -15,7 +15,7 @@ const command: BotCommand = {
         [argument.MESSAGE]
     ],
     slashCommand: [
-        { ...argument.MEMBER, type: 'MENTIONABLE' },
+        { ...argument.MEMBER, type: 'USER' },
         { ...argument.MESSAGE, type: 'STRING' }
     ],
     execSlash: commandSlash,

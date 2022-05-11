@@ -15,7 +15,7 @@ const command: BotCommand = {
         [argument.REASON]
     ],
     slashCommand: [
-        { ...argument.MEMBER, type: 'MENTIONABLE' },
+        { ...argument.MEMBER, type: 'USER' },
         { ...argument.DAYS, type: 'INTEGER', min_value: 0, max_value: 7 },
         { ...argument.REASON, type: 'STRING' },
     ],

@@ -1,11 +1,11 @@
-import { GuildMember } from "discord.js";
 import { ExecuteSlashCommand } from "../../index.types";
 import { argument } from "./command.args";
 import guildBanMember from './banMember.func';
 
 const slashCommand: ExecuteSlashCommand = async (interaction, options) => {
-    const banMember = interaction.options.getMentionable(argument.MEMBER.name, argument.MEMBER.required) as GuildMember;
-    if (!banMember.bannable) return { content: options.locale.command.ban.interaction.isNotBannable, ephemeral: true };
+    const user = interaction.options.getUser(argument.MEMBER.name, argument.MEMBER.required);
+    const banMember = interaction.guild?.members.cache.find(member => member.id === user?.id);
+    if (!banMember?.bannable) return { content: options.locale.command.ban.interaction.isNotBannable, ephemeral: true };
 
     const days = interaction.options.getInteger(argument.DAYS.name, argument.DAYS.required);
     const reason = interaction.options.getString(argument.REASON.name, argument.REASON.required);
