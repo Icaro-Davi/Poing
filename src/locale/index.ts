@@ -63,7 +63,10 @@ export const navigateToObjectDepthAndTranslate = (command: any, locale: any) => 
                     prev[current] = translateCommands(command[current], {});
                     return prev;
                 case 'string':
-                    prev[current] = replaceVarsInString(command[current].replace(/\[.+\]/gi, ''), locale);
+                    const str = (command[current] as string)
+                        .match(/[^\\](\[[^\\]+?\])/gm)
+                        ?.reduce(((str, current) => str.replace(current, current[0])), command[current]) ?? command[current];
+                    prev[current] = replaceVarsInString(str, locale);
                     return prev;
                 default:
                     prev[current] = command[current];
