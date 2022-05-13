@@ -1,5 +1,5 @@
 import { ExecuteSlashCommand } from "../../index.types";
-import { argument } from "./command.args";
+import argument from "./command.args";
 import { sendDirectMessage } from "./sendMessage.func";
 
 const slashCommand: ExecuteSlashCommand = async (interaction, options) => {

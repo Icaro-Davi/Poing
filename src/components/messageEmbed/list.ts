@@ -41,7 +41,9 @@ const commandsByCategory = (options: ExecuteCommandOptions) => {
 const mutedMembers = (mutedGuildMembers: MutedMember[], options: ExecuteCommandOptions) => {
     return new MessageEmbed()
         .setColor(options.bot.hexColor)
-        .setDescription(mutedGuildMembers.reduce((str, member) => `${str}\n${MD.underline(`🤫${options.locale.labels.name}:`)} ${MD.codeBlock.line(member.name)} ${MD.underline(`⌛${options.locale.labels.ends}:`)} ${MD.codeBlock.line(moment(member.timeout).locale(options.locale.localeLabel).fromNow())}`, ''));
+        .setDescription(mutedGuildMembers.length
+            ? mutedGuildMembers.reduce((str, member) => `${str}\n${MD.underline(`🤫${options.locale.labels.name}:`)} ${MD.codeBlock.line(member.name)} ${MD.underline(`⌛${options.locale.labels.ends}:`)} ${MD.codeBlock.line(moment(member.timeout).locale(options.locale.localeLabel).fromNow())}`, '')
+            : options.locale.command.mute.interaction.noTimeSilencedMembers);
 }
 
 export default {

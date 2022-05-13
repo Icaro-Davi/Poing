@@ -1,6 +1,6 @@
 import { GuildMember } from "discord.js";
 import { ExecuteCommand } from "../../index.types";
-import { argument } from "./command.args";
+import argument from "./command.args";
 import { sendDirectMessage } from "./sendMessage.func";
 
 const defaultCommand: ExecuteCommand = async (message, args, options) => {

@@ -71,6 +71,7 @@ class Commands {
                 }
                 resolve(true);
             } catch (error) {
+                console.log(error);
                 reject(false);
             }
         });

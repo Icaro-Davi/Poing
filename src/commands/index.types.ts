@@ -11,7 +11,7 @@ export type BotCommands = Collection<string, BotCommand>;
 export type BotCommandCategory = 'Administration' | 'Moderation' | 'Utility';
 export type BotGetHelp = (customPrefix?: string) => MessageEmbed;
 export type BotUsage = BotArgument[][];
-export type FilterFunc = (message: Message, args: string[], locale: Locale) => any;
+export type FilterFunc = (message: Message, args: string[], locale: Locale, data?: any) => any;
 
 export type BotDefinitions = {
     name: string;
@@ -49,6 +49,7 @@ export type ExecuteCommandOptions = {
 
 export type BotCommand = {
     name: string;
+    howToUse: string;
     execDefault: ExecuteCommand;
     execSlash?: ExecuteSlashCommand;
     category: BotCommandCategory | string;

@@ -1,5 +1,5 @@
 import { ExecuteCommand } from "../../index.types";
-import { argument } from "./command.args";
+import argument from "./command.args";
 import guildBanMember from './banMember.func';
 
 const defaultCommand: ExecuteCommand = async (message, args, options) => {

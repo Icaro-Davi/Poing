@@ -3,7 +3,7 @@ import { BotApplication } from '../application';
 import { DiscordBot } from '../config';
 import translateCommandToLocale, { Locale } from '../locale';
 import handleError from '../utils/handleError';
-import { BotCommand, BotUsage, ExecuteCommandOptions } from './index.types';
+import { BotCommand, ExecuteCommandOptions } from './index.types';
 
 export const getArgs = async (options: { message: Message, command: BotCommand, args: string[], locale: Locale }) => {
     try {
@@ -12,7 +12,7 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
 
         for (let args of options.command.usage) {
             for (let arg of args) {
-                const data = arg.filter ? await arg.filter(options.message, options.args, options.locale) : undefined;
+                const data = arg.filter ? await arg.filter(options.message, options.args, options.locale, filters) : undefined;
                 filters[`${arg.name}`] = data;
             }
         }
@@ -30,10 +30,6 @@ export const memberDoesNotHavePermissions = (message: Message, allowedPermission
     return !allowedPermissions.some(permission => message.member?.permissions.has(permission));
 }
 
-export const anyArgumentIsRequired = (args: string[], usage: BotUsage) => {
-    const argsRequiredByIndex = usage.map(args => args.reduce((prev, current) => prev + Number(current.required), 0));
-    return !argsRequiredByIndex.every((requiredIndex, i) => requiredIndex ? i < args.length : true);
-}
 
 export const itIsANormalMessage = (message: Message, prefix: string) => {
     return (!message.content.startsWith(prefix));

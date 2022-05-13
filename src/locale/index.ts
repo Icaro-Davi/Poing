@@ -63,9 +63,12 @@ export const navigateToObjectDepthAndTranslate = (command: any, locale: any) => 
                     prev[current] = translateCommands(command[current], {});
                     return prev;
                 case 'string':
-                    const str = (command[current] as string)
-                        .match(/[^\\](\[[^\\]+?\])/gm)
-                        ?.reduce(((str, current) => str.replace(current, current[0])), command[current]) ?? command[current];
+                    const str: string = (command[current] as string)
+                        .match(/\\?\[.+?\]/gm)
+                        ?.reduce(((str, current) => current.match(/\\\[.+?\\?\]/)
+                            ? str.replaceAll('\\]', ']').replaceAll('\\[', '[')
+                            : str.replace(current, '')
+                        ), command[current]) ?? command[current];
                     prev[current] = replaceVarsInString(str, locale);
                     return prev;
                 default:

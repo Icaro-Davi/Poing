@@ -1,6 +1,6 @@
 import { BotCommand } from "../../index.types";
 import locale from '../../../locale/example.locale.json';
-import argument from "./command.args";
+import argument, { getHowToUse } from "./command.args";
 import execDefaultCommand from "./command.default";
 import execSlashCommand from "./command.slash";
 import { DiscordBot } from "../../../config";
@@ -8,15 +8,22 @@ import { DiscordBot } from "../../../config";
 const command: BotCommand = {
     name: 'help',
     category: locale.category.utility,
+    howToUse: getHowToUse(),
     description: locale.command.help.description,
     aliases: ['h'],
     usage: [
         [argument.COMMAND, argument.LIST]
     ],
     slashCommand: [
-        { ...argument.LIST, type: 'SUB_COMMAND' },
         {
-            ...argument.COMMAND, type: 'SUB_COMMAND',
+            ...argument.LIST,
+            description: `\\[${locale.category.utility}\\] ${argument.LIST.description}`,
+            type: 'SUB_COMMAND'
+        },
+        {
+            ...argument.COMMAND,
+            type: 'SUB_COMMAND',
+            description: `\\[${locale.category.utility}\\] ${argument.COMMAND.description}`,
             options: [{
                 ...argument.TARGET, type: 'STRING',
             }]

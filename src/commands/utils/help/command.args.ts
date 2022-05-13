@@ -5,7 +5,7 @@ const argument: Record<'COMMAND' | 'LIST' | 'TARGET', BotArgument> = {
     COMMAND: {
         name: 'command',
         required: false,
-        description: `[${locale.category.utility}] ${locale.usage.argument.command.description}`,
+        description: locale.usage.argument.command.description,
         example: locale.command.help.usage.commandExample,
         filter(message, args, locale) {
             if (args[0] === 'list') return;
@@ -15,7 +15,7 @@ const argument: Record<'COMMAND' | 'LIST' | 'TARGET', BotArgument> = {
     LIST: {
         name: 'list',
         required: false,
-        description: `[${locale.category.utility}] ${locale.command.help.usage.list.description}`,
+        description: locale.command.help.usage.list.description,
         example: locale.command.help.usage.list.example,
         filter(message, args, locale) {
             return args[0]?.toLocaleLowerCase() === 'list';
@@ -26,6 +26,16 @@ const argument: Record<'COMMAND' | 'LIST' | 'TARGET', BotArgument> = {
         required: true,
         description: locale.usage.argument.command.description
     }
+}
+
+export const getHowToUse = () => {
+    const command = '{bot.prefix}help';
+    const { COMMAND, LIST } = argument;
+    const howToUse = `
+    ${command} (${LIST.name})
+    ${command} (${COMMAND.name})
+    `.trim();
+    return howToUse;
 }
 
 export default argument;

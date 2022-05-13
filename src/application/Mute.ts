@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Guild } from "discord.js";
 import mongoose from "mongoose";
 import { DiscordBot } from "../config";
 import GuildRepository from "../domain/guild/GuildRepository";
@@ -54,11 +54,11 @@ class Mute {
         return await ScheduleUnmuteRepository.findByGuildIdAndMemberId(guildId, memberId);
     }
 
-    static async listMutedMembers(message: Message): Promise<MutedMember[]> {
-        if (!message.guildId) throw new Error('[needGuildId]');
-        const docsOfMutedMembers = await ScheduleUnmuteRepository.listByGuildId(message.guildId);
+    static async listMutedMembers(guild: Guild): Promise<MutedMember[]> {
+        if (!guild.id) throw new Error('[needGuildId]');
+        const docsOfMutedMembers = await ScheduleUnmuteRepository.listByGuildId(guild.id);
         const guildMutedMembers = docsOfMutedMembers.reduce((prev, current) => {
-            const guildMember = message.guild?.members.cache.get(current.memberId);
+            const guildMember = guild.members.cache.get(current.memberId);
             guildMember ? prev.push({ name: guildMember.user.username ?? guildMember.nickname, timeout: current.timeout }) : undefined;
             return prev;
         }, [] as MutedMember[]);

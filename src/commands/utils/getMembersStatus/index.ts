@@ -5,6 +5,7 @@ import execDefaultCommand from './command.default';
 
 const command: BotCommand = {
     name: 'get-members-status',
+    howToUse: '{bot.prefix}get-members-status',
     category: locale.category.utility,
     description: locale.command.getMembersStatus.description,
     aliases: ['gms', 'guildMembers'],

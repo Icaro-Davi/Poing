@@ -8,7 +8,11 @@ const execSlashCommand: ExecuteSlashCommand = async (interaction, options) => {
     if (subCommand === argument.LIST.name)
         return { content: list.commandsByCategory(options), type: 'embed', ephemeral: true };
     if (subCommand === argument.COMMAND.name)
-        return await getCommandHelp(interaction.options.getString(argument.TARGET.name, argument.TARGET.required)!, options);
+        return await getCommandHelp({
+            options,
+            ephemeral: true,
+            commandName: interaction.options.getString(argument.TARGET.name, argument.TARGET.required)!,
+        });
     return { content: list.commandsByCategory(options), type: 'embed', ephemeral: true };
 }
 

@@ -2,8 +2,9 @@ import { BotArgument } from "../../index.types";
 import locale from '../../../locale/example.locale.json';
 import Member from "../../../application/Member";
 import getValuesFromStringFlag from "../../../utils/regex/getValuesFromStringFlag";
+import MD from "../../../utils/md";
 
-export const argument: Record<'MEMBER' | 'DAYS' | 'REASON', BotArgument> = {
+const argument: Record<'MEMBER' | 'DAYS' | 'REASON', BotArgument> = {
     MEMBER: {
         required: true,
         name: 'member',
@@ -18,8 +19,9 @@ export const argument: Record<'MEMBER' | 'DAYS' | 'REASON', BotArgument> = {
     },
     DAYS: {
         name: 'days',
-        description: locale.command.ban.usage.days.description,
+        isFlag: true,
         required: false,
+        description: locale.command.ban.usage.days.description,
         example: locale.command.ban.usage.days.example,
         filter(message, args, locale) {
             const days = getValuesFromStringFlag(args, ['--days', '-d']);
@@ -34,8 +36,9 @@ export const argument: Record<'MEMBER' | 'DAYS' | 'REASON', BotArgument> = {
     },
     REASON: {
         name: 'reason',
-        description: locale.command.ban.usage.reason.description,
+        isFlag: true,
         required: false,
+        description: locale.command.ban.usage.reason.description,
         example: locale.command.ban.usage.reason.example,
         filter(message, args, locale) {
             const reason = getValuesFromStringFlag(args, ['--reason', '-r']);
@@ -43,3 +46,12 @@ export const argument: Record<'MEMBER' | 'DAYS' | 'REASON', BotArgument> = {
         }
     }
 }
+
+export const getHowToUse = () => {
+    const command = '{bot.prefix}ban'
+    const { DAYS, MEMBER, REASON } = argument;
+    const howToUse = `${command} \\[@${MEMBER.name}|memberID\\]* (${DAYS.name} "Number") (${REASON.name} "Text")`;
+    return MD.codeBlock.line(howToUse);
+}
+
+export default argument;

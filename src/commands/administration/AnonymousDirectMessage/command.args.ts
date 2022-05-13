@@ -1,8 +1,9 @@
 import Member from '../../../application/Member';
 import locale from '../../../locale/example.locale.json';
+import MD from '../../../utils/md';
 import { BotArgument } from '../../index.types';
 
-export const argument: Record<'MEMBER' | 'MESSAGE', BotArgument> = {
+const argument: Record<'MEMBER' | 'MESSAGE', BotArgument> = {
     MEMBER: {
         required: true,
         name: 'member',
@@ -26,3 +27,12 @@ export const argument: Record<'MEMBER' | 'MESSAGE', BotArgument> = {
         }
     }
 }
+
+export const getHowToUse = () => {
+    const command = '{bot.prefix}anonymous-direct-message';
+    const { MEMBER, MESSAGE } = argument;
+    const howToUse = `${command} \\[@${MEMBER.name}|memberID\\]* \\[${MESSAGE.name}\\]*`;
+    return MD.codeBlock.line(howToUse);
+}
+
+export default argument;
