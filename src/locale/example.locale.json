@@ -21,7 +21,8 @@
         "joinedDiscord": "{locale.status.joinedDiscord}",
         "roles": "{locale.status.role}",
         "muted": "{locale.status.muted}",
-        "unmute": "{locale.status.unmute}"
+        "unmute": "{locale.status.unmute}",
+        "reason": "{locale.status.reason}"
     },
     "messageEmbed": {
         "getHelp": {
@@ -186,6 +187,8 @@
         "mute": {
             "description": "{locale.command.mute.description}",
             "interaction": {
+                "invalidTime": "{locale.command.mute.interaction.invalidTime}",
+                "noTimeSilencedMembers": "{locale.command.mute.interaction.noTimeSilencedMembers}",
                 "mutedSuccessful": "{locale.command.mute.interaction.mutedSuccessful}[memberMutedName, author, duration]",
                 "memberAlreadyMuted": "{locale.command.mute.interaction.memberAlreadyMuted}",
                 "needMuteRoleId": "{locale.command.mute.interaction.add}",
@@ -194,6 +197,7 @@
                 "roleNotFound": "{locale.command.mute.interaction.roleNotFound}",
                 "needRegisterRole": "{locale.command.mute.interaction.needRegisterRole}",
                 "cannotMuteAdmin": "{locale.command.mute.interaction.cannotMuteAdmin}",
+                "mustBeNumber": "{locale.command.mute.interaction.mustBeNumber}",
                 "arg": {
                     "time": {
                         "day": "{locale.command.mute.interaction.arg.time.day}",
@@ -205,20 +209,18 @@
             },
             "usage": {
                 "reason": {
-                    "arg": "{locale.command.mute.usage.reason.arg}",
                     "description": "{locale.command.mute.usage.reason.description}",
                     "example": "{locale.command.mute.usage.reason.example}[bot]"
                 },
-                "-addRole": {
-                    "description": "{locale.command.mute.usage.-addRole.description}",
-                    "example": "{locale.command.mute.usage.-addRole.example}[bot]"
+                "addRole": {
+                    "description": "{locale.command.mute.usage.addRole.description}",
+                    "example": "{locale.command.mute.usage.addRole.example}[bot]"
                 },
-                "-list": {
-                    "description": "{locale.command.mute.usage.-list.description}",
-                    "example": "{locale.command.mute.usage.-list.example}[bot]"
+                "list": {
+                    "description": "{locale.command.mute.usage.list.description}",
+                    "example": "{locale.command.mute.usage.list.example}[bot]"
                 },
                 "exampleMember": "{locale.command.mute.usage.exampleMember}[bot]",
-                "exampleFlagAddRole": "{locale.command.mute.usage.exampleFlagAddRole}[bot]",
                 "exampleTime": "{locale.command.mute.usage.exampleTime}[bot]"
             }
         }

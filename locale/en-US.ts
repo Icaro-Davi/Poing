@@ -23,7 +23,8 @@ const en_US: Locale = {
         "joinedDiscord": "Joined in Discord at",
         "roles": "Roles",
         "muted": "Muted",
-        "unmute": "Unmute"
+        "unmute": "Unmute",
+        "reason": "Reason"
     },
     "messageEmbed": {
         "getHelp": {
@@ -188,6 +189,8 @@ const en_US: Locale = {
         "mute": {
             "description": "Mute a member",
             "interaction": {
+                "invalidTime": "TIME argument is invalid, try again using e.g. 10M for minutes, 1H for hours, 7D for days.",
+                "noTimeSilencedMembers": "🙊 No time-silenced members.",
                 "mutedSuccessful": "Member {memberMutedName} was muted for {author} and will end {duration}.",
                 "memberAlreadyMuted": "This member is already muted.",
                 "needMuteRoleId": "Register a role that i can use to \"mute\" any member, use `!mute --a \"Role name | Role ID | @Role\"` to add a role.",
@@ -195,6 +198,7 @@ const en_US: Locale = {
                 "cannotRegisterRole": "I couldn't register this role.",
                 "roleNotFound": "I couldn't find this role in guild.",
                 "needRegisterRole": "Need help to add a role? Use `!help mute` 🤓",
+                "mustBeNumber": 'Must be a number.',
                 "cannotMuteAdmin": "I can't... this member... so strong. 😱",
                 "arg": {
                     "time": {
@@ -207,21 +211,19 @@ const en_US: Locale = {
             },
             "usage": {
                 "reason": {
-                    "arg": "reason",
                     "description": "Reason to mute the member.",
                     "example": "`{bot.prefix}mute @{bot.name} It's too violent` - Mute member indefinitely with a reason."
                 },
-                "-addRole": {
-                    "description": "The flag can be used `[ -addrole | --a ]`. Here you add a role which can be the name, ID or mention of the role `\" @Role \"`, when a member is mutated, i will use that role as punishment.",
-                    "example": "`{bot.prefix}mute --addrole \"Muted\"`. Add a role \"Muted\" now i can use this role to punish bad members."
+                "addRole": {
+                    "description": "Add a role to use to punish a member.",
+                    "example": "`{bot.prefix}mute addrole @Role` - Added new role to mute members as punishment."
                 },
-                "-list": {
+                "list": {
                     "description": "List the 50 closest members to ending the punishment.",
-                    "example": "`{bot.prefix}mute -list` - List members by [Name] | [Time to end the punishment]"
+                    "example": "`{bot.prefix}mute list` - List members by [Name] | [Time to end the punishment]"
                 },
                 "exampleMember": "`{bot.prefix}mute @{bot.name}` - Mute member.",
-                "exampleTime": "`{bot.prefix}mute @{bot.name} 10M` - member @{bot.name} has been muted for 10 minutes.",
-                "exampleFlagAddRole": "`{bot.prefix}mute -addRole \"Muted\"` - Add role to use when muting a member `{bot.prefix}mute`"
+                "exampleTime": "`{bot.prefix}mute @{bot.name} 10M` - Member @{bot.name} has been muted for 10 minutes.",
             }
         }
     },

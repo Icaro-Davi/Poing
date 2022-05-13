@@ -23,7 +23,8 @@ const pt_BR: Locale = {
         "joinedDiscord": "Entrou no Discord",
         "roles": "Cargos",
         "muted": "Silenciado",
-        "unmute": "Desmuta"
+        "unmute": "Desmuta",
+        "reason": "Motivo"
     },
     "messageEmbed": {
         "getHelp": {
@@ -188,6 +189,9 @@ const pt_BR: Locale = {
         "mute": {
             "description": "Muta um membro do servidor",
             "interaction": {
+                "invalidTime": "TIME argument is invalid, try again using e.g. 10M for minutes, 1H for hours, 7D for days",
+                "noTimeSilencedMembers": "🙊 Não tem membros silenciados.",
+                "mustBeNumber": "Precisa ser número",
                 "mutedSuccessful": "O membro {memberMutedName} foi mutado por {author} e acabará {duration}.",
                 "memberAlreadyMuted": "O membro já foi mutado, remova o cargo e tente novamente.",
                 "needMuteRoleId": "Precisa me falar um cargo que eu possa \"Mutar\", use `!mute --a \"Nome do cargo | Id do cargo | @Cargo\"` para adicionar um.",
@@ -207,21 +211,19 @@ const pt_BR: Locale = {
             },
             "usage": {
                 "reason": {
-                    "arg": "razão",
-                    "description": "Razão para mutar o membro",
-                    "example": "`{bot.prefix}mute @{bot.name} Não para de pular nos servidores` - Vai mutar o {bot.name} por tempo indeterminado, com um motivo/razão."
+                    "description": "Motivo para mutar o membro",
+                    "example": "`{bot.prefix}mute @{bot.name} Não para de pular na frente dos membros` - Vai mutar o {bot.name} por tempo indeterminado, com um motivo/razão."
                 },
-                "-addRole": {
-                    "description": "A flag pode ser usado `[ -addrole | --a ]`. Aqui você adiciona um cargo que pode ser o nome, ID ou menção do Cargo `\" @Cargo \"`, quando um membro for mutado usarei esse cargo como punição.",
-                    "example": "`{bot.prefix}mute --addrole \"Muted\"`. Registra o cargo \"Muted\" assim eu irei usar para mutar os membros do servidor hehe."
+                "addRole": {
+                    "description": "Quando um membro for mutado usarei esse cargo como punição.",
+                    "example": "`{bot.prefix}mute addrole @Cargo`. Registra um cargo assim eu irei usar para mutar os membros do servidor hehe."
                 },
-                "-list": {
+                "list": {
                     "description": "Lista os 50 membros mais próximos de acabar a punição.",
-                    "example": "`{bot.prefix}mute -list` - Lista os membros por [Nome] | [Tempo para acabar punição]"
+                    "example": "`{bot.prefix}mute list` - Lista os membros por [Nome] | [Tempo para acabar punição]"
                 },
-                "exampleMember": "`{bot.prefix}mute @{bot.name}` - Muta o membro.",
+                "exampleMember": "`{bot.prefix}mute @{bot.name}` - Muta o membro forever :3.",
                 "exampleTime": "`{bot.prefix}mute @{bot.name} 10M` - O membro @{bot.name} foi mutado por 10 Minutos.",
-                "exampleFlagAddRole": "`{bot.prefix}mute -addRole \"Mutado\"` - Adiciona o cargo mutado para ser usado no comando `{bot.prefix}mute`"
             }
         }
     },
