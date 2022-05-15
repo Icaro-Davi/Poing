@@ -180,10 +180,10 @@ const en_US: Locale = {
             },
             "description": "I will send you the response time in milliseconds(ms) of my services."
         },
-        "userInfo": {
-            "description": "I will search info about any member in the server.",
+        "info": {
+            "description": "I will search info about any member in the guild.",
             "usage": {
-                "exampleMember": "`{bot.prefix}userinfo @{bot.name}`- I will show you info about {bot.name}."
+                "exampleMember": "`{bot.prefix}info member @{bot.name}`- I will show you info about @{bot.name}."
             }
         },
         "mute": {
@@ -235,7 +235,7 @@ const en_US: Locale = {
         },
         "argument": {
             "member": {
-                "description": "Reference of any member."
+                "description": "Can be Mention or MemberID."
             },
             "command": {
                 "arg": "command",

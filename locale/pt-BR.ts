@@ -180,10 +180,10 @@ const pt_BR: Locale = {
             },
             "description": "Enviarei para você o tempo de resposta em milissegundos(ms) dos meus serviços."
         },
-        "userInfo": {
-            "description": "Buscarei informações sobre algum usuário do servidor.",
+        "info": {
+            "description": "Buscarei informações sobre algum membro da guild.",
             "usage": {
-                "exampleMember": "`{bot.prefix}userinfo @{bot.name}`- Retornarei informações sobre o usuário {bot.name}."
+                "exampleMember": "`{bot.prefix}info member @{bot.name}`- Retornarei informações sobre o membro @{bot.name}."
             }
         },
         "mute": {

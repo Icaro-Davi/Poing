@@ -178,10 +178,10 @@
                 "serverPing": "{locale.command.ping.interaction.serverPing}[bot, ping.server]"
             }
         },
-        "userInfo": {
-            "description": "{locale.command.userInfo.description}",
+        "info": {
+            "description": "{locale.command.info.description}",
             "usage": {
-                "exampleMember": "{locale.command.userInfo.usage.exampleMember}[bot]"
+                "exampleMember": "{locale.command.info.usage.exampleMember}[bot]"
             }
         },
         "mute": {
