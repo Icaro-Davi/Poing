@@ -8,19 +8,19 @@ import { BotCommand, ExecuteCommandOptions } from './index.types';
 export const getArgs = async (options: { message: Message, command: BotCommand, args: string[], locale: Locale }) => {
     try {
         const filters: { [key: string]: any } = {};
-        if (!options.command.usage) return;
+        const args = {
+            get: (argName: string) => filters[argName],
+            data: filters
+        }
 
+        if (!options.command.usage) return args;
         for (let args of options.command.usage) {
             for (let arg of args) {
                 const data = arg.filter ? await arg.filter(options.message, options.args, options.locale, filters) : undefined;
                 filters[`${arg.name}`] = data;
             }
         }
-
-        return {
-            get: (argName: string) => filters[argName],
-            data: filters
-        }
+        return args
     } catch (err: any) {
         err && await options.message.reply(err.message);
     }
