@@ -70,6 +70,7 @@ const en_US: Locale = {
         "50013": "Make sure I have this permission enabled on my job title, or also try moving my job higher in the job list hierarchy."
     },
     "interaction": {
+        "onlyNumbers": "Hmm master??, I think this argument is not a number 🤨.",
         "welcomeGuild": "Hello you invite me to join in your guild, i hope to help you :3\nIf you wanna see my commands just use {bot.@mention} help or !help",
         "cannotSendPrivateMessage": "I could't send your message, 😢sorry.",
         "iDontKnowThisArgument": "I don't know this argument",
@@ -143,7 +144,7 @@ const en_US: Locale = {
         "removeMessages": {
             "description": "Delete messages that were sent within 2 weeks.",
             "interaction": {
-                "deletedMessages": "✉️ deletedMessageSize} messages were deleted."
+                "deletedMessages": "✉️ {deletedMessageSize} messages were deleted."
             },
             "usage": {
                 "quantityExample": "`{bot.prefix}remove-messages 10` - Delete 10 messages."
@@ -250,7 +251,6 @@ const en_US: Locale = {
                 "description": "Here you add a reason for the action you are doing."
             },
             "quantity": {
-                "arg": "quantity",
                 "description": "Enter the desired amount."
             },
             "time": {

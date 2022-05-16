@@ -70,6 +70,7 @@ const pt_BR: Locale = {
         "50013": "Verifique se tenho habilitado essa permissão no meu cargo, ou tente também mover meu cargo em uma posição mais alta na hierarquia da lista de cargos."
     },
     "interaction": {
+        "onlyNumbers": "Hmmm mestre??, so acho que esse argumento não é um número 🤨.",
         "welcomeGuild": "Olá, me chamo {bot.name}, espero lhe ajudar na sua guild :3\nConfira a lista de magias secretas usando {bot.@mention} help ou !help",
         "cannotSendPrivateMessage": "Eu não pude enviar sua mensagem, :C desculpe.",
         "iDontKnowThisArgument": "Eu não conheço esse argumento",
@@ -250,7 +251,6 @@ const pt_BR: Locale = {
                 "description": "Aqui você adiciona um motivo a ação que estar fazendo."
             },
             "quantity": {
-                "arg": "quantidade",
                 "description": "Insira a quantidade desejada."
             },
             "time": {

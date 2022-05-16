@@ -68,6 +68,7 @@
         "50013": "{locale.error.50013}"
     },
     "interaction": {
+        "onlyNumbers": "{locale.interaction.onlyNumbers}",
         "welcomeGuild": "{locale.interaction.welcomeGuild}[@BotMention]",
         "cannotSendPrivateMessage": "{locale.interaction.cannotSendPrivateMessage}",
         "iDontKnowThisArgument": "{locale.interaction.iDontKnowThisArgument}[arg]",
@@ -248,7 +249,6 @@
                 "description": "{locale.usage.argument.reason.description}"
             },
             "quantity": {
-                "arg": "{locale.usage.argument.quantity.arg}",
                 "description": "{locale.usage.argument.quantity.description}"
             },
             "time": {
