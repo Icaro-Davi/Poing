@@ -120,6 +120,10 @@ const en_US: Locale = {
                 "bannedWithNoReason": "No Reason"
             },
             "usage": {
+                "list": {
+                    "description": "List banned guild members.",
+                    "example": "`{bot.prefix}ban list` - Banned members."
+                },
                 "days": {
                     "description": "Number of days between \"1 and 7\" representing messages to be deleted, default value is 0.",
                     "example": "`{bot.prefix}ban @{bot.name} --days \"1\"` - You can use the flag [--days | -d] and the quantity of days between quotes."
@@ -158,11 +162,6 @@ const en_US: Locale = {
                 "cantUnban": "I couldn't unban the member, sorry TwT"
             },
             "usage": {
-                "list": {
-                    "arg": "list",
-                    "description": "List banned guild members.",
-                    "example": "`{bot.prefix}unban list` - Banned members."
-                },
                 "member": {
                     "arg": "memberId",
                     "description": "Member ID to be unbaned.",

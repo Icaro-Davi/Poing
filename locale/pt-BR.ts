@@ -120,6 +120,10 @@ const pt_BR: Locale = {
                 "bannedWithNoReason": "Sem Motivo."
             },
             "usage": {
+                "list": {
+                    "description": "Irei mostrar a lista dos banidos do servidor.",
+                    "example": "`{bot.prefix}ban list` - Lista com todos os banidos."
+                },
                 "days": {
                     "description": "Número de dias entre \"1 e 7\" que representa as mensagens que serão deletadas, valor padrão é 0.",
                     "example": "`{bot.prefix}ban @{bot.name} --days \"7\" ` - A flag de days pode ser usada `[ -d | --days ]` em seguida o valor entre aspas duplas."
@@ -158,11 +162,6 @@ const pt_BR: Locale = {
                 "cantUnban": "Não consegui desbanir o membro, desculpa TwT"
             },
             "usage": {
-                "list": {
-                    "arg": "list",
-                    "description": "Irei mostrar a lista dos banidos do servidor.",
-                    "example": "`{bot.prefix}unban list` - Lista com todos os banidos."
-                },
                 "member": {
                     "arg": "membroId",
                     "description": "Id do usurário que será desbanido.",

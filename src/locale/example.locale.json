@@ -118,6 +118,10 @@
                 "bannedWithNoReason": "{locale.command.ban.interaction.member.bannedWithNoReason}"
             },
             "usage": {
+                "list": {
+                    "description": "{locale.command.ban.usage.list.description}",
+                    "example": "{locale.command.ban.usage.list.example}[bot]"
+                },
                 "days": {
                     "description": "{locale.command.ban.usage.days.description}[bot]",
                     "example": "{locale.command.ban.usage.days.example}[bot]"
@@ -156,11 +160,6 @@
                 "cantUnban": "{locale.command.unban.interaction.cantUnban}"
             },
             "usage": {
-                "list": {
-                    "arg": "{locale.command.unban.usage.list.arg}",
-                    "description": "{locale.command.unban.usage.list.description}",
-                    "example": "{locale.command.unban.usage.list.example}[bot]"
-                },
                 "member": {
                     "arg": "{locale.command.unban.usage.member.arg}",
                     "description": "{locale.command.unban.usage.member.description}",

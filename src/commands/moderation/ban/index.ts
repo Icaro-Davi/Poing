@@ -11,14 +11,26 @@ const command: BotCommand = {
     description: locale.command.ban.description,
     allowedPermissions: ['BAN_MEMBERS'],
     usage: [
-        [argument.MEMBER],
+        [argument.MEMBER, argument.LIST],
         [argument.DAYS],
         [argument.REASON]
     ],
     slashCommand: [
-        { ...argument.MEMBER, type: 'USER' },
-        { ...argument.DAYS, type: 'INTEGER', min_value: 1, max_value: 7 },
-        { ...argument.REASON, type: 'STRING' },
+        {
+            ...argument.MEMBER,
+            type: 'SUB_COMMAND',
+            description: `\\[${locale.category.moderation}\\] ${argument.MEMBER.description}`,
+            options: [
+                { ...argument.TARGET_MEMBER, type: 'USER' },
+                { ...argument.DAYS, type: 'NUMBER', min_value: 1, max_value: 7 },
+                { ...argument.REASON, type: 'STRING' }
+            ]
+        },
+        {
+            ...argument.LIST,
+            type: 'SUB_COMMAND',
+            description: `\\[${locale.category.moderation}\\] ${argument.LIST.description}`
+        }
     ],
     execSlash: slashCommand,
     execDefault: defaultCommand

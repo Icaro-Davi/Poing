@@ -5,14 +5,14 @@ import { Locale } from "../../../locale";
 import { onlyMessageAuthorCanUse } from "../../../utils/collectorFilters";
 import handleError from "../../../utils/handleError";
 import { RequireAtLeastOne } from "../../../utils/typescript.funcs";
-import { BotDefinitions } from "../../index.types";
+import { BotDefinitions, ExecuteCommandReturn } from "../../index.types";
 
 type BanMemberOptions = {
     locale: Locale;
     days?: number | null;
     reason?: string | null;
     bot: BotDefinitions;
-    banMember: GuildMember;
+    banMember?: GuildMember;
     ephemeral?: boolean
 }
 
@@ -22,9 +22,11 @@ type BanMemberArgs = {
     options: BanMemberOptions;
 }
 
-const banMember = async ({ message, interaction, options }: RequireAtLeastOne<BanMemberArgs, 'message' | 'interaction'>) => {
-    console.log(options.days, options.reason)
+const banMember = async ({ message, interaction, options }: RequireAtLeastOne<BanMemberArgs, 'message' | 'interaction'>): ExecuteCommandReturn => {
     if (!message && !interaction) throw new Error('Please add to this func a message or interaction param');
+    if (!options.banMember) return { content: options.locale.interaction.member.notFound, ephemeral: options.ephemeral };
+    if (!options.banMember.bannable) return { content: options.locale.command.ban.interaction.isNotBannable, ephemeral: options.ephemeral };
+
     const action = (message ? message : interaction);
     const guild = message?.guild || interaction?.guild;
     const author = (message?.author || interaction?.member?.user) as User;
@@ -50,9 +52,9 @@ const banMember = async ({ message, interaction, options }: RequireAtLeastOne<Ba
             let buttonId = buttonInteraction.first()?.customId;
             if (buttonId === component.button.yesId) {
                 let promises = [];
-                promises.push(options.banMember.ban({ days: Number(options.days) ?? 0, reason: options.reason ?? options.locale.command.ban.interaction.bannedWithNoReason}));
+                promises.push(options.banMember!.ban({ days: Number(options.days) ?? 0, reason: options.reason ?? options.locale.command.ban.interaction.bannedWithNoReason }));
                 await Promise.all(promises);
-                options.banMember.send({
+                options.banMember!.send({
                     embeds: [PM.toBanishedMember({
                         botColor: options.bot.hexColor, locale: options.locale,
                         guildName: guild?.name || '', iconUrl: guild?.iconURL() || '',

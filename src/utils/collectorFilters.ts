@@ -15,11 +15,11 @@ const onlyMessageAuthorCanUse = (message: Message | CommandInteraction, options:
 
 const onlyWithPermission = (message: Message | CommandInteraction, options: { locale: Locale, permissions: PermissionResolvable, ephemeral?: boolean }) => {
     return message.channel!.createMessageComponentCollector({
-        filter: (interaction) => {
+        filter: async (interaction) => {
             if (interaction.memberPermissions.has(options.permissions)) {
                 return true;
             } else {
-                interaction.reply({ ephemeral: options.ephemeral, content: options.locale.interaction.youCantUseThisButton });
+                await interaction.reply({ ephemeral: options.ephemeral, content: options.locale.interaction.youCantUseThisButton });
                 return false;
             }
         },

@@ -4,16 +4,13 @@ import Member from "../../../application/Member";
 import getValuesFromStringFlag from "../../../utils/regex/getValuesFromStringFlag";
 import MD from "../../../utils/md";
 
-const argument: Record<'MEMBER' | 'DAYS' | 'REASON', BotArgument> = {
+const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER', BotArgument> = {
     MEMBER: {
-        required: true,
+        required: false,
         name: 'member',
         description: locale.usage.argument.member.description,
         async filter(message, args, locale) {
-            if (!args[0] && this.required) throw new Error(locale.interaction.needArguments);
             const member = message.mentions.members?.first() ?? (await Member.find({ guild: message.guild!, member: args[0] }));
-            if (!member) throw new Error(locale.interaction.member.notFound);
-            if (!member.bannable) throw new Error(locale.command.ban.interaction.isNotBannable);
             return member;
         }
     },
@@ -44,14 +41,31 @@ const argument: Record<'MEMBER' | 'DAYS' | 'REASON', BotArgument> = {
             const reason = getValuesFromStringFlag(args, ['--reason', '-r']);
             return reason;
         }
+    },
+    LIST: {
+        name: 'list',
+        required: false,
+        description: locale.command.ban.usage.list.description,
+        example: locale.command.ban.usage.list.example,
+        filter(message, args, locale) {
+            if (args[0].toLocaleLowerCase() === 'list') return true;
+        }
+    },
+    TARGET_MEMBER: {
+        name: 'target',
+        description: locale.usage.argument.member.description,
+        required: true
     }
 }
 
 export const getHowToUse = () => {
     const command = '{bot.prefix}ban'
     const { DAYS, MEMBER, REASON } = argument;
-    const howToUse = `${command} \\[@${MEMBER.name}|memberID\\]* (${DAYS.name} "Number") (${REASON.name} "Text")`;
-    return MD.codeBlock.line(howToUse);
+    const howToUse = `
+    ${MD.codeBlock.line(`${command} \\[@${MEMBER.name}|memberID\\]* (${DAYS.name} "Number") (${REASON.name} "Text")`)}
+    ${MD.codeBlock.line(`${command} (list)`)}
+    `.trim();
+    return howToUse;
 }
 
 export default argument;
