@@ -5,7 +5,7 @@ import { CommandHandler } from '../config/command';
 // export type FilterFunc = (message: Message) => string;
 export type BotArgumentFilterFunction = (args: string[]) => any | void;
 export type ExecuteCommandReturn = Promise<Partial<Omit<CommandHandler, 'message'>> | void>;
-export type ExecuteCommand = (message: Message, args: string[] | FilterType, options: ExecuteCommandOptions) => ExecuteCommandReturn;
+export type ExecuteCommand = (message: Message, args: FilterType, options: ExecuteCommandOptions) => ExecuteCommandReturn;
 export type ExecuteSlashCommand = (message: CommandInteraction, options: ExecuteCommandOptions) => ExecuteCommandReturn;
 export type BotCommands = Collection<string, BotCommand>;
 export type BotCommandCategory = 'Administration' | 'Moderation' | 'Utility';

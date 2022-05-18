@@ -4,8 +4,6 @@ import argument from "./command.args";
 import getCommandHelp from "./getCommandHelp.func";
 
 const execDefaultCommand: ExecuteCommand = async (message, args, options) => {
-    if (Array.isArray(args)) return;
-
     const commandName = args.get(argument.COMMAND.name);
     const _list = args.get(argument.LIST.name);
 

@@ -5,8 +5,6 @@ import listMutedMembers from "./listMutedMembers.func";
 import { MuteGuildMember } from "./muteGuildMember.func";
 
 const execDefaultCommand: ExecuteCommand = async (message, args, options) => {
-    if (Array.isArray(args)) return;
-
     const muteMember = args.get(argument.MEMBER.name);
     const muteRole = args.get(argument.ADD_ROLE.name);
     const list = args.get(argument.LIST.name);
