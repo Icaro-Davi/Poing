@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "build": "tsc",
-    "start": "node ./dist",
+    "start": "node ./dist/src/",
     "test": "jest",
     "test:verbose": "jest --verbose"
   },
