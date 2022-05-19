@@ -163,7 +163,6 @@ const en_US: Locale = {
             },
             "usage": {
                 "member": {
-                    "arg": "memberId",
                     "description": "Member ID to be unbaned.",
                     "example": "`{bot.prefix}unban 123456789` - Now the member can back to guild."
                 },
@@ -238,22 +237,18 @@ const en_US: Locale = {
                 "description": "Can be Mention or MemberID."
             },
             "command": {
-                "arg": "command",
                 "description": "The reference of some command that is in my list."
             },
             "message": {
-                "arg": "message",
                 "description": "Message that will be sent to the member."
             },
             "reason": {
-                "arg": "reason",
                 "description": "Here you add a reason for the action you are doing."
             },
             "quantity": {
                 "description": "Enter the desired amount."
             },
             "time": {
-                "arg": "time",
                 "description": "Duration can be used by typing a number and using M for minutes, H for hours and D for days."
             }
         }

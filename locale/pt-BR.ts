@@ -163,7 +163,6 @@ const pt_BR: Locale = {
             },
             "usage": {
                 "member": {
-                    "arg": "membroId",
                     "description": "Id do usurário que será desbanido.",
                     "example": "`{bot.prefix}unban 123456789` - Agora {bot.name} pode voltar ao servidor."
                 },
@@ -238,22 +237,18 @@ const pt_BR: Locale = {
                 "description": "A referência de algum membro do servidor, pode ser `[menção | membroId]`."
             },
             "command": {
-                "arg": "comando",
                 "description": "A referência de algum comando que está na minha lista."
             },
             "message": {
-                "arg": "mensagem",
                 "description": "Mensagem que será enviada para o membro."
             },
             "reason": {
-                "arg": "motivo",
                 "description": "Aqui você adiciona um motivo a ação que estar fazendo."
             },
             "quantity": {
                 "description": "Insira a quantidade desejada."
             },
             "time": {
-                "arg": "tempo",
                 "description": "A duração pode ser usado informando um número e em seguida com M para minutos, H para horas e D para dias."
             }
         }

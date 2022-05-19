@@ -26,7 +26,7 @@
     },
     "messageEmbed": {
         "getHelp": {
-            "title": "{locale.messageEmbed.getHelp.titile}",
+            "title": "{locale.messageEmbed.getHelp.title}",
             "fieldHowToUse": "{locale.messageEmbed.getHelp.fieldHowToUse}",
             "fieldAliases": "{locale.messageEmbed.getHelp.fieldAliases}",
             "fieldArguments": "{locale.messageEmbed.getHelp.fieldArguments}",
@@ -48,7 +48,7 @@
             "fieldReason": "{locale.messageEmbed.confirmKickMember.fieldReason}"
         },
         "messageToBanishedMember": {
-            "title": "{locale.messageEmbed.messageToBanishedMember.}",
+            "title": "{locale.messageEmbed.messageToBanishedMember}",
             "fieldReason": "{locale.messageEmbed.messageToBanishedMember.fieldReason}",
             "banWithoutReason": "{locale.messageEmbed.messageToBanishedMember.banWithoutReason}"
         },
@@ -161,7 +161,6 @@
             },
             "usage": {
                 "member": {
-                    "arg": "{locale.command.unban.usage.member.arg}",
                     "description": "{locale.command.unban.usage.member.description}",
                     "example": "{locale.command.unban.usage.member.example}[bot]"
                 },
@@ -236,22 +235,18 @@
                 "description": "{locale.usage.argument.member.description}"
             },
             "command": {
-                "arg": "{locale.usage.argument.command.arg}",
                 "description": "{locale.usage.argument.command.description}"
             },
             "message": {
-                "arg": "{locale.usage.argument.message.arg}",
                 "description": "{locale.usage.argument.message.description}"
             },
             "reason": {
-                "arg": "{locale.usage.argument.reason.arg}",
                 "description": "{locale.usage.argument.reason.description}"
             },
             "quantity": {
                 "description": "{locale.usage.argument.quantity.description}"
             },
             "time": {
-                "arg": "{locale.usage.argument.time.arg}",
                 "description": "{locale.usage.argument.time.description}"
             }
         }
