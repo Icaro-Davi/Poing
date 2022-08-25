@@ -1,0 +1,38 @@
+name: Production
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  checking-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Get project ${{ github.event.repository.name }}"
+        uses: actions/checkout@v3
+
+      - name: Uses Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: "Install Dependencies"
+        run: yarn
+
+      - name: "Test features"
+        run: yarn test
+
+      - name: "Build Project"
+        run: yarn build
+
+  build:
+    needs: checking-project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DOMAIN }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHPRIVATEKEY }}
+          script: sudo bash ~/PROJECTS/BASH/install-dependencies.bash && bash ~/PROJECTS/BASH/get-project-from-git.bash ${{ github.event.repository.name }} git@github.com:Icaro-Davi/poing-web.git ${{ secrets.PROJECT_ENVS }}
