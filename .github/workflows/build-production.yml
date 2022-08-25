@@ -20,7 +20,7 @@ jobs:
         run: yarn
 
       - name: "Test features"
-        run: yarn test
+        run: yarn test:verbose
 
       - name: "Build Project"
         run: yarn build
