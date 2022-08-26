@@ -45,21 +45,20 @@ class Commands {
         });
     }
 
-    private static searchCommandsFiles(dir: string, initialPath: string) {
+    private static searchCommandsFiles(dir: string) {
         const getPaths = (path: string, paths: string[]) => {
             fs.readdirSync(path).forEach(file => {
                 if (file.match(/(?:\..+\.(?:t|j)?s)$/gi)) return;
-                if (fs.lstatSync(`${path}/${file}`).isFile()) paths.push(`/${path}/${file}`);
+                if (fs.lstatSync(`${path}/${file}`).isFile()) paths.push(`${path}/${file}`);
                 if (fs.lstatSync(`${path}/${file}`).isDirectory()) return getPaths(`${path}/${file}`, paths);
             });
             return paths;
         }
-        const commandPaths = getPaths(dir, []).map(_path => path.resolve(`${initialPath}/${_path.split('/').slice(2).join('/')}`));
-        return commandPaths;
+        return getPaths(dir, []);
     }
 
     private static loadCommands() {
-        const commandPaths = this.searchCommandsFiles(path.resolve(`${__dirname}/../commands`), path.resolve(`${__dirname}/../commands/`));
+        const commandPaths = this.searchCommandsFiles(path.resolve(`${__dirname}/../commands`));
         return new Promise((resolve, reject) => {
             try {
                 for (const path of commandPaths) {
