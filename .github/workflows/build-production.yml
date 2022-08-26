@@ -31,8 +31,12 @@ jobs:
     steps:
       - name: Deploy on server
         uses: appleboy/ssh-action@master
+        env:
+          PROJECT_NAME: ${{ github.event.repository.name }}
+          PROJECT_SSH_CLONE: git@github.com:Icaro-Davi/${{ github.event.repository.name }}.git
+          PROJECT_ENVS: ${{ secrets.PROJECT_ENVS }}
         with:
           host: ${{ secrets.DOMAIN }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHPRIVATEKEY }}
-          script: sudo bash ~/PROJECTS/BASH/install-dependencies.bash && bash ~/PROJECTS/BASH/get-project-from-git.bash ${{ github.event.repository.name }} git@github.com:Icaro-Davi/${{ github.event.repository.name }}.git ${{ secrets.PROJECT_ENVS }}
+          script: sudo bash ~/PROJECTS/BASH/install-dependencies.bash && bash ~/PROJECTS/BASH/get-project-from-git.bash
