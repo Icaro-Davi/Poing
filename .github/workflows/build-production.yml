@@ -35,4 +35,4 @@ jobs:
           host: ${{ secrets.DOMAIN }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHPRIVATEKEY }}
-          script: sudo bash ~/PROJECTS/BASH/install-dependencies.bash && bash ~/PROJECTS/BASH/get-project-from-git.bash ${{ github.event.repository.name }} git@github.com:Icaro-Davi/poing-web.git ${{ secrets.PROJECT_ENVS }}
+          script: sudo bash ~/PROJECTS/BASH/install-dependencies.bash && bash ~/PROJECTS/BASH/get-project-from-git.bash ${{ github.event.repository.name }} git@github.com:Icaro-Davi/${{ github.event.repository.name }}.git ${{ secrets.PROJECT_ENVS }}
