@@ -59,7 +59,11 @@ const getDefaultCommand = async (message: Message) => {
         _locale = locale;
 
         const options: ExecuteCommandOptions = {
-            bot,
+            bot: {
+                ...bot,
+                hexColor: botConf.messageEmbedHexColor ?? bot.hexColor,
+                prefix: botConf.prefix ?? bot.prefix,
+            },
             locale
         }
 
