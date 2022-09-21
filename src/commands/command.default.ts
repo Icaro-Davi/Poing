@@ -1,9 +1,11 @@
-import { Message, PermissionResolvable } from 'discord.js';
 import { BotApplication } from '../application';
 import { DiscordBot } from '../config';
-import translateCommandToLocale, { Locale } from '../locale';
+import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
-import { BotCommand, ExecuteCommandOptions } from './index.types';
+
+import type { Locale } from '../locale'
+import type { BotCommand, ExecuteCommandOptions } from './index.types';
+import type { Message, PermissionResolvable } from 'discord.js';
 
 export const getArgs = async (options: { message: Message, command: BotCommand, args: string[], locale: Locale }) => {
     try {
@@ -14,6 +16,7 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
         }
 
         if (!options.command.usage) return args;
+
         for (let args of options.command.usage) {
             for (let arg of args) {
                 const data = arg.filter ? await arg.filter(options.message, options.args, options.locale, filters) : undefined;
@@ -22,7 +25,12 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
         }
         return args
     } catch (err: any) {
-        err && await options.message.reply(err.message);
+        handleError(err, {
+            errorLocale: 'src/commands/command.default',
+            locale: options.locale,
+            message: options.message,
+            customMessage: err.message,
+        });
     }
 }
 

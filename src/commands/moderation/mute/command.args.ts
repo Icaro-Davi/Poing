@@ -1,10 +1,11 @@
-import { BotArgument } from "../../index.types";
 import locale from '../../../locale/example.locale.json';
 import Member from "../../../application/Member";
 import moment from "moment";
 import MD from "../../../utils/md";
-import { Role } from "discord.js";
 import { replaceVarsInString } from "../../../locale";
+
+import type { BotArgument } from "../../index.types";
+import type { Role } from "discord.js";
 
 const argument: Record<'MEMBER' | 'ADD_ROLE' | 'LIST' | 'TIME' | 'REASON' | 'TARGET_MEMBER' | 'TARGET_ROLE', BotArgument> = {
     MEMBER: {
@@ -13,8 +14,8 @@ const argument: Record<'MEMBER' | 'ADD_ROLE' | 'LIST' | 'TIME' | 'REASON' | 'TAR
         description: locale.usage.argument.member.description,
         example: locale.command.mute.usage.exampleMember,
         async filter(message, args, locale) {
+            if (!args[0]) return;
             const member = message.mentions.members?.first() ?? await Member.find({ guild: message.guild!, member: args[0] });
-            if (!member) return;
             return member;
         }
     },
@@ -24,7 +25,7 @@ const argument: Record<'MEMBER' | 'ADD_ROLE' | 'LIST' | 'TIME' | 'REASON' | 'TAR
         description: locale.command.mute.usage.addRole.description,
         example: locale.command.mute.usage.addRole.example,
         filter(message, args, locale) {
-            if (args[0].toLocaleLowerCase() === this.name.toLocaleLowerCase()) {
+            if (args[0] && args[0].toLocaleLowerCase() === this.name.toLocaleLowerCase()) {
                 if (!args[1]) throw new Error(locale.interaction.needArguments);
                 const role: Role | undefined = message.mentions.roles.first()
                     || message.guild?.roles.cache.find(_role => _role.id === args[1] || _role.name === args.slice(1).join(' '));
@@ -39,7 +40,10 @@ const argument: Record<'MEMBER' | 'ADD_ROLE' | 'LIST' | 'TIME' | 'REASON' | 'TAR
         description: locale.command.mute.usage.list.description,
         example: locale.command.mute.usage.list.example,
         filter(message, args, locale) {
+            if (!args[0]) throw new Error(locale.interaction.needArguments);
             if (args[0].toLocaleLowerCase() === this.name.toLocaleLowerCase()) return true;
+            else throw new Error(locale.interaction.iDontKnowThisArgument);
+
         }
     },
     TIME: {

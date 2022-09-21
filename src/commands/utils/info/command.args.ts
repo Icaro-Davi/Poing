@@ -10,9 +10,11 @@ const argument: Record<'MEMBER' | 'TARGET_MEMBER', BotArgument> = {
         required: false,
         example: locale.command.info.usage.exampleMember,
         async filter(message, args, locale) {
-            if (!args[1]) return;
-            const member = message.mentions.members?.first() ?? await Member.find({ guild: message.guild!, member: args[1] });
-            return member;
+            if (!args[1]) throw new Error(locale.interaction.needArguments);
+            if (args[0] === this.name.toLocaleLowerCase()) {
+                const member = message.mentions.members?.first() ?? await Member.find({ guild: message.guild!, member: args[1] });
+                return member;
+            }
         }
     },
     TARGET_MEMBER: {

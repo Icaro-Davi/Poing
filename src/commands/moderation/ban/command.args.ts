@@ -1,8 +1,9 @@
-import { BotArgument } from "../../index.types";
 import locale from '../../../locale/example.locale.json';
 import Member from "../../../application/Member";
 import getValuesFromStringFlag from "../../../utils/regex/getValuesFromStringFlag";
 import MD from "../../../utils/md";
+
+import type { BotArgument } from "../../index.types";
 
 const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER', BotArgument> = {
     MEMBER: {
@@ -10,8 +11,20 @@ const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER', 
         name: 'member',
         description: locale.usage.argument.member.description,
         async filter(message, args, locale) {
+            if (!args[0]) return;
             const member = message.mentions.members?.first() ?? (await Member.find({ guild: message.guild!, member: args[0] }));
             return member;
+        }
+    },
+    LIST: {
+        name: 'list',
+        required: false,
+        description: locale.command.ban.usage.list.description,
+        example: locale.command.ban.usage.list.example,
+        filter(message, args, locale) {
+            if (!args[0]) throw new Error(locale.interaction.needArguments);
+            if (args[0].toLocaleLowerCase() === 'list') return true;
+            else throw new Error(locale.interaction.iDontKnowThisArgument);
         }
     },
     DAYS: {
@@ -40,15 +53,6 @@ const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER', 
         filter(message, args, locale) {
             const reason = getValuesFromStringFlag(args, ['--reason', '-r']);
             return reason;
-        }
-    },
-    LIST: {
-        name: 'list',
-        required: false,
-        description: locale.command.ban.usage.list.description,
-        example: locale.command.ban.usage.list.example,
-        filter(message, args, locale) {
-            if (args[0].toLocaleLowerCase() === 'list') return true;
         }
     },
     TARGET_MEMBER: {

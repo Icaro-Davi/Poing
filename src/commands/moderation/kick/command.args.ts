@@ -1,6 +1,7 @@
-import { BotArgument } from "../../index.types";
 import locale from '../../../locale/example.locale.json';
 import Member from "../../../application/Member";
+
+import type { BotArgument } from "../../index.types";
 
 const argument: Record<'MEMBER' | 'REASON', BotArgument> = {
     MEMBER: {
@@ -9,7 +10,7 @@ const argument: Record<'MEMBER' | 'REASON', BotArgument> = {
         example: locale.command.kick.usage.memberExample,
         required: true,
         async filter(message, args, locale) {
-            if (!args[0]) return;
+            if (!args[0]) throw new Error(locale.interaction.needArguments);
             const member = message.mentions.members?.first() ?? await Member.find({ guild: message.guild!, member: args[0] })
             return member;
         }
