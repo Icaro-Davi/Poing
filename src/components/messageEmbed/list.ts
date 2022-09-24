@@ -1,26 +1,27 @@
 import { MessageEmbed } from "discord.js";
-import { ExecuteCommandOptions } from "../../commands/index.types";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
-import locale from "../../locale/example.locale.json";
 import { replaceVarsInString } from "../../locale";
 import { MutedMember } from "../../application/Mute";
 import moment from "moment";
 
+import type { ExecuteCommandOptions } from "../../commands/index.types";
+
 const commandsByCategory = (options: ExecuteCommandOptions) => {
     const commandsByCategory: { [key: string]: string[] } = {};
-    DiscordBot.Command.Collection.forEach(BotCommand => {
+    DiscordBot.Command.Collection.forEach(commandFunc => {
+        const BotCommand = commandFunc({ locale: options.locale });
         commandsByCategory[BotCommand.category]
             ? commandsByCategory[BotCommand.category].push(BotCommand.name)
             : commandsByCategory[BotCommand.category] = [BotCommand.name]
     });
     const getEmojiByCategory = (category: string) => {
         switch (category) {
-            case locale.category.administration:
+            case options.locale.category.administration:
                 return ':crown: ';
-            case locale.category.moderation:
+            case options.locale.category.moderation:
                 return ':gear: '
-            case locale.category.utility:
+            case options.locale.category.utility:
                 return ':tools: ';
             default:
                 return ''

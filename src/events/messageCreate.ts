@@ -1,8 +1,8 @@
-import { Message } from 'discord.js';
-
 import { DiscordBot } from '../config';
 import handleError from '../utils/handleError';
 import getCommand from '../commands/command.default';
+
+import type { Message } from 'discord.js';
 
 export const eventMessageCreate = async (message: Message) => {
     const Command = await getCommand(message);
@@ -21,7 +21,6 @@ export const eventMessageCreate = async (message: Message) => {
         });
 
     } catch (error) {
-        console.log(error);
         Command?.options.locale ? handleError(error, {
             errorLocale: 'event/messageCreate',
             locale: Command.options.locale,

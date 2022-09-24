@@ -1,9 +1,9 @@
-import { BotCommand } from '../../index.types';
-import locale from '../../../locale/example.locale.json';
 import execSlashCommand from './command.slash';
 import execDefaultCommand from './command.default';
 
-const command: BotCommand = {
+import type { BotCommandFunc } from '../../index.types';
+
+const command: BotCommandFunc = ({ locale }) => ({
     name: 'get-members-status',
     howToUse: '{bot.prefix}get-members-status',
     category: locale.category.utility,
@@ -11,6 +11,6 @@ const command: BotCommand = {
     aliases: ['gms', 'guildMembers'],
     execSlash: execSlashCommand,
     execDefault: execDefaultCommand
-}
+});
 
 export default command;

@@ -1,7 +1,8 @@
-import { ExecuteSlashCommand } from "../../index.types";
 import getMembersStatus from "./getMembersStatus.func";
 
-const execSlashCommand: ExecuteSlashCommand = async (interaction, options) => {
+import type { ExecuteSlashCommand } from "../../index.types";
+
+const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
     if (!interaction.guild) return;
 
     const answer = await getMembersStatus(interaction.guild, options);

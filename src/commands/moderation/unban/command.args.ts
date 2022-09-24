@@ -1,35 +1,24 @@
-import { BotArgument } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
-import MD from "../../../utils/md";
+import { createFilter } from "../../argument.utils";
+import { BotArgumentFunc } from "../../index.types";
 
-const argument: Record<'MEMBER' | 'REASON', BotArgument> = {
-    MEMBER: {
+const argument: Record<'MEMBER' | 'REASON', BotArgumentFunc> = {
+    MEMBER: (options) => ({
         name: 'member',
         required: true,
-        description: locale.command.unban.usage.member.description,
-        example: locale.command.unban.usage.member.example,
-        async filter(message, args, locale) {
+        description: options.locale.command.unban.usage.member.description,
+        filter: createFilter(options, function (message, args) {
             if (Number.isNaN(args[0])) return;
             return args[0];
-        }
-    },
-    REASON: {
+        })
+    }),
+    REASON: (options) => ({
         name: 'reason',
         required: false,
-        description: locale.usage.argument.reason.description,
-        example: locale.command.unban.usage.reasonExample,
-        filter(message, args, locale) {
+        description: options.locale.usage.argument.reason.description,
+        filter: createFilter(options, function (message, args) {
             if (args[1]) return args.slice(1).join(' ');
-        }
-    }
-}
-
-export const getHowToUse = () => {
-    const command = '{bot.prefix}unban';
-    const howToUse = `
-    ${MD.codeBlock.line(`${command} \\[MemberID\\]* (${argument.REASON.name})`)}
-    `.trim();
-    return howToUse;
+        })
+    })
 }
 
 export default argument;

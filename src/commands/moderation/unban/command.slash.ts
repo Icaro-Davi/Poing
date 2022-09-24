@@ -1,10 +1,15 @@
-import { ExecuteSlashCommand } from "../../index.types";
 import argument from "./command.args";
 import unbanMember from "./unbanMember.func";
 
-const execSlashCommand: ExecuteSlashCommand = async (interaction, options) => {
-    const memberID = interaction.options.getString(argument.MEMBER.name, argument.MEMBER.required);
-    const reason = interaction.options.getString(argument.REASON.name, argument.REASON.required) ?? undefined;
+import type { ExecuteSlashCommand } from "../../index.types";
+
+const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
+    const arg = {
+        MEMBER: argument.MEMBER(options),
+        REASON: argument.REASON(options)
+    }
+    const memberID = interaction.options.getString(arg.MEMBER.name, arg.MEMBER.required);
+    const reason = interaction.options.getString(arg.REASON.name, arg.REASON.required) ?? undefined;
 
     return await unbanMember({
         reason, options,

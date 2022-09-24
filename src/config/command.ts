@@ -1,9 +1,11 @@
-import Discord, { Message, MessageEmbed, MessageOptions, ReplyMessageOptions, CommandInteraction, ApplicationCommandDataResolvable, ApplicationCommandOptionData } from 'discord.js';
+import Discord from 'discord.js';
 import path from 'path';
-import { BotCommand } from '../commands/index.types';
 import fs from 'fs';
-import translateCommandToLocale, { replaceVarsInString } from '../locale';
+import { replaceVarsInString } from '../locale';
 import { DiscordBot } from '.';
+
+import type { BotCommand, BotCommandFunc } from '../commands/index.types';
+import type { Message, MessageEmbed, MessageOptions, ReplyMessageOptions, CommandInteraction, MessageComponent } from 'discord.js';
 
 export type CommandHandler = {
     message: Message | CommandInteraction;
@@ -13,10 +15,11 @@ export type CommandHandler = {
     use?: 'reply' | 'send';
     ignore?: boolean;
     ephemeral?: boolean;
+    components?: MessageComponent[];
 }
 
 class Commands {
-    public static readonly Collection: Discord.Collection<string, BotCommand> = new Discord.Collection<string, BotCommand>();
+    public static readonly Collection: Discord.Collection<string, BotCommandFunc> = new Discord.Collection<string, BotCommandFunc>();
     public static readonly AliasesCollection: Discord.Collection<string, string> = new Discord.Collection<string, string>();
     private static listOfFuncsToExecAfterCommandsLoad: Function[] = [];
 
@@ -31,16 +34,18 @@ class Commands {
 
     static async loadSlashCommands() {
         const commands = DiscordBot.Client.get().application?.commands;
+        const locale = DiscordBot.LocaleMemory.get('en-US');
+
         this.Collection.forEach(botCommand => {
             (async () => {
-                if (!botCommand.execSlash) return;
-                botCommand = (await translateCommandToLocale(botCommand, 'en-US')).botCommand;
-                const descriptionLength = 100 - botCommand.category.length - 6;
+                const command = botCommand({ locale });
+                if (!command.execSlash) return;
+                const descriptionLength = 100 - command.category.length - 6;
                 commands?.create({
-                    name: botCommand.name,
-                    description: `[${botCommand.category}] ${botCommand.description.slice(0, descriptionLength)}${botCommand.description.length > descriptionLength ? '...' : ''}`,
-                    options: botCommand?.slashCommand
-                });
+                    name: command.name,
+                    description: `[${command.category}] ${command.description.slice(0, descriptionLength)}${command.description.length > descriptionLength ? '...' : ''}`,
+                    options: command?.slashCommand
+                })
             })();
         });
     }
@@ -61,11 +66,13 @@ class Commands {
         const commandPaths = this.searchCommandsFiles(path.resolve(`${__dirname}/../commands`));
         return new Promise((resolve, reject) => {
             try {
+                const locale = DiscordBot.LocaleMemory.get('en-US');
                 for (const path of commandPaths) {
-                    const command = require(path).default as BotCommand;
-                    this.Collection.set(command.name, command);
-                    command.aliases?.forEach(aliases => {
-                        this.AliasesCollection.set(aliases, command.name);
+                    let command = require(path).default as BotCommandFunc;
+                    const botCommand = command({ locale });
+                    this.Collection.set(botCommand.name, command);
+                    botCommand.aliases?.forEach(aliases => {
+                        this.AliasesCollection.set(aliases, botCommand.name);
                     });
                 }
                 resolve(true);
@@ -76,15 +83,15 @@ class Commands {
         });
     }
 
-    static async handleMessage({ ignore, content, message, use = 'reply', type = 'message', vars, ephemeral }: CommandHandler) {
+    static async handleMessage({ ignore, content, message, use = 'reply', type = 'message', vars, ephemeral, components }: CommandHandler) {
         if (ignore || !content) return;
         const exec = {
-            send: message.channel?.send ? (a: any) => message.channel!.send(a) : (a: any) => { },
-            reply: (a: any) => message.reply(a)
+            send: message.channel?.send ? (m: any) => message.channel!.send(m) : (m: any) => { },
+            reply: (m: any) => message.reply(m)
         }
         const _type = {
-            embed: () => ({ embeds: [content], ephemeral }) as MessageOptions | ReplyMessageOptions,
-            message: () => ({ content: replaceVarsInString(content as string, vars) || content, ephemeral })
+            embed: () => ({ embeds: [content], ephemeral, components }) as MessageOptions | ReplyMessageOptions,
+            message: () => ({ content: replaceVarsInString(content as string, vars) || content, ephemeral, components })
         }
         await exec[use](_type[type]());
     }

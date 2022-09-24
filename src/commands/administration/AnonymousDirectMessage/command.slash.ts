@@ -1,8 +1,9 @@
-import { ExecuteSlashCommand } from "../../index.types";
 import argument from "./command.args";
 import { sendDirectMessage } from "./sendMessage.func";
 
-const slashCommand: ExecuteSlashCommand = async (interaction, options) => {
+import type { ExecuteSlashCommand } from "../../index.types";
+
+const slashCommand: ExecuteSlashCommand = async function (interaction, options) {
     const user = interaction.options.getUser(argument.MEMBER.name);
     const anonymousMessage = interaction.options.getString(argument.MESSAGE.name);
 

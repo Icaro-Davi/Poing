@@ -1,27 +1,26 @@
-import { BotCommand } from '../../index.types';
-import locale from '../../../locale/example.locale.json';
-import argument, { getHowToUse } from './command.args';
-import execDefaultCommand from './command.default';
-import execSlashCommand from './command.slash';
+import argument from './command.args';
+import execDefault from './command.default';
+import execSlash from './command.slash';
 
-const command: BotCommand = {
+import type { BotCommandFunc } from '../../index.types';
+
+const command: BotCommandFunc = (options) => ({
     name: 'info',
-    howToUse: getHowToUse(),
-    category: locale.category.utility,
-    description: locale.command.info.description,
+    category: options.locale.category.utility,
+    description: options.locale?.command.info.description,
     usage: [
-        [argument.MEMBER],
+        [argument.MEMBER({ locale: options.locale, required: true })],
     ],
     slashCommand: [
         {
-            ...argument.MEMBER,
-            description: ` \\[${locale.category.utility}\\] ${argument.MEMBER.description}`,
+            ...argument.MEMBER(options),
+            description: `[${options.locale.category.utility}] ${argument.MEMBER(options).description}`,
             type: 'SUB_COMMAND',
-            options: [{ ...argument.TARGET_MEMBER, type: 'USER' }]
+            options: [{ ...argument.TARGET_MEMBER(options), type: 'USER' }]
         }
     ],
-    execSlash: execSlashCommand,
-    execDefault: execDefaultCommand
-}
+    execSlash,
+    execDefault
+});
 
 export default command;

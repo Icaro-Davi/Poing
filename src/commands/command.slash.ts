@@ -1,21 +1,26 @@
-import { CommandInteraction } from "discord.js";
-import Guild from "../application/Guild";
+import { BotApplication } from "../application";
 import { DiscordBot } from "../config";
-import { getInitialLocaleVars } from "../locale";
+
+import type { CommandInteraction } from "discord.js";
 
 const execSlashCommand = async (interaction: CommandInteraction) => {
     try {
-        const defaultCommand = DiscordBot.Command.Collection.get(interaction.commandName);
-        if (!defaultCommand || !defaultCommand.execSlash) return;
+        const Command = DiscordBot.Command.Collection.get(interaction.commandName);
+        if (!Command) return;
 
-        const guildDoc = await Guild.findById(interaction.guildId!);
-        const vars = await getInitialLocaleVars({ locale: guildDoc?.bot.locale || 'en-US' });
+        const botConf = await BotApplication.getConfigurations(interaction.guildId!);
 
-        const returnMessageOptions = await defaultCommand.execSlash(interaction, {
-            locale: vars.locale!,
+        const locale = DiscordBot.LocaleMemory.get(botConf.locale);
+        const botCommand = Command({ locale });
+        if (!botCommand || !botCommand.execSlash) return;
+
+        const returnMessageOptions = await botCommand.execSlash(interaction, {
+            locale,
             bot: {
-                ...vars.bot,
-                hexColor: guildDoc?.bot.messageEmbedHexColor ?? vars.bot.hexColor
+                "@mention": `<@${DiscordBot.Bot.ID}>`,
+                name: DiscordBot.Bot.name,
+                hexColor: botConf.messageEmbedHexColor ?? DiscordBot.Bot.defaultBotHexColor,
+                prefix: DiscordBot.Bot.defaultPrefix
             }
         });
 
@@ -24,7 +29,7 @@ const execSlashCommand = async (interaction: CommandInteraction) => {
             message: interaction,
             vars: {
                 ...returnMessageOptions?.vars ? returnMessageOptions.vars : {},
-                ...vars,
+                ...locale,
             }
         });
     } catch (error) {

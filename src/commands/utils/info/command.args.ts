@@ -1,35 +1,26 @@
-import { BotArgument } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
 import Member from "../../../application/Member";
-import MD from "../../../utils/md";
+import { createFilter } from "../../argument.utils";
 
-const argument: Record<'MEMBER' | 'TARGET_MEMBER', BotArgument> = {
-    MEMBER: {
+import type { BotArgumentFunc } from "../../index.types";
+
+const argument: Record<'MEMBER' | 'TARGET_MEMBER', BotArgumentFunc> = {
+    MEMBER: (options) => ({
         name: 'member',
-        description: locale.usage.argument.member.description,
+        description: options.locale.usage.argument.member.description,
         required: false,
-        example: locale.command.info.usage.exampleMember,
-        async filter(message, args, locale) {
-            if (!args[1]) throw new Error(locale.interaction.needArguments);
-            if (args[0] === this.name.toLocaleLowerCase()) {
+        filter: createFilter(options, async function (message, args) {
+            if (!args[1]) return;
+            if (args[0] && args[0] === argument.MEMBER(options).name) {
                 const member = message.mentions.members?.first() ?? await Member.find({ guild: message.guild!, member: args[1] });
                 return member;
             }
-        }
-    },
-    TARGET_MEMBER: {
+        })
+    }),
+    TARGET_MEMBER: (options) => ({
         name: 'target',
-        description: locale.usage.argument.member.description,
+        description: options.locale.usage.argument.member.description,
         required: true,
-    }
-}
-
-export const getHowToUse = () => {
-    const command = '{bot.prefix}info';
-    const howToUse = `
-        ${MD.codeBlock.line(`${command} member \\[@Member|MemberID\\]*`)}
-    `.trim();
-    return howToUse;
+    })
 }
 
 export default argument;

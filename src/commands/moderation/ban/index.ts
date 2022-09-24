@@ -1,39 +1,38 @@
-import { BotCommand } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
-import argument, { getHowToUse } from "./command.args";
+import argument from "./command.args";
 import slashCommand from "./command.slash";
 import defaultCommand from "./command.default";
 
-const command: BotCommand = {
+import type { BotCommandFunc } from "../../index.types";
+
+const command: BotCommandFunc = ({ locale }) => ({
     name: 'ban',
     category: locale.category.moderation,
-    howToUse: getHowToUse(),
     description: locale.command.ban.description,
     allowedPermissions: ['BAN_MEMBERS'],
     usage: [
-        [argument.MEMBER, argument.LIST],
-        [argument.DAYS],
-        [argument.REASON]
+        [argument.MEMBER({ locale, required: true }), argument.LIST({ locale, required: true })],
+        [argument.DAYS({ locale })],
+        [argument.REASON({ locale })]
     ],
     slashCommand: [
         {
-            ...argument.MEMBER,
+            ...argument.MEMBER({ locale }),
             type: 'SUB_COMMAND',
-            description: `\\[${locale.category.moderation}\\] ${argument.MEMBER.description}`,
+            description: `[${locale.category.moderation}] ${locale.usage.argument.member.description}`,
             options: [
-                { ...argument.TARGET_MEMBER, type: 'USER' },
-                { ...argument.DAYS, type: 'NUMBER', min_value: 1, max_value: 7 },
-                { ...argument.REASON, type: 'STRING' }
+                { ...argument.TARGET_MEMBER({ locale }), type: 'USER' },
+                { ...argument.DAYS({ locale }), type: 'NUMBER', min_value: 1, max_value: 7 },
+                { ...argument.REASON({ locale }), type: 'STRING' }
             ]
         },
         {
-            ...argument.LIST,
+            ...argument.LIST({ locale }),
             type: 'SUB_COMMAND',
-            description: `\\[${locale.category.moderation}\\] ${argument.LIST.description}`
+            description: `[${locale.category.moderation}] ${locale.command.ban.usage.list.description}`
         }
     ],
     execSlash: slashCommand,
     execDefault: defaultCommand
-}
+});
 
 export default command;

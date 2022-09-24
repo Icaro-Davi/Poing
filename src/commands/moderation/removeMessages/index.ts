@@ -1,24 +1,23 @@
-import { BotCommand } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
-import argument, { getHowToUse } from "./command.args";
+import argument from "./command.args";
 import execDefaultCommand from "./command.default";
 import execSlashCommand from "./command.slash";
 
-const command: BotCommand = {
+import type { BotCommandFunc } from "../../index.types";
+
+const command: BotCommandFunc = (options) => ({
     name: 'remove-messages',
-    howToUse: getHowToUse(),
-    category: locale.category.moderation,
-    description: locale.command.removeMessages.description,
+    category: options.locale.category.moderation,
+    description: options.locale.command.removeMessages.description,
     aliases: ['rm'],
     allowedPermissions: ['MANAGE_MESSAGES'],
     usage: [
-        [argument.QUANTITY]
+        [argument.QUANTITY({ locale: options.locale, required: true })]
     ],
     slashCommand: [
-        { ...argument.QUANTITY, type: 'NUMBER' }
+        { ...argument.QUANTITY(options), type: 'NUMBER' }
     ],
     execSlash: execSlashCommand,
     execDefault: execDefaultCommand,
-}
+});
 
 export default command;

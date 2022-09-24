@@ -4,7 +4,7 @@ const pt_BR: Locale = {
     "localeLabel": "pt-BR",
     "category": {
         "label": "Categoria",
-        "administration": "Administração",
+        "administration": "Admin",
         "moderation": "Moderação",
         "utility": "Utilitários"
     },
@@ -62,7 +62,8 @@ const pt_BR: Locale = {
         "confirmButtons": {
             "successLabel": "Sim",
             "dangerLabel": "Não"
-        }
+        },
+        "getHelpButton": "Abrir detalhes do comando"
     },
     "error": {
         "unknown": "Desculpe 😢, achei um bug estranho 🪲 irei tentar mata-lo.",
@@ -80,6 +81,7 @@ const pt_BR: Locale = {
         "iDidntFoundAnything": "Não consegui encontrar nada.",
         "youDontHavePermission": "Você não tem permissão para fazer isso.",
         "needARole": "Preciso que o servidor tenha um cargo chamado {role}.",
+        "verifyTheArguments": "Argumento invalido, verifique o que foi passado para o comando.",
         "member": {
             "kickCanceled": "Salvo, não será mais kicado ❤️",
             "kickFromServer": "KIC-KA-DO muhahahaha 😈",

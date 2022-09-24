@@ -1,27 +1,17 @@
-import { BotArgument } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
-import MD from "../../../utils/md";
+import { createFilter } from "../../argument.utils";
+import { BotArgumentFunc } from "../../index.types";
 
-const argument: Record<'QUANTITY', BotArgument> = {
-    QUANTITY: {
+const argument: Record<'QUANTITY', BotArgumentFunc> = {
+    QUANTITY: (options) => ({
         name: 'quantity',
-        description: locale.usage.argument.quantity.description,
+        description: options.locale.usage.argument.quantity.description,
         required: true,
-        example: locale.command.removeMessages.usage.quantityExample,
-        filter(message, args, locale) {
-            if (!args[0]) throw new Error(locale.interaction.needArguments);
-            if (Number.isNaN(Number(args[0]))) throw new Error(locale.interaction.onlyNumbers);
+        filter: createFilter(options, function (message, args) {
+            if (!args[0]) return;
+            if (Number.isNaN(Number(args[0]))) throw new Error(options.locale.interaction.onlyNumbers);
             return Number(args[0]);
-        }
-    }
-}
-
-export const getHowToUse = () => {
-    const command = '{bot.prefix}remove-messages';
-    const howToUse = `
-    ${MD.codeBlock.line(`${command} \\[${argument.QUANTITY.name}\\]*`)}
-    `.trim();
-    return howToUse;
+        })
+    })
 }
 
 export default argument;

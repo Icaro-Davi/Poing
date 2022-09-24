@@ -60,7 +60,8 @@
         "confirmButtons": {
             "successLabel": "{locale.messageActionRow.confirmButtons.successLabel}",
             "dangerLabel": "{locale.messageActionRow.confirmButtons.dangerLabel}"
-        }
+        },
+        "getHelpButton": "{locale.messageActionRow.getHelpButton}"
     },
     "error": {
         "unknown": "{locale.error.unknow}",
@@ -78,6 +79,7 @@
         "iDidntFoundAnything": "{locale.interaction.iDidntFoundAnything}",
         "youDontHavePermission": "{locale.interaction.youDontHavePermission}",
         "needARole": "{locale.interaction.needARole}[role]",
+        "verifyTheArguments": "{locale.interaction.verifyTheArguments}",
         "member": {
             "kickCanceled": "{locale.interaction.member.kickCanceled}",
             "kickFromServer": "{locale.interaction.member.kickFromServer}",

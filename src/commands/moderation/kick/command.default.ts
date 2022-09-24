@@ -1,10 +1,11 @@
-import { ExecuteCommand } from "../../index.types";
 import argument from "./command.args";
 import kickMember from "./kickMember.func";
 
-const execDefaultCommand: ExecuteCommand = async (message, args, options) => {
-    const kickedMember = args.get(argument.MEMBER.name);
-    const reason = args.get(argument.REASON.name);
+import type { ExecuteCommand } from "../../index.types";
+
+const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
+    const kickedMember = args.get(argument.MEMBER(options).name);
+    const reason = args.get(argument.REASON(options).name);
 
     return kickMember({ kickedMember, options, message, reason });
 }

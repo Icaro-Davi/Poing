@@ -1,12 +1,11 @@
-import { ExecuteCommand } from "../../index.types";
 import argument from "./command.args";
 import deleteMessages from "./deleteMessage.func";
 
-const execDefaultCommand: ExecuteCommand = async (message, args, options) => {
-    if (message.channel.type === 'DM') return;
-    const quantity = args.get(argument.QUANTITY.name) as number;
-    if (!quantity) return;
+import type { ExecuteCommand } from "../../index.types";
 
+const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
+    if (message.channel.type === 'DM') return;
+    const quantity = args.get(argument.QUANTITY(options).name) as number;
     return await deleteMessages({ channel: message.channel, locale: options.locale, quantity });
 }
 

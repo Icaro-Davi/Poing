@@ -1,13 +1,12 @@
-import { GuildMember } from "discord.js";
-import { ExecuteCommand } from "../../index.types";
 import argument from "./command.args";
 import { sendDirectMessage } from "./sendMessage.func";
 
-const defaultCommand: ExecuteCommand = async (message, args, options) => {
-    const member = args.get(argument.MEMBER.name) as GuildMember;
-    const anonymousMessage = args.get(argument.MESSAGE.name) as string;
+import type { GuildMember } from "discord.js";
+import type { ExecuteCommand } from "../../index.types";
 
-    if (!anonymousMessage) return { content: options.locale.interaction.needArguments };
+const defaultCommand: ExecuteCommand = async function (message, args, options) {
+    const member = args.get(argument.MEMBER(options).name) as GuildMember;
+    const anonymousMessage = args.get(argument.MESSAGE(options).name) as string;
 
     const answer = await sendDirectMessage({
         options,

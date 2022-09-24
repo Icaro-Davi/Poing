@@ -1,6 +1,5 @@
 import { BotApplication } from '../application';
 import { DiscordBot } from '../config';
-import translateCommandToLocale from '../locale';
 import handleError from '../utils/handleError';
 
 import type { Locale } from '../locale'
@@ -12,18 +11,28 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
         const filters: { [key: string]: any } = {};
         const args = {
             get: (argName: string) => filters[argName],
-            data: filters
+            data: filters,
+            defaultArgs: options.args
         }
 
         if (!options.command.usage) return args;
 
         for (let args of options.command.usage) {
+            const checkedArgs: { failed: boolean; required: boolean; }[] = [];
             for (let arg of args) {
-                const data = arg.filter ? await arg.filter(options.message, options.args, options.locale, filters) : undefined;
-                filters[`${arg.name}`] = data;
+                const filterResult = arg.filter ? await arg.filter(options.message, options.args, options.locale, filters) : undefined;
+                filters[`${arg.name}`] = filterResult?.data;
+                checkedArgs.push({ failed: typeof filterResult?.data === 'undefined', required: !!filterResult?.required });
+                if (!filterResult?.next) break;
+            }
+            if (checkedArgs.length && checkedArgs.every(arg => arg.required && arg.failed)) {
+                if (!options.args.length)
+                    throw new Error(options.locale.interaction.needArguments);
+                else throw new Error(options.locale.interaction.verifyTheArguments);
             }
         }
-        return args
+
+        return args;
     } catch (err: any) {
         handleError(err, {
             errorLocale: 'src/commands/command.default',
@@ -38,9 +47,11 @@ export const memberDoesNotHavePermissions = (message: Message, allowedPermission
     return !allowedPermissions.some(permission => message.member?.permissions.has(permission));
 }
 
-
-export const itIsANormalMessage = (message: Message, prefix: string) => {
-    return (!message.content.startsWith(prefix));
+export const findInMessageAValidPrefix = (message: Message, prefix?: string) => {
+    const botMentionPrefix = message.mentions.users.first()?.id === message.guild?.me?.id ? `<@${message.mentions.users.first()?.id}> ` : undefined;
+    const messageStartWithPrefix = (message: Message, prefix: string) => message.content.startsWith(prefix);
+    if (prefix && messageStartWithPrefix(message, prefix ?? DiscordBot.Bot.defaultPrefix)) return prefix ?? DiscordBot.Bot.defaultPrefix;
+    else if (botMentionPrefix && messageStartWithPrefix(message, botMentionPrefix)) return botMentionPrefix;
 }
 
 export const splitArgs = (message: string, botPrefix: string) => {
@@ -54,30 +65,34 @@ const getDefaultCommand = async (message: Message) => {
     try {
         if (!message.guildId || message.author.bot) return;
 
+        // Save conf in bot memory to save data on database, use debounce and atualize conf every 20 messages and delete bot memory if anyone no update time
         const botConf = await BotApplication.getConfigurations(message.guildId);
 
-        const botMention = message.mentions.users.first()?.id === message.guild?.me?.id ? `<@${message.mentions.users.first()?.id}> ` : undefined;
-        if (itIsANormalMessage(message, (botMention ?? botConf.prefix) || DiscordBot.Bot.defaultPrefix)) return;
+        const prefix = findInMessageAValidPrefix(message, botConf.prefix);
+        if (!prefix) return;
 
-        const initialCommand = splitArgs(message.content, botMention ?? botConf.prefix);
-        const defaultCommand = DiscordBot.Command.search(initialCommand.name);
-        if (!defaultCommand) return;
+        const initialCommand = splitArgs(message.content, prefix);
+        const _command = DiscordBot.Command.search(initialCommand.name);
+        if (!_command) return;
 
-        const { botCommand, locale, bot } = await translateCommandToLocale({ ...defaultCommand }, botConf.locale);
+        const locale = DiscordBot.LocaleMemory.get(botConf.locale);
         _locale = locale;
+
+        const botCommand = _command({ locale });
+
+        if (botCommand.allowedPermissions?.length && memberDoesNotHavePermissions(message, botCommand.allowedPermissions)) {
+            await message.reply(locale.interaction.youDontHavePermission);
+            return;
+        }
 
         const options: ExecuteCommandOptions = {
             bot: {
-                ...bot,
-                hexColor: botConf.messageEmbedHexColor ?? bot.hexColor,
-                prefix: botConf.prefix ?? bot.prefix,
+                name: DiscordBot.Bot.name,
+                "@mention": `<@${DiscordBot.Bot.ID}>`,
+                hexColor: botConf.messageEmbedHexColor ?? DiscordBot.Bot.defaultBotHexColor,
+                prefix: botConf.prefix ?? DiscordBot.Bot.defaultPrefix,
             },
             locale
-        }
-
-        if (botCommand.allowedPermissions?.length && memberDoesNotHavePermissions(message, botCommand.allowedPermissions)) {
-            await message.reply(options.locale.interaction.youDontHavePermission);
-            return;
         }
 
         const args = await getArgs({

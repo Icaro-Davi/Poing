@@ -81,11 +81,11 @@ export const navigateToObjectDepthAndTranslate = (command: any, locale: any) => 
 }
 
 export const getAvailableLocales = () => {
-    return fs.readdirSync(path.resolve(`${__dirname}/../../locale`)).map(locale => locale.replace('.json', '')) as LocaleLabel[];
+    return fs.readdirSync(path.resolve(`${__dirname}/../../locale`)).map(locale => locale.replace(/(.json|.ts)/g, '')) as LocaleLabel[];
 }
 
-export const getLocale = async (locale: LocaleLabel) => {
-    const _locale = (await import(`../../locale/${locale}`)).default as Locale;
+export const getLocale = async (localeLang: LocaleLabel) => {
+    const _locale = (await import(`../../locale/${localeLang}`)).default as Locale;
     return _locale;
 }
 

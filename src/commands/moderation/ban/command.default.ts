@@ -1,15 +1,16 @@
-import { ExecuteCommand } from "../../index.types";
 import argument from "./command.args";
 import guildBanMember from './banMember.func';
 import listBannedMembers from "./listBannedMembers.func";
 
-const defaultCommand: ExecuteCommand = async (message, args, options) => {
-    const banMember = args.get(argument.MEMBER.name);
-    const list = args.get(argument.LIST.name);
+import type { ExecuteCommand } from "../../index.types";
+
+const defaultCommand: ExecuteCommand = async function (message, args, options) {
+    const banMember = args.get(argument.MEMBER(options).name);
+    const list = args.get(argument.LIST(options).name);
 
     if (banMember) {
-        const days = args.get(argument.DAYS.name);
-        const reason = args.get(argument.REASON.name);
+        const days = args.get(argument.DAYS(options).name);
+        const reason = args.get(argument.REASON(options).name);
 
         const answer = guildBanMember({
             message,

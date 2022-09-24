@@ -1,17 +1,23 @@
 import { list } from "../../../components/messageEmbed";
-import { ExecuteSlashCommand } from "../../index.types";
 import argument from "./command.args";
 import getCommandHelp from "./getCommandHelp.func";
 
-const execSlashCommand: ExecuteSlashCommand = async (interaction, options) => {
+import type { ExecuteSlashCommand } from "../../index.types";
+
+const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
     const subCommand = interaction.options.getSubcommand(true);
-    if (subCommand === argument.LIST.name)
+    const arg = {
+        COMMAND: argument.COMMAND(options),
+        LIST: argument.LIST(options),
+        TARGET: argument.TARGET(options),
+    }
+    if (subCommand === arg.LIST.name)
         return { content: list.commandsByCategory(options), type: 'embed', ephemeral: true };
-    if (subCommand === argument.COMMAND.name)
+    if (subCommand === arg.COMMAND.name)
         return await getCommandHelp({
             options,
             ephemeral: true,
-            commandName: interaction.options.getString(argument.TARGET.name, argument.TARGET.required)!,
+            commandName: interaction.options.getString(arg.TARGET.name, arg.TARGET.required)!,
         });
     return { content: list.commandsByCategory(options), type: 'embed', ephemeral: true };
 }

@@ -62,7 +62,8 @@ const en_US: Locale = {
         "confirmButtons": {
             "successLabel": "Yes",
             "dangerLabel": "No"
-        }
+        },
+        "getHelpButton": "Open command details"
     },
     "error": {
         "unknown": "Sorry 😢, i found a weird bug 🪲, i'm going kill it!",
@@ -80,6 +81,7 @@ const en_US: Locale = {
         "iDidntFoundAnything": "I couldn't find anything.",
         "youDontHavePermission": "You are not allowed to do it.",
         "needARole": "I need the server to have a role called {role}.",
+        "verifyTheArguments": "Argument invalid, verify the arguments you passed to the command.",
         "member": {
             "kickCanceled": "Safe, you won't be kicked ❤️",
             "kickFromServer": "KIC-KA-DO hahaha 😈",

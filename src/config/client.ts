@@ -19,6 +19,7 @@ class Client {
     static async start() {
         startListeningEvents();
         await DiscordBot.Database.start();
+        await DiscordBot.LocaleMemory.loadLocales();
         await this.client.login(process.env.BOT_TOKEN);
         DiscordBot.Command.start();
     }

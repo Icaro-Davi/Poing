@@ -1,18 +1,16 @@
-import { BotCommand } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
-import execDefaultCommand from "./command.default";
-import execSlashCommand from "./command.slash";
-import MD from "../../../utils/md";
+import execDefault from "./command.default";
+import execSlash from "./command.slash";
 
-const command: BotCommand = {
+import type { BotCommandFunc } from "../../index.types";
+
+const command: BotCommandFunc = ({ locale }) => ({
     name: 'ping',
-    howToUse: MD.codeBlock.line('{bot.prefix}ping'),
     category: locale.category.utility,
     description: locale.command.ping.description,
     aliases: ['p'],
-    execSlash: execSlashCommand,
-    execDefault: execDefaultCommand
-}
+    execSlash,
+    execDefault
+});
 
 export default command;
 

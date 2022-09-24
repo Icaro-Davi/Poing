@@ -1,17 +1,18 @@
-import { ExecuteCommand } from "../../index.types";
 import addMuteRole from "./addMuteRole.func";
 import argument from "./command.args";
 import listMutedMembers from "./listMutedMembers.func";
 import { MuteGuildMember } from "./muteGuildMember.func";
 
-const execDefaultCommand: ExecuteCommand = async (message, args, options) => {
-    const muteMember = args.get(argument.MEMBER.name);
-    const muteRole = args.get(argument.ADD_ROLE.name);
-    const list = args.get(argument.LIST.name);
+import type { ExecuteCommand } from "../../index.types";
+
+const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
+    const muteMember = args.get(argument.MEMBER(options).name);
+    const muteRole = args.get(argument.ADD_ROLE(options).name);
+    const list = args.get(argument.LIST(options).name);
 
     if (muteMember) {
-        const time = args.get(argument.TIME.name);
-        const reason = args.get(argument.REASON.name);
+        const time = args.get(argument.TIME(options).name);
+        const reason = args.get(argument.REASON(options).name);
         return await MuteGuildMember({
             options,
             reason,

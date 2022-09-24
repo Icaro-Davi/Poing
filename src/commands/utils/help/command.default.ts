@@ -1,11 +1,12 @@
 import { list } from "../../../components/messageEmbed";
-import { ExecuteCommand } from "../../index.types";
 import argument from "./command.args";
 import getCommandHelp from "./getCommandHelp.func";
 
-const execDefaultCommand: ExecuteCommand = async (message, args, options) => {
-    const commandName = args.get(argument.COMMAND.name);
-    const _list = args.get(argument.LIST.name);
+import type { ExecuteCommand } from "../../index.types";
+
+const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
+    const commandName = args.get(argument.COMMAND(options).name);
+    const _list = args.get(argument.LIST(options).name);
 
     if (commandName) return await getCommandHelp({ commandName, options });
     if (_list) return { content: list.commandsByCategory(options), type: 'embed' };

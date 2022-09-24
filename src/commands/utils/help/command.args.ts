@@ -1,41 +1,31 @@
-import { BotArgument } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
+import { createFilter } from "../../argument.utils";
 
-const argument: Record<'COMMAND' | 'LIST' | 'TARGET', BotArgument> = {
-    COMMAND: {
+import type { BotArgumentFunc } from "../../index.types";
+
+const argument: Record<'COMMAND' | 'LIST' | 'TARGET', BotArgumentFunc> = {
+    COMMAND: (options) => ({
         name: 'command',
         required: false,
-        description: locale.usage.argument.command.description,
-        example: locale.command.help.usage.commandExample,
-        filter(message, args, locale) {
-            if (args[0] === 'list') return;
+        description: options.locale.usage.argument.command.description,
+        filter: createFilter(options, function (message, args) {
+            if (args[0] === argument.LIST(options).name) return;
             return args[0];
-        }
-    },
-    LIST: {
+        })
+    }),
+    LIST: (options) => ({
         name: 'list',
         required: false,
-        description: locale.command.help.usage.list.description,
-        example: locale.command.help.usage.list.example,
-        filter(message, args, locale) {
+        description: options.locale.command.help.usage.list.description,
+        example: options.locale.command.help.usage.list.example,
+        filter: createFilter(options, function (message, args) {
             return args[0]?.toLocaleLowerCase() === 'list';
-        }
-    },
-    TARGET: {
+        })
+    }),
+    TARGET: (options) => ({
         name: 'target',
         required: true,
-        description: locale.usage.argument.command.description
-    }
-}
-
-export const getHowToUse = () => {
-    const command = '{bot.prefix}help';
-    const { COMMAND, LIST } = argument;
-    const howToUse = `
-    ${command} (${LIST.name})
-    ${command} (${COMMAND.name})
-    `.trim();
-    return howToUse;
+        description: options.locale.usage.argument.command.description
+    })
 }
 
 export default argument;

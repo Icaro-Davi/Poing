@@ -1,26 +1,25 @@
-import { BotCommand } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
-import argument, { getHowToUse } from "./command.args";
+import argument from "./command.args";
 import commandSlash from "./command.slash";
 import commandDefault from "./command.default";
 
-const command: BotCommand = {
+import type { BotCommandFunc } from "../../index.types";
+
+const command: BotCommandFunc = ({ locale }) => ({
     name: 'anonymous-direct-message',
     category: locale.category.administration,
-    howToUse: getHowToUse(),
     aliases: ['adm'],
     description: locale.command.anonymousDirectMessage.description,
     allowedPermissions: ['ADMINISTRATOR'],
     usage: [
-        [argument.MEMBER],
-        [argument.MESSAGE]
+        [argument.MEMBER({ locale, required: true })],
+        [argument.MESSAGE({ locale, required: true })]
     ],
     slashCommand: [
-        { ...argument.MEMBER, type: 'USER' },
-        { ...argument.MESSAGE, type: 'STRING' }
+        { ...argument.MEMBER({ locale }), type: 'USER' },
+        { ...argument.MESSAGE({ locale }), type: 'STRING' }
     ],
     execSlash: commandSlash,
     execDefault: commandDefault
-}
+});
 
 export default command;

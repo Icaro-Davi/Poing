@@ -1,75 +1,62 @@
-import locale from '../../../locale/example.locale.json';
 import Member from "../../../application/Member";
 import getValuesFromStringFlag from "../../../utils/regex/getValuesFromStringFlag";
-import MD from "../../../utils/md";
+import { createFilter } from "../../argument.utils";
 
-import type { BotArgument } from "../../index.types";
+import type { BotArgumentFunc } from "../../index.types";
 
-const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER', BotArgument> = {
-    MEMBER: {
-        required: false,
+const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER', BotArgumentFunc> = {
+    MEMBER: (options) => ({
         name: 'member',
-        description: locale.usage.argument.member.description,
-        async filter(message, args, locale) {
-            if (!args[0]) return;
-            const member = message.mentions.members?.first() ?? (await Member.find({ guild: message.guild!, member: args[0] }));
-            return member;
-        }
-    },
-    LIST: {
+        required: false,
+        description: options.locale.usage.argument.member.description,
+        filter: createFilter(options, async (message, args) => {
+            if (args[0]) {
+                const member = message.mentions.members?.first() ?? (await Member.find({ guild: message.guild!, member: args[0] }));
+                if (member) return member;
+            }
+        })
+    }),
+    LIST: (options) => ({
         name: 'list',
         required: false,
-        description: locale.command.ban.usage.list.description,
-        example: locale.command.ban.usage.list.example,
-        filter(message, args, locale) {
-            if (!args[0]) throw new Error(locale.interaction.needArguments);
-            if (args[0].toLocaleLowerCase() === 'list') return true;
-            else throw new Error(locale.interaction.iDontKnowThisArgument);
-        }
-    },
-    DAYS: {
+        description: options.locale.command.ban.usage.list.description,
+        filter: createFilter(options, (_, args) => {
+            if (args[0] && args[0].toLocaleLowerCase() === 'list') {
+                return true
+            }
+        })
+    }),
+    DAYS: (options) => ({
         name: 'days',
         isFlag: true,
         required: false,
-        description: locale.command.ban.usage.days.description,
-        example: locale.command.ban.usage.days.example,
-        filter(message, args, locale) {
+        description: options.locale.command.ban.usage.days.description,
+        filter: createFilter(options, (_, args) => {
             const days = getValuesFromStringFlag(args, ['--days', '-d']);
             if (days) {
                 if (Number.isNaN(days))
-                    throw new Error(locale.command.ban.error.mustBeNumber);
+                    throw new Error(options.locale.command.ban.error.mustBeNumber);
                 else if (Number(days) > 7 || Number(days) < 1)
-                    throw new Error(locale.command.ban.error.numberMustBeBetweenTwoValues);
+                    throw new Error(options.locale.command.ban.error.numberMustBeBetweenTwoValues);
             }
             return days;
-        }
-    },
-    REASON: {
+        })
+    }),
+    REASON: (options) => ({
         name: 'reason',
         isFlag: true,
         required: false,
-        description: locale.command.ban.usage.reason.description,
-        example: locale.command.ban.usage.reason.example,
-        filter(message, args, locale) {
+        description: options.locale.command.ban.usage.reason.description,
+        filter: createFilter(options, (_, args) => {
             const reason = getValuesFromStringFlag(args, ['--reason', '-r']);
             return reason;
-        }
-    },
-    TARGET_MEMBER: {
+        })
+    }),
+    TARGET_MEMBER: ({ locale }) => ({
         name: 'target',
         description: locale.usage.argument.member.description,
         required: true
-    }
-}
-
-export const getHowToUse = () => {
-    const command = '{bot.prefix}ban'
-    const { DAYS, MEMBER, REASON } = argument;
-    const howToUse = `
-    ${MD.codeBlock.line(`${command} \\[@${MEMBER.name}|memberID\\]* (${DAYS.name} "Number") (${REASON.name} "Text")`)}
-    ${MD.codeBlock.line(`${command} (list)`)}
-    `.trim();
-    return howToUse;
+    })
 }
 
 export default argument;

@@ -1,45 +1,48 @@
-import { BotCommand } from "../../index.types";
-import locale from '../../../locale/example.locale.json';
-import argument, { getHowToUse } from "./command.args";
+import argument from "./command.args";
 import execDefaultCommand from "./command.default";
 import execSlashCommand from "./command.slash";
 
-const command: BotCommand = {
+import type { BotCommandFunc } from "../../index.types";
+
+const command: BotCommandFunc = (options) => ({
     name: 'mute',
-    howToUse: getHowToUse(),
-    category: locale.category.moderation,
-    description: locale.command.mute.description,
+    category: options.locale.category.moderation,
+    description: options.locale.command.mute.description,
     allowedPermissions: ['MUTE_MEMBERS'],
     usage: [
-        [argument.MEMBER, argument.ADD_ROLE, argument.LIST],
-        [argument.TIME],
-        [argument.REASON]
+        [
+            argument.MEMBER({ locale: options.locale, required: true }),
+            argument.ADD_ROLE({ locale: options.locale, required: true }),
+            argument.LIST({ locale: options.locale, required: true })
+        ],
+        [argument.TIME(options)],
+        [argument.REASON(options)]
     ],
     slashCommand: [
         {
-            ...argument.MEMBER,
-            description: `\\[${locale.category.moderation}\\] ${argument.MEMBER.description}`,
+            ...argument.MEMBER(options),
+            description: `[${options.locale.category.moderation}] ${argument.MEMBER(options).description}`,
             type: 'SUB_COMMAND',
             options: [
-                { ...argument.TARGET_MEMBER, type: 'USER' },
-                { ...argument.TIME, type: 'STRING' },
-                { ...argument.REASON, type: 'STRING' }
+                { ...argument.TARGET_MEMBER(options), type: 'USER' },
+                { ...argument.TIME(options), type: 'STRING' },
+                { ...argument.REASON(options), type: 'STRING' }
             ]
         },
         {
-            ...argument.ADD_ROLE,
-            description: `\\[${locale.category.moderation}\\] ${argument.ADD_ROLE.description}`,
+            ...argument.ADD_ROLE(options),
+            description: `[${options.locale.category.moderation}] ${argument.ADD_ROLE(options).description}`,
             type: 'SUB_COMMAND',
-            options: [{ ...argument.TARGET_ROLE, type: 'ROLE' }]
+            options: [{ ...argument.TARGET_ROLE(options), type: 'ROLE' }]
         },
         {
-            ...argument.LIST,
-            description: `\\[${locale.category.moderation}\\] ${argument.LIST.description}`,
+            ...argument.LIST(options),
+            description: `[${options.locale.category.moderation}] ${argument.LIST(options).description}`,
             type: 'SUB_COMMAND'
         },
     ],
     execSlash: execSlashCommand,
     execDefault: execDefaultCommand
-}
+});
 
 export default command;

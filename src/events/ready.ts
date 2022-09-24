@@ -18,6 +18,7 @@ export default () =>
         console.log('--- Guilds:', DiscordBot.Client.get().guilds.cache.size);
         // console.log('--- Loaded Commands:', '\x1b[34m', commands.map(path => `[${path.split(/(?:\\|\/)/g).pop()?.replace(/(?:\.ts|\.js)/, '')}]`).join(' '), '\x1b[0m');
         console.log('--- Schedule Events', DiscordBot.ScheduleEvent.start() ? 'Online' : 'Offline');
+        console.log('--- Locales:', DiscordBot.LocaleMemory.getLocaleLangs().map(lang => DiscordBot.LocaleMemory.get(lang)?.localeLabel).join(' '));
         console.log('--- MongoDB status', DiscordBot.Database.getMongoDBStatus());
         console.log(`-- My creator is https://github.com/icaro-davi`);
     });
