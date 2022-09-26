@@ -1,6 +1,7 @@
-import { ColorResolvable } from "discord.js";
 import mongoose from "mongoose";
-import { LocaleLabel } from "../../locale";
+
+import type { LocaleLabel } from "../../locale";
+import type { ColorResolvable } from "discord.js";
 
 export interface IBotRolesSchema {
     muteId: string;

@@ -1,6 +1,6 @@
-import { BotApplication } from '../application';
 import { DiscordBot } from '../config';
 import handleError from '../utils/handleError';
+import GuildMemory from '../config/guilds';
 
 import type { Locale } from '../locale'
 import type { BotCommand, ExecuteCommandOptions } from './index.types';
@@ -65,8 +65,7 @@ const getDefaultCommand = async (message: Message) => {
     try {
         if (!message.guildId || message.author.bot) return;
 
-        // Save conf in bot memory to save data on database, use debounce and atualize conf every 20 messages and delete bot memory if anyone no update time
-        const botConf = await BotApplication.getConfigurations(message.guildId);
+        const botConf = await GuildMemory.getConfigs(message.guildId);
 
         const prefix = findInMessageAValidPrefix(message, botConf.prefix);
         if (!prefix) return;
