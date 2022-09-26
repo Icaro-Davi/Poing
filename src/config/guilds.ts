@@ -50,7 +50,7 @@ class GuildMemory {
     }
 
     private static startTimerToDestroyGuildSlot(guildId: string) {
-        return setTimeout(() => { this.removeConfig(guildId); console.log('after', this.guildConfigs.size) }, this.timerToDestroyGuildSlotInMilliseconds);
+        return setTimeout(() => { this.removeConfig(guildId); }, this.timerToDestroyGuildSlotInMilliseconds);
     }
 
 }
