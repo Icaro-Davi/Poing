@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 import { DiscordBot } from "../config";
 import GuildRepository from "../domain/guild/GuildRepository.mongo";
 import ScheduleUnmuteRepository from "../domain/schedule/unmute/ScheduleUnmuteRepository.mongo";
-import { LocaleLabel } from "../locale";
+
+import type { LocaleLabel } from "../locale";
 
 class Guild {
     static async create(guildId: string, locale: LocaleLabel = 'en-US') {

@@ -4,6 +4,7 @@ import Command from './command';
 import Database from './database';
 import ScheduleEvent from './schedule';
 import LocaleMemory from './locale';
+import GuildMemory from './guilds';
 
 const DiscordBot = {
     Bot,
@@ -11,7 +12,8 @@ const DiscordBot = {
     Command,
     Database,
     ScheduleEvent,
-    LocaleMemory
+    LocaleMemory,
+    GuildMemory
 };
 
 export { DiscordBot };

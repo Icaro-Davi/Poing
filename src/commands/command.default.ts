@@ -1,6 +1,5 @@
 import { DiscordBot } from '../config';
 import handleError from '../utils/handleError';
-import GuildMemory from '../config/guilds';
 
 import type { Locale } from '../locale'
 import type { BotCommand, ExecuteCommandOptions } from './index.types';
@@ -65,7 +64,7 @@ const getDefaultCommand = async (message: Message) => {
     try {
         if (!message.guildId || message.author.bot) return;
 
-        const botConf = await GuildMemory.getConfigs(message.guildId);
+        const botConf = await DiscordBot.GuildMemory.getConfigs(message.guildId);
 
         const prefix = findInMessageAValidPrefix(message, botConf.prefix);
         if (!prefix) return;

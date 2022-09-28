@@ -1,7 +1,7 @@
 import moment from "moment";
 import Member from "../../../application/Member";
 import MD from "../../../utils/md";
-import { replaceVarsInString } from "../../../locale";
+import { replaceValuesInString  } from "../../../utils/replaceValues";
 
 import type { Role } from "discord.js";
 import type { BotArgumentFunc } from "../../index.types";
@@ -55,13 +55,13 @@ const argument: Record<'MEMBER' | 'ADD_ROLE' | 'LIST' | 'TIME' | 'REASON' | 'TAR
                         if (parseInt(timeArg) > 365) throw new Error(options.locale.command.mute.interaction.arg.time.day);
                         return moment.utc().add(parseInt(timeArg), 'days');
                     case 'H':
-                        if (parseInt(timeArg) > 24) throw new Error(replaceVarsInString(options.locale.command.mute.interaction.arg.time.hour, { timeArg: `[${args[1]}]` }));
+                        if (parseInt(timeArg) > 24) throw new Error(replaceValuesInString(options.locale.command.mute.interaction.arg.time.hour, { timeArg: `[${args[1]}]` }));
                         return moment.utc().add(parseInt(timeArg), 'hours');
                     case 'M':
-                        if (parseInt(timeArg) > 60) throw new Error(replaceVarsInString(options.locale.command.mute.interaction.arg.time.minute, { timeArg: `[${args[1]}]` }));
+                        if (parseInt(timeArg) > 60) throw new Error(replaceValuesInString(options.locale.command.mute.interaction.arg.time.minute, { timeArg: `[${args[1]}]` }));
                         return moment.utc().add(parseInt(timeArg), 'minutes');
                     default:
-                        throw new Error(replaceVarsInString(options.locale.command.mute.interaction.arg.time.idk, { timeArg, timeChar }));
+                        throw new Error(replaceValuesInString(options.locale.command.mute.interaction.arg.time.idk, { timeArg, timeChar }));
                 }
             }
         })

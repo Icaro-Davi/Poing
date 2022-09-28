@@ -1,18 +1,22 @@
 
-import { Guild, MessageEmbed, TextChannel } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { GuildApplication } from "../application";
 import { DiscordBot } from "../config";
-import { getAvailableLocales, getInitialLocaleVars, LocaleLabel, replaceVarsInString } from "../locale";
+import { getAvailableLocales } from "../locale";
+import { replaceValuesInString  } from "../utils/replaceValues";
+
+import type { LocaleLabel } from "../locale";
+import type { Guild, TextChannel } from 'discord.js';
 
 export const welcomeGuild = async (guild: Guild) => {
     const channel = guild.channels.cache.find(channel => channel.isText()) as TextChannel;
     const localeLang = (getAvailableLocales().some(locale => guild.preferredLocale === locale) ? guild.preferredLocale : 'en-US') as LocaleLabel;
     await GuildApplication.create(guild.id, localeLang);
-    const defaultLocaleVars = await getInitialLocaleVars({ locale: localeLang });
+    const locale = await DiscordBot.LocaleMemory.get(localeLang);
     await channel.send({
         embeds: [new MessageEmbed({
             color: DiscordBot.Bot.defaultBotHexColor,
-            description: replaceVarsInString(defaultLocaleVars.locale?.interaction.welcomeGuild!, { bot: defaultLocaleVars.bot })
+            description: replaceValuesInString(locale?.interaction.welcomeGuild!, { bot: DiscordBot.Bot.getDefaultVars() })
         })]
     });
 }

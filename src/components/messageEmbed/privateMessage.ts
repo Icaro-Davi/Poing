@@ -1,6 +1,9 @@
-import { ColorResolvable, Guild, MessageEmbed } from "discord.js"
-import { ExecuteCommandOptions } from "../../commands/index.types"
-import { Locale, replaceVarsInString } from "../../locale";
+import { MessageEmbed } from "discord.js"
+import { replaceValuesInString  } from "../../utils/replaceValues";
+
+import type { ColorResolvable, Guild } from "discord.js"
+import type { ExecuteCommandOptions } from "../../commands/index.types"
+import type { Locale } from "../../locale";
 
 type options = {
     botColor: ColorResolvable;
@@ -14,7 +17,7 @@ const normalMessage = (message: string, guild: Guild, option: ExecuteCommandOpti
     return new MessageEmbed()
         .setColor(option.bot.hexColor)
         .setTitle(option.locale.messageEmbed.privateMessage.title.replace('{bot.name}', option.bot.name))
-        .setDescription(replaceVarsInString(option.locale.messageEmbed.privateMessage.description, { message, guild: { name: `[${guild.name}](https://discord.com/channels/${guild.id})` } }))
+        .setDescription(replaceValuesInString(option.locale.messageEmbed.privateMessage.description, { message, guild: { name: `[${guild.name}](https://discord.com/channels/${guild.id})` } }))
         .setThumbnail(guild.iconURL() || '')
         .setFooter({ text: option.locale.messageEmbed.privateMessage.footer })
 }

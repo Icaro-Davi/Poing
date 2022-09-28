@@ -1,10 +1,10 @@
 import { MessageEmbed } from "discord.js";
+import moment from "moment";
 import { DiscordBot } from "../../config";
 import MD from "../../utils/md";
-import { replaceVarsInString } from "../../locale";
-import { MutedMember } from "../../application/Mute";
-import moment from "moment";
+import { replaceValuesInString  } from "../../utils/replaceValues";
 
+import type { MutedMember } from "../../application/Mute";
 import type { ExecuteCommandOptions } from "../../commands/index.types";
 
 const commandsByCategory = (options: ExecuteCommandOptions) => {
@@ -28,7 +28,7 @@ const commandsByCategory = (options: ExecuteCommandOptions) => {
         }
     }
     const translateCategory = (category: string) => {
-        category = replaceVarsInString(category, { locale: options.locale });
+        category = replaceValuesInString(category, { locale: options.locale });
         return category;
     }
     return new MessageEmbed()

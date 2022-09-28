@@ -1,7 +1,9 @@
-import { ColorResolvable, CommandInteraction, Message, MessageEmbed } from "discord.js";
-import { replaceVarsInString } from "../../../locale";
-import { RequireAtLeastOne } from "../../../utils/typescript.funcs";
-import { ExecuteCommandOptions } from "../../index.types";
+import { MessageEmbed } from "discord.js";
+import { replaceValuesInString  } from "../../../utils/replaceValues";
+
+import type { ColorResolvable, CommandInteraction, Message, } from 'discord.js';
+import type { RequireAtLeastOne } from "../../../utils/typescript.funcs";
+import type { ExecuteCommandOptions } from "../../index.types";
 
 type PingOptions = RequireAtLeastOne<{
     message: Message;
@@ -16,7 +18,7 @@ const ping = async ({ options, interaction, message, ephemeral }: PingOptions) =
     const pingEmbedMessage = new MessageEmbed({ color: options.bot.hexColor, title: ':small_orange_diamond: Ping' });
     const resultMessage = await (message ?? interaction)?.channel?.send({ embeds: [pingEmbedMessage] });
 
-    let serverPing = replaceVarsInString(options.locale.command.ping.interaction.serverPing, { bot: { ...options.bot }, ping: { server: (message ?? interaction)?.client.ws.ping } });
+    let serverPing = replaceValuesInString(options.locale.command.ping.interaction.serverPing, { bot: { ...options.bot }, ping: { server: (message ?? interaction)?.client.ws.ping } });
     let clientPing: string = resultMessage ? `${options.locale.command.ping.interaction.clientPing} ${resultMessage.createdTimestamp - (message ? message.createdTimestamp : interaction?.createdTimestamp ?? 0)}ms` : '';
 
     if (message && resultMessage)

@@ -1,8 +1,8 @@
 import Discord from 'discord.js';
 import path from 'path';
 import fs from 'fs';
-import { replaceVarsInString } from '../locale';
 import { DiscordBot } from '.';
+import { replaceValuesInString  } from '../utils/replaceValues';
 
 import type { BotCommand, BotCommandFunc } from '../commands/index.types';
 import type { Message, MessageEmbed, MessageOptions, ReplyMessageOptions, CommandInteraction, MessageComponent } from 'discord.js';
@@ -91,7 +91,7 @@ class Commands {
         }
         const _type = {
             embed: () => ({ embeds: [content], ephemeral, components }) as MessageOptions | ReplyMessageOptions,
-            message: () => ({ content: replaceVarsInString(content as string, vars) || content, ephemeral, components })
+            message: () => ({ content: replaceValuesInString(content as string, vars) || content, ephemeral, components })
         }
         await exec[use](_type[type]());
     }
