@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from 'mongoose';
 import { Modify } from '../../utils/typescript.funcs';
 import { IBotRolesSchema, IBotSchema } from '../bot/Bot.schema';
-import Guild, { IGuildSchema } from './Guild.schema';
+import GuildSchema, { IGuildSchema } from './Guild.schema';
 
 type SelectGuildValues = Partial<{
     _id: 0 | 1,
@@ -14,7 +14,7 @@ class GuildRepository {
 
     static async create(guild: IGuildSchema) {
         try {
-            return await Guild.create(guild) as IGuildSchema;
+            return await GuildSchema.create(guild) as IGuildSchema;
         } catch (error) {
             console.error(error);
             return false;
@@ -23,7 +23,7 @@ class GuildRepository {
 
     static async findById(guildId: string) {
         try {
-            return await Guild.findById(guildId).lean();
+            return await GuildSchema.findById(guildId).lean();
         } catch (error) {
             console.error(error);
             throw new Error('[errorGuildFindById]');
@@ -32,7 +32,7 @@ class GuildRepository {
 
     static async update(guildId: string, update: mongoose.UpdateQuery<GuildOptionalValues>) {
         try {
-            await Guild.findByIdAndUpdate(guildId, update);
+            await GuildSchema.findByIdAndUpdate(guildId, update);
         } catch (error) {
             console.error(error);
             throw new Error('[errorGuildUpdate]');
@@ -41,7 +41,7 @@ class GuildRepository {
 
     static async findByIdAndOmitValues(guildId: string, select: SelectGuildValues) {
         try {
-            return (await Guild.findById(guildId).select(select))?.toJSON();
+            return (await GuildSchema.findById(guildId).select(select))?.toJSON();
         } catch (error) {
             console.error(error);
             throw new Error('[errorGuildFindByIdAndOmitValues]');
@@ -50,7 +50,7 @@ class GuildRepository {
 
     static async delete(guildId: string, session?: ClientSession) {
         try {
-            await Guild.findByIdAndDelete(guildId, session ? { session } : {});
+            await GuildSchema.findByIdAndDelete(guildId, session ? { session } : {});
         } catch (error) {
             throw new Error('[errorGuildDelete]');
         }
