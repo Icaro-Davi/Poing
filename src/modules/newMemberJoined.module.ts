@@ -1,5 +1,6 @@
 import { MessageEmbed } from "discord.js";
-import { ChannelApplication } from "../application";
+import moment from "moment";
+import { ChannelApplication, ModulesApplication } from "../application";
 import { DiscordBot } from "../config";
 
 import type { GuildMember, TextChannel, MessageEmbedOptions } from "discord.js";
@@ -41,9 +42,16 @@ const createEmbedMessage = (embedMessageOptions: EmbedMessageOptionsType, vars: 
 const welcomeNewGuildMember = async (member: GuildMember, guildConf: IBotSchema) => {
     const guild = member.guild;
 
+    const settings = await ModulesApplication.getWelcomeConfig(guild.id);
+
+    const channel = (settings?.channelId
+        ? guild.channels.cache.get(settings.channelId)
+        : await ChannelApplication.getMainTextChannel(guild)) as TextChannel;
+
     const vars = {
         bot: {
-            ...DiscordBot.Bot.getDefaultVars()
+            ...DiscordBot.Bot.getDefaultVars(),
+            hexColor: guildConf.messageEmbedHexColor || DiscordBot.Bot.defaultBotHexColor
         },
         guild: {
             name: guild.name,
@@ -53,35 +61,19 @@ const welcomeNewGuildMember = async (member: GuildMember, guildConf: IBotSchema)
             username: member.user.username,
             tagNumber: member.user.discriminator,
             picture: member.displayAvatarURL(),
-            mention: `<@${member.id}>`
+            mention: `<@${member.id}>`,
+            joinedAt: moment(member.user.createdAt).locale(guildConf.locale).fromNow()
         }
     }
 
-    const channel = (guild.channels.cache.get('1234123121') || await ChannelApplication.getMainTextChannel(guild)) as TextChannel;
-
-    const messageText = 'Welcome {member.mention}';
-    const messageEmbed: EmbedMessageOptionsType = {
-        title: `Bem vindo {member.username}`,
-        author: { name: `{member.username}`, picture: '{member.picture}' },
-        description: `Fique a vontade e leia as regras em {member.mention}`,
-        fields: [
-            {
-                name: 'Ajuda no canal: {member.username}',
-                value: `{member.mention}`,
-                inline: true
-            },
-            {
-                name: 'Regras em:',
-                value: `<#${channel.id}>`,
-                inline: true
-            }
-        ],
-        footer: 'Divirta-se na guild',
-        thumbnail: `{member.picture}`,
+    if (settings.isMessageText) {
+        channel?.send(replaceValuesInString(settings?.messageText || 'Welcome Message Text', vars));
+    } else {
+        channel?.send({
+            content: vars.member.mention,
+            embeds: [createEmbedMessage(settings?.messageEmbed || { description: 'Welcome Message Embed' }, vars)]
+        });
     }
-
-    channel?.send(replaceValuesInString(messageText, vars));
-    channel?.send({ content: vars.member.mention, embeds: [createEmbedMessage(messageEmbed, vars)] });
 }
 
 export default welcomeNewGuildMember;
