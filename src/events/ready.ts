@@ -2,7 +2,7 @@ import fs from 'fs';
 import { DiscordBot } from '../config';
 
 export default () =>
-    DiscordBot.Client.get().on('ready', () => {
+    DiscordBot.Client.on('ready', () => {
         DiscordBot.Command.loadSlashCommands();
         DiscordBot.Client.get().user?.setActivity(`Call me baby @${DiscordBot.Bot.nickname} help`, {
             type: 'LISTENING',

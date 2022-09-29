@@ -9,4 +9,4 @@ const onInteractionCreate = async (interaction: Interaction) => {
     }
 }
 
-export default () => DiscordBot.Client.get().on('interactionCreate', onInteractionCreate);
+export default () => DiscordBot.Client.on('interactionCreate', onInteractionCreate);

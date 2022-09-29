@@ -10,4 +10,4 @@ const onLeaveGuild = async (guild: Guild) => {
     }
 }
 
-export default () => DiscordBot.Client.get().on('guildDelete', onLeaveGuild);
+export default () => DiscordBot.Client.on('guildDelete', onLeaveGuild);
