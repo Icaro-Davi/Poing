@@ -2,6 +2,8 @@ import Discord, { Intents } from 'discord.js';
 import { DiscordBot } from '.';
 import startListeningEvents from '../events';
 
+import type { ClientEvents, Awaitable } from 'discord.js';
+
 class Client {
 
     private static client: Discord.Client = new Discord.Client({
@@ -25,6 +27,10 @@ class Client {
     }
 
     static get = () => this.client;
+
+    static on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>) {
+        this.client.on(event, listener);
+    }
 }
 
 export default Client;
