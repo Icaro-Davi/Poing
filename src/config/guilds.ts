@@ -1,8 +1,10 @@
-import { BotApplication } from "../application";
+import { DiscordBot } from ".";
+import { BotApplication, GuildApplication } from "../application";
 import type { IBotSchema } from "../domain/bot/Bot.schema";
+import { IGuildSchema } from "../domain/guild/Guild.schema";
 
 type GuildSlot = {
-    config: IBotSchema;
+    config: Omit<IGuildSchema, '_id'>;
     updateCount: number;
     timeoutReference: NodeJS.Timeout;
 }
@@ -13,25 +15,46 @@ class GuildMemory {
     private static readonly maxGuildSavedInMemorySize = 1000;
     private static readonly guildConfigs: Map<string, GuildSlot> = new Map<string, GuildSlot>();
 
-    private static saveGuild(guildId: string, botConfig: IBotSchema) {
-        this.guildConfigs.set(guildId, {
-            config: botConfig,
+    private static saveGuild(guildId: string, guild: IGuildSchema) {
+        const { _id, ...rest } = guild;
+        const guildSlot: GuildSlot = {
+            config: rest,
             updateCount: 0,
             timeoutReference: this.startTimerToDestroyGuildSlot(guildId)
-        });
+        }
+        this.guildConfigs.set(guildId, guildSlot);
+        return guildSlot;
     }
 
-    static async getConfigs(guildId: string) {
+    static async get(guildId: string) {
         const guildSlot = this.guildConfigs.get(guildId);
         const haveGuildSlotInMemory = this.guildConfigs.size < this.maxGuildSavedInMemorySize;
         if (guildSlot) {
             this.updateConfig(guildId, guildSlot);
-            return guildSlot.config;
+            return guildSlot;
         } else {
-            const botConf = await BotApplication.getConfigurations(guildId);
-            haveGuildSlotInMemory && this.saveGuild(guildId, botConf);
-            return botConf;
+            const guild = await GuildApplication.findById(guildId);
+            if ((haveGuildSlotInMemory && guild))
+                return this.saveGuild(guildId, guild);
+            else
+                return {
+                    config: {
+                        bot: {
+                            prefix: DiscordBot.Bot.defaultPrefix,
+                            messageEmbedHexColor: DiscordBot.Bot.defaultBotHexColor,
+                            locale: 'en-US'
+                        }
+                    }
+                } as GuildSlot;
         }
+    }
+
+    static async getConfigs(guildId: string) {
+        return (await this.get(guildId)).config.bot;
+    }
+
+    static async getModules(guildId: string) {
+        return (await this.get(guildId)).config?.modules;
     }
 
     static removeConfig(guildId: string) {
@@ -44,8 +67,8 @@ class GuildMemory {
             config.timeoutReference = this.startTimerToDestroyGuildSlot(guildId);
             config.updateCount++;
         } else {
-            const botConf = await BotApplication.getConfigurations(guildId);
-            this.saveGuild(guildId, botConf);
+            const guild = await GuildApplication.findById(guildId);
+            guild && this.saveGuild(guildId, guild);
         }
     }
 
