@@ -3,22 +3,30 @@ import { MessageEmbed } from "discord.js";
 import { GuildApplication } from "../application";
 import { DiscordBot } from "../config";
 import { getAvailableLocales } from "../locale";
-import { replaceValuesInString  } from "../utils/replaceValues";
+import { replaceValuesInString } from "../utils/replaceValues";
 
 import type { LocaleLabel } from "../locale";
 import type { Guild, TextChannel } from 'discord.js';
 
 export const welcomeGuild = async (guild: Guild) => {
-    const channel = guild.channels.cache.find(channel => channel.isText()) as TextChannel;
-    const localeLang = (getAvailableLocales().some(locale => guild.preferredLocale === locale) ? guild.preferredLocale : 'en-US') as LocaleLabel;
-    await GuildApplication.create(guild.id, localeLang);
-    const locale = await DiscordBot.LocaleMemory.get(localeLang);
-    await channel.send({
-        embeds: [new MessageEmbed({
-            color: DiscordBot.Bot.defaultBotHexColor,
-            description: replaceValuesInString(locale?.interaction.welcomeGuild!, { bot: DiscordBot.Bot.getDefaultVars() })
-        })]
-    });
+    try {
+        const _guild = await GuildApplication.findById(guild.id);
+        if (!_guild) {
+            const channel = guild.channels.cache.find(channel => channel.isText()) as TextChannel;
+            const localeLang = (getAvailableLocales().some(locale => guild.preferredLocale === locale) ? guild.preferredLocale : 'en-US') as LocaleLabel;
+            await GuildApplication.create(guild.id, localeLang);
+            const locale = await DiscordBot.LocaleMemory.get(localeLang);
+            await channel.send({
+                embeds: [new MessageEmbed({
+                    color: DiscordBot.Bot.defaultBotHexColor,
+                    description: replaceValuesInString(locale?.interaction.welcomeGuild!, { bot: DiscordBot.Bot.getDefaultVars() })
+                })]
+            });
+        }
+    } catch (error) {
+        setTimeout(() => { welcomeGuild(guild) }, 5000);
+        throw error;
+    }
 }
 
 const onBotJoinGuild = async (guild: Guild) => {
@@ -29,4 +37,4 @@ const onBotJoinGuild = async (guild: Guild) => {
     }
 }
 
-export default () => DiscordBot.Client.get().on('guildCreate', onBotJoinGuild);
+export default () => DiscordBot.Client.on('guildCreate', onBotJoinGuild);
