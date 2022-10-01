@@ -16,7 +16,6 @@ const argument: Record<'COMMAND' | 'LIST' | 'TARGET', BotArgumentFunc> = {
         name: 'list',
         required: false,
         description: options.locale.command.help.usage.list.description,
-        example: options.locale.command.help.usage.list.example,
         filter: createFilter(options, function (message, args) {
             return args[0]?.toLocaleLowerCase() === 'list';
         })

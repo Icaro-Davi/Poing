@@ -1,17 +1,17 @@
 import fs from 'fs';
 import path from 'path';
+import BaseLocale from './baseLocale';
+import { BaseError } from './baseLocale/error.type';
 
-import defaultLocale from './example.locale.json';
-
-export type Locale = typeof defaultLocale;
-export type LocaleErroTypes = keyof typeof defaultLocale.error;
+export type Locale = BaseLocale;
 export type LocaleLabel = 'pt-BR' | 'en-US';
+export type LocaleErroTypes = keyof BaseError;
 
 export const getAvailableLocales = () => {
-    return fs.readdirSync(path.resolve(`${__dirname}/../../locale`)).map(locale => locale.replace(/(\.json|\.ts)/g, '')) as LocaleLabel[];
+    return fs.readdirSync(path.resolve(`${__dirname}/langs`)).map(locale => locale.replace(/(\.json|\.ts)/g, '')) as LocaleLabel[];
 }
 
 export const getLocale = async (localeLang: LocaleLabel) => {
-    const _locale = (await import(`../../locale/${localeLang}`)).default as Locale;
+    const _locale = (await import(`./langs/${localeLang}`)).default as Locale;
     return _locale;
 }

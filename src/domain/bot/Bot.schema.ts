@@ -21,7 +21,8 @@ export interface IBotSchema {
 const BotSchema = new mongoose.Schema<IBotSchema>({
     prefix: {
         type: String,
-        min: 1, max: 5
+        min: 1, max: 5,
+        match: new RegExp('^[!@#$%&*\-_=+.:?/]{1,5}', 'g')
     },
     locale: {
         type: String,
