@@ -23,7 +23,11 @@ const WelcomeMemberModuleSettingsSchema = new mongoose.Schema<IWelcomeMemberModu
         required: true,
         default: true
     },
-    channelId: String,
+    channelId: {
+        type: String,
+        match: /^\d$/g,
+        max: 50
+    },
     messageText: {
         type: String,
         maxLength: 500
@@ -35,7 +39,6 @@ const WelcomeMemberModuleSettingsSchema = new mongoose.Schema<IWelcomeMemberModu
         },
         description: {
             type: String,
-            required: true,
             maxLength: 500
         },
         author: {
