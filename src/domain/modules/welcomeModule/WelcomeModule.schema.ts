@@ -25,7 +25,7 @@ const WelcomeMemberModuleSettingsSchema = new mongoose.Schema<IWelcomeMemberModu
     },
     channelId: {
         type: String,
-        match: /^\d$/g,
+        match: /^\d+$/g,
         max: 50
     },
     messageText: {
@@ -52,19 +52,20 @@ const WelcomeMemberModuleSettingsSchema = new mongoose.Schema<IWelcomeMemberModu
             }
         },
         fields: [{
+            _id: false,
             name: {
                 type: String,
-                maxLength: 50
+                maxLength: 100
             },
             value: {
                 type: String,
-                maxLength: 50
+                maxLength: 250
             },
-            inline: Boolean
+            inline: Boolean,
         }],
         footer: {
             type: String,
-            maxLength: 50
+            maxLength: 100
         },
         thumbnail: {
             type: String,
