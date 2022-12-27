@@ -6,6 +6,7 @@ import { DiscordBot } from "../config";
 import type { GuildMember, TextChannel, MessageEmbedOptions } from "discord.js";
 import type { IBotSchema } from "../domain/bot/Bot.schema";
 import { replaceValuesInObject, replaceValuesInString } from "../utils/replaceValues";
+import { IGuildSchema } from "../domain/guild/Guild.schema";
 
 type EmbedMessageOptionsType = {
     description: string;
@@ -39,10 +40,11 @@ const createEmbedMessage = (embedMessageOptions: EmbedMessageOptionsType, vars: 
     });
 }
 
-const welcomeNewGuildMember = async (member: GuildMember, guildConf: IBotSchema) => {
+const welcomeNewGuildMember = async (member: GuildMember, guildConf: Omit<IGuildSchema, '_id'>) => {
     const guild = member.guild;
 
-    const settings = await ModulesApplication.getWelcomeConfig(guild.id);
+    if (!guildConf?.modules?.welcomeMember?.settings) return;
+    const settings = await ModulesApplication.getWelcomeSettingsById(guildConf.modules.welcomeMember.settings as unknown as string);
 
     const channel = (settings?.channelId
         ? guild.channels.cache.get(settings.channelId)
@@ -51,28 +53,31 @@ const welcomeNewGuildMember = async (member: GuildMember, guildConf: IBotSchema)
     const vars = {
         bot: {
             ...DiscordBot.Bot.getDefaultVars(),
-            hexColor: guildConf.messageEmbedHexColor || DiscordBot.Bot.defaultBotHexColor
+            hexColor: guildConf.bot.messageEmbedHexColor || DiscordBot.Bot.defaultBotHexColor
         },
         guild: {
             name: guild.name,
-            picture: guild.iconURL({ dynamic: true })
+            picture: guild.iconURL({ dynamic: true }),
+            memberSize: guild.memberCount,
         },
         member: {
             username: member.user.username,
             tagNumber: member.user.discriminator,
             picture: member.displayAvatarURL(),
             mention: `<@${member.id}>`,
-            joinedAt: moment(member.user.createdAt).locale(guildConf.locale).fromNow()
+            joinedAt: moment(member.user.createdAt).locale(guildConf.bot.locale).fromNow()
         }
     }
 
-    if (settings.isMessageText) {
-        channel?.send(replaceValuesInString(settings?.messageText || 'Welcome Message Text', vars));
+    if (settings?.isMessageText) {
+        settings.messageText &&
+        channel?.send(replaceValuesInString(settings.messageText, vars));
     } else {
-        channel?.send({
-            content: vars.member.mention,
-            embeds: [createEmbedMessage(settings?.messageEmbed || { description: 'Welcome Message Embed' }, vars)]
-        });
+        (settings?.messageEmbed && settings.messageEmbed.description) &&
+            channel?.send({
+                content: vars.member.mention,
+                embeds: [createEmbedMessage(settings.messageEmbed, vars)]
+            });
     }
 }
 

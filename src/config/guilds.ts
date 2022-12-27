@@ -1,6 +1,5 @@
 import { DiscordBot } from ".";
-import { BotApplication, GuildApplication } from "../application";
-import type { IBotSchema } from "../domain/bot/Bot.schema";
+import { GuildApplication } from "../application";
 import { IGuildSchema } from "../domain/guild/Guild.schema";
 
 type GuildSlot = {

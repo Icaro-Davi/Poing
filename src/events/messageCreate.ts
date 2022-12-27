@@ -3,20 +3,8 @@ import handleError from '../utils/handleError';
 import getCommand from '../commands/command.default';
 
 import type { Message } from 'discord.js';
-import welcomeNewGuildMember from '../modules/newMemberJoined.module';
-import { welcomeGuild } from './guildCreate';
 
 export const eventMessageCreate = async (message: Message) => {
-    // remove
-    if (message.content.startsWith('!welcome')) {
-        welcomeNewGuildMember(message.member!, await DiscordBot.GuildMemory.getConfigs(message.guildId!));
-        return;
-    }
-    if (message.content.startsWith('!register-guild')) {
-        welcomeGuild(message.guild!);
-        return;
-    }
-    // end remove
     const Command = await getCommand(message);
 
     try {
