@@ -58,7 +58,7 @@ const welcomeNewGuildMember = async (member: GuildMember, guildConf: Omit<IGuild
         guild: {
             name: guild.name,
             picture: guild.iconURL({ dynamic: true }),
-            memberSize: guild.memberCount,
+            memberCount: guild.memberCount,
         },
         member: {
             username: member.user.username,
