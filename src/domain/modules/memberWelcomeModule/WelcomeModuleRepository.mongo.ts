@@ -1,9 +1,9 @@
 import WelcomeMemberModuleSchema from './WelcomeModule.schema';
 
-import type { ObjectId, ClientSession } from 'mongoose';
+import type { Types, ClientSession } from 'mongoose';
 
 class WelcomeModuleRepository {
-    static async findById(moduleId: string){
+    static async findById(moduleId: Types.ObjectId){
         try {
             return (await WelcomeMemberModuleSchema.findById(moduleId))?.toJSON();
         } catch (error) {
@@ -11,7 +11,7 @@ class WelcomeModuleRepository {
         }
     }
 
-    static async delete(welcomeMemberModuleId: ObjectId, options: { session?: ClientSession }) {
+    static async delete(welcomeMemberModuleId: Types.ObjectId, options: { session?: ClientSession }) {
         try {
             await WelcomeMemberModuleSchema.findByIdAndRemove(welcomeMemberModuleId, { session: options?.session });
         } catch (error) {
