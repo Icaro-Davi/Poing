@@ -1,13 +1,10 @@
-import { Guild } from "discord.js";
+import { createNewEvent } from ".";
 import { GuildApplication } from "../application";
-import { DiscordBot } from "../config";
 
-const onLeaveGuild = async (guild: Guild) => {
+export default createNewEvent('guildDelete', async (event, guild) => {
     try {
         await GuildApplication.delete(guild.id);
     } catch (error) {
-        console.error(error);
+        console.error('[EVENT_GUILD_DELETE] error on src.events.guildDelete \n', error);
     }
-}
-
-export default () => DiscordBot.Client.on('guildDelete', onLeaveGuild);
+});

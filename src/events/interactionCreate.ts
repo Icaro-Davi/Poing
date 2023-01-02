@@ -1,12 +1,13 @@
-import { Interaction } from "discord.js";
+import { createNewEvent } from ".";
 import execSlashCommand from "../commands/command.slash";
-import { DiscordBot } from "../config/";
 
-const onInteractionCreate = async (interaction: Interaction) => {
-    if (interaction.user.bot) return;
-    if (interaction.isCommand()) {
-        await execSlashCommand(interaction);
+export default createNewEvent('interactionCreate', async (event, interaction) => {
+    try {
+        if (interaction.user.bot) return;
+        if (interaction.isCommand()) {
+            await execSlashCommand(interaction);
+        }
+    } catch (error) {
+        console.error('[EVENT_INTERACTION_CREATE] Error on src.events.interactionCreate \n', error);
     }
-}
-
-export default () => DiscordBot.Client.on('interactionCreate', onInteractionCreate);
+});

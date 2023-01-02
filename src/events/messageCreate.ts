@@ -1,33 +1,12 @@
-import { DiscordBot } from '../config';
-import handleError from '../utils/handleError';
-import getCommand from '../commands/command.default';
+import TextCommandModule from '../modules/textCommand.module';
+import { createNewEvent } from '.';
 
-import type { Message } from 'discord.js';
-
-export const eventMessageCreate = async (message: Message) => {
-    const Command = await getCommand(message);
-
+export default createNewEvent('messageCreate', async (event, message) => {
     try {
-        if (!Command) return;
-        const { args, command, options } = Command;
-
-        const returnMessageOptions = await command?.execDefault(message, args, options);
-
-        await DiscordBot.Command.handleMessage({
-            ...returnMessageOptions, message,
-            vars: {
-                ...returnMessageOptions?.vars ? returnMessageOptions.vars : {},
-                ...options,
-            }
-        });
-
+        const promises: any[] = [];
+        promises.push(TextCommandModule.validateEvent(event, true).exec(message));
+        await Promise.all(promises);
     } catch (error) {
-        Command?.options.locale ? handleError(error, {
-            errorLocale: 'event/messageCreate',
-            locale: Command.options.locale,
-            message: message
-        }) : console.error(error);
+        console.log('[EVENT_MESSAGE_CREATE] error on src.events.messageCreate \n', error);
     }
-}
-
-export default () => DiscordBot.Client.on('messageCreate', eventMessageCreate);
+});
