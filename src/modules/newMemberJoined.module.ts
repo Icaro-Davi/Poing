@@ -1,12 +1,13 @@
-import { MessageEmbed } from "discord.js";
-import moment from "moment";
+import { Types } from 'mongoose';
+import { Guild, MessageEmbed, PartialGuildMember } from "discord.js";
 import { ChannelApplication, ModulesApplication } from "../application";
-import { DiscordBot } from "../config";
 
-import type { GuildMember, TextChannel, MessageEmbedOptions } from "discord.js";
-import type { IBotSchema } from "../domain/bot/Bot.schema";
 import { replaceValuesInObject, replaceValuesInString } from "../utils/replaceValues";
-import { IGuildSchema } from "../domain/guild/Guild.schema";
+import { getBotVars } from "../utils/bot";
+import { createNewModule } from ".";
+import type { IGuildSchema } from "../domain/guild/Guild.schema";
+import type { IWelcomeMemberModuleSettings } from "../domain/modules/memberWelcomeModule/WelcomeModule.schema";
+import type { GuildMember, TextChannel, MessageEmbedOptions } from "discord.js";
 
 type EmbedMessageOptionsType = {
     description: string;
@@ -40,45 +41,42 @@ const createEmbedMessage = (embedMessageOptions: EmbedMessageOptionsType, vars: 
     });
 }
 
-const welcomeNewGuildMember = async (member: GuildMember, guildConf: Omit<IGuildSchema, '_id'>) => {
-    const guild = member.guild;
+export async function createMessage<S extends IWelcomeMemberModuleSettings>({ discordGuild, guildMember, moduleSettings, guildConf }: { guildMember: GuildMember | PartialGuildMember, discordGuild: Guild, moduleSettings: S, guildConf: IGuildSchema }) {
+    const channel = (moduleSettings?.channelId
+        ? discordGuild.channels.cache.get(moduleSettings.channelId)
+        : await ChannelApplication.getMainTextChannel(discordGuild)) as TextChannel;
 
-    if (!guildConf?.modules?.welcomeMember?.settings) return;
-    const settings = await ModulesApplication.getWelcomeSettingsById(guildConf.modules.welcomeMember.settings as unknown as string);
+    const vars = getBotVars({ discordGuild, guildConf: guildConf as IGuildSchema, guildMember: guildMember });
 
-    const channel = (settings?.channelId
-        ? guild.channels.cache.get(settings.channelId)
-        : await ChannelApplication.getMainTextChannel(guild)) as TextChannel;
-
-    const vars = {
-        bot: {
-            ...DiscordBot.Bot.getDefaultVars(),
-            hexColor: guildConf.bot.messageEmbedHexColor || DiscordBot.Bot.defaultBotHexColor
-        },
-        guild: {
-            name: guild.name,
-            picture: guild.iconURL({ dynamic: true }),
-            memberCount: guild.memberCount,
-        },
-        member: {
-            username: member.user.username,
-            tagNumber: member.user.discriminator,
-            picture: member.displayAvatarURL(),
-            mention: `<@${member.id}>`,
-            joinedAt: moment(member.user.createdAt).locale(guildConf.bot.locale).fromNow()
-        }
-    }
-
-    if (settings?.isMessageText) {
-        settings.messageText &&
-        channel?.send(replaceValuesInString(settings.messageText, vars));
+    if (moduleSettings?.isMessageText) {
+        moduleSettings.messageText &&
+            channel?.send(replaceValuesInString(moduleSettings.messageText, vars));
     } else {
-        (settings?.messageEmbed && settings.messageEmbed.description) &&
+        (moduleSettings?.messageEmbed && moduleSettings.messageEmbed.description) &&
             channel?.send({
                 content: vars.member.mention,
-                embeds: [createEmbedMessage(settings.messageEmbed, vars)]
+                embeds: [createEmbedMessage(moduleSettings.messageEmbed, vars)]
             });
     }
 }
 
-export default welcomeNewGuildMember;
+const welcomeNewGuildMember = async (member: GuildMember, guildConf: Omit<IGuildSchema, '_id'>) => {
+    try {
+        const moduleId: Types.ObjectId = guildConf.modules?.welcomeMember?.settings as unknown as Types.ObjectId;
+        if (Types.ObjectId.isValid(moduleId)) {
+            const guild = member.guild;
+            const settings = await ModulesApplication.getWelcomeSettingsById(moduleId);
+            if (settings)
+                await createMessage({
+                    discordGuild: guild,
+                    guildConf: guildConf as IGuildSchema,
+                    guildMember: member,
+                    moduleSettings: settings
+                });
+        }
+    } catch (error) {
+        console.error('[ERROR_MODULE_NEW_MEMBER_JOINED] Error on src.modules.newMemberJoined.module.ts \n', error);
+    }
+}
+
+export default createNewModule('guildMemberAdd', welcomeNewGuildMember);
