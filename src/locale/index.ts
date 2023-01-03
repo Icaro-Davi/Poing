@@ -12,6 +12,10 @@ export const getAvailableLocales = () => {
 }
 
 export const getLocale = async (localeLang: LocaleLabel) => {
-    const _locale = (await import(`./langs/${localeLang}`)).default as Locale;
-    return _locale;
+    try {
+        const _locale = (await import(`./langs/${localeLang}`)).default as Locale;
+        return _locale;
+    } catch (error) {
+        throw error;
+    }
 }

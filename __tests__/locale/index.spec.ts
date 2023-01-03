@@ -1,13 +1,12 @@
-import LocaleExample from '../../src/locale/example.locale.json';
+import LocaleExample from '../../src/locale/langs/pt-BR';
 import fs from 'fs';
 import path from 'path';
 import { Locale } from '../../src/locale';
 
 describe('Test Locale Files', () => {
-    it('All locale .json should exact same of example.locale.json', async () => {
-        const localeFilePath = `${__dirname}/../../locale`;
+    it('All locales should have same keys', async () => {
+        const localeFilePath = `${__dirname}/../../src/locale/langs`;
         const localeFileList = fs.readdirSync(path.resolve(localeFilePath));
-
         const searchDiferenceBetweenLocaleFilesAndExample = (LocaleExample: any, locale: any, fileName: string): boolean => {
             const verify = (key: string) => {
                 if (typeof LocaleExample[key] === 'string') {
