@@ -7,8 +7,15 @@ import type { ExecuteCommand } from "../../index.types";
 const defaultCommand: ExecuteCommand = async function (message, args, options) {
     const banMember = args.get(argument.MEMBER(options).name);
     const list = args.get(argument.LIST(options).name);
+    const softBan = args.get(argument.SOFT_BAN(options).name);
 
     if (banMember) {
+
+        if(softBan){
+            console.log(banMember);
+            return { type: 'message', content: 'User soft banned!' };
+        }
+
         const days = args.get(argument.DAYS(options).name);
         const reason = args.get(argument.REASON(options).name);
 

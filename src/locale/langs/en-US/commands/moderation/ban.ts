@@ -17,6 +17,9 @@ const ban: BaseBanCommand = {
         "list": {
             "description": "List banned guild members.",
         },
+        "soft_ban": {
+            "description": "Ban a member temporarily and then unban, delete many messages from the banned member."
+        },
         "days": {
             "description": "Number of days between \"1 and 7\" representing messages to be deleted, default value is 0.",
         },

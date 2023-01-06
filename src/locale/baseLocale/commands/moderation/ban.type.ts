@@ -22,6 +22,9 @@ export type BaseBanCommand = {
         list: {
             description: string;
         };
+        soft_ban: {
+            description: string;
+        }
         days: {
             description: string;// Bot
         };

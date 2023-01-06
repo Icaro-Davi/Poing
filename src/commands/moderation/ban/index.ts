@@ -29,6 +29,14 @@ const command: BotCommandFunc = ({ locale }) => ({
             ...argument.LIST({ locale }),
             type: 'SUB_COMMAND',
             description: `[${locale.category.moderation}] ${locale.command.ban.usage.list.description}`
+        },
+        {
+            ...argument.SOFT_BAN({ locale }),
+            type: 'SUB_COMMAND',
+            description: `[${locale.category.moderation}] ${locale.command.ban.usage.soft_ban.description}`,
+            options: [
+                { ...argument.TARGET_MEMBER({ locale }), type: 'USER' }
+            ]
         }
     ],
     execSlash: slashCommand,

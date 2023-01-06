@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 import path from 'path';
 import fs from 'fs';
 import { DiscordBot } from '.';
-import { replaceValuesInString  } from '../utils/replaceValues';
+import { replaceValuesInString } from '../utils/replaceValues';
 
 import type { BotCommand, BotCommandFunc } from '../commands/index.types';
 import type { Message, MessageEmbed, MessageOptions, ReplyMessageOptions, CommandInteraction, MessageComponent } from 'discord.js';
@@ -36,15 +36,28 @@ class Commands {
         const commands = DiscordBot.Client.get().application?.commands;
         const locale = DiscordBot.LocaleMemory.get('en-US');
 
+        const reduceStringSize = (content: string, offsetLength: number = 0) => {
+            const contentCaractereSize = 100 - offsetLength;
+            if (content.length > contentCaractereSize) {
+                console.warn('[WARN] Description on src.config.Commands.loadSlashCommands is exceeding 100 caracteres\n- - -discord_description: ', `${content.slice(0, contentCaractereSize - 3)}...`);
+                return `${content.slice(0, contentCaractereSize - 3)}...`;
+            }
+            else {
+                return content;
+            }
+        }
+
         this.Collection.forEach(botCommand => {
             (async () => {
                 const command = botCommand({ locale });
                 if (!command.execSlash) return;
-                const descriptionLength = 100 - command.category.length - 6;
                 commands?.create({
                     name: command.name,
-                    description: `[${command.category}] ${command.description.slice(0, descriptionLength)}${command.description.length > descriptionLength ? '...' : ''}`,
-                    options: command?.slashCommand
+                    description: reduceStringSize(`[${command.category}] ${command.description}`),
+                    options: command?.slashCommand?.map(option => ({
+                        ...option,
+                        description: reduceStringSize(option.description)
+                    }))
                 })
             })();
         });

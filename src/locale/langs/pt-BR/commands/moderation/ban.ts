@@ -18,6 +18,9 @@ const ban: BaseBanCommand = {
             "description": "Irei mostrar a lista dos banidos do servidor.",
 
         },
+        "soft_ban": {
+            "description": "Aplica ban em um membro temporariamente e depois desfaz o ban, isso faz com que todas as mensagens desse membro sejam deletadas do servidor."
+        },
         "days": {
             "description": "Número de dias entre \"1 e 7\" que representa as mensagens que serão deletadas, valor padrão é 0.",
 
