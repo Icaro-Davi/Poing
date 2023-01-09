@@ -10,9 +10,12 @@ const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER' |
         required: false,
         description: options.locale.usage.argument.member.description,
         filter: createFilter(options, async (message, args) => {
-            if (args[0]) {
-                const member = message.mentions.members?.first() ?? (await Member.find({ guild: message.guild!, member: args[0] }));
+            const memberId = args.find(arg => /^\d+$/.test(arg));
+            if (memberId) {
+                const member = await Member.find({ guild: message.guild!, member: memberId });
                 if (member) return member;
+            } else {
+                return message.mentions.members?.first() ?? undefined;
             }
         })
     }),
@@ -31,6 +34,7 @@ const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER' |
         required: false,
         description: options.locale.command.ban.usage.soft_ban.description,
         filter: createFilter(options, (_, args) => {
+            console.log('test soft ban', args[0].toLocaleLowerCase() === 'soft-ban');
             if (args[0] && args[0].toLocaleLowerCase() === 'soft-ban') {
                 return true;
             }

@@ -10,8 +10,15 @@ const command: BotCommandFunc = ({ locale }) => ({
     description: locale.command.ban.description,
     allowedPermissions: ['BAN_MEMBERS'],
     usage: [
-        [argument.MEMBER({ locale, required: true }), argument.LIST({ locale, required: true })],
-        [argument.DAYS({ locale })],
+        [
+            argument.MEMBER({ locale, required: false }),
+            argument.SOFT_BAN({ locale, required: true }),
+            argument.LIST({ locale, required: true }),
+        ],
+        [
+            argument.DAYS({ locale }),
+            argument.MEMBER({ locale, required: true }),
+        ],
         [argument.REASON({ locale })]
     ],
     slashCommand: [

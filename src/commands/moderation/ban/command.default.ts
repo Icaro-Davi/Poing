@@ -1,6 +1,7 @@
 import argument from "./command.args";
 import guildBanMember from './banMember.func';
 import listBannedMembers from "./listBannedMembers.func";
+import softBanMember from "./softBan.func";
 
 import type { ExecuteCommand } from "../../index.types";
 
@@ -10,10 +11,9 @@ const defaultCommand: ExecuteCommand = async function (message, args, options) {
     const softBan = args.get(argument.SOFT_BAN(options).name);
 
     if (banMember) {
-
         if(softBan){
-            console.log(banMember);
-            return { type: 'message', content: 'User soft banned!' };
+            softBanMember(banMember)
+            return { type: 'message', content: `soft-ban: ${softBan}, member: ${banMember.user.username}` };
         }
 
         const days = args.get(argument.DAYS(options).name);

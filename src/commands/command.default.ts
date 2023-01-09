@@ -19,10 +19,11 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
         for (let args of options.command.usage) {
             const checkedArgs: { failed: boolean; required: boolean; }[] = [];
             for (let arg of args) {
-                const filterResult = arg.filter ? await arg.filter(options.message, options.args, options.locale, filters) : undefined;
-                filters[`${arg.name}`] = filterResult?.data;
-                checkedArgs.push({ failed: typeof filterResult?.data === 'undefined', required: !!filterResult?.required });
-                if (!filterResult?.next) break;
+                if (typeof filters[`${arg.name}`] === 'undefined'){
+                    const filterResult = arg.filter ? await arg.filter(options.message, options.args, options.locale, filters) : undefined;
+                    filters[`${arg.name}`] = filterResult?.data;
+                    checkedArgs.push({ failed: typeof filterResult?.data === 'undefined', required: !!filterResult?.required });
+                }
             }
             if (checkedArgs.length && checkedArgs.every(arg => arg.required && arg.failed)) {
                 if (!options.args.length)
@@ -30,6 +31,8 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
                 else throw new Error(options.locale.interaction.verifyTheArguments);
             }
         }
+
+        console.log(args)
 
         return args;
     } catch (err: any) {

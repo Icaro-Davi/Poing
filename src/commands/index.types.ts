@@ -11,7 +11,7 @@ export type BotCommandCategory = 'Administration' | 'Moderation' | 'Utility';
 export type BotGetHelp = (customPrefix?: string) => MessageEmbed;
 export type BotUsage = BotArgument[][];
 export type CreateFilterFunc = (message: Message, args: string[], locale: Locale, data?: any) => any;
-export type FilterFunc = (message: Message, args: string[], locale: Locale, data?: any) => Promise<{ data: any, next: boolean, required?: boolean; }>;
+export type FilterFunc = (message: Message, args: string[], locale: Locale, data?: any) => Promise<{ data: any, required?: boolean; }>;
 
 export type BotDefinitions = {
     name: string;
@@ -36,7 +36,7 @@ export type BotArgument = {
     filter?: FilterFunc;
 };
 
-export type BotArgumentFunc = (options: { locale: Locale; required?: boolean; }) => BotArgument;
+export type BotArgumentFunc = (options: { locale: Locale; required?: boolean; argIndex?: number }) => BotArgument;
 
 export type ExecuteCommandOptions = {
     locale: Locale;
