@@ -2,7 +2,7 @@ import { CommandInteraction, GuildMember, Message, User } from "discord.js";
 import { confirmButtons } from "../../../components/messageActionRow";
 import { confirm, PM } from "../../../components/messageEmbed";
 import { Locale } from "../../../locale";
-import { onlyMessageAuthorCanUse } from "../../../utils/collectorFilters";
+import { onlyMessageAuthorCanUse } from "../../../components/collectorFilters";
 import handleError from "../../../utils/handleError";
 import { RequireAtLeastOne } from "../../../utils/typescript.funcs";
 import { BotDefinitions, ExecuteCommandReturn } from "../../index.types";
@@ -52,7 +52,10 @@ const banMember = async ({ message, interaction, options }: RequireAtLeastOne<Ba
             let buttonId = buttonInteraction.first()?.customId;
             if (buttonId === component.button.yesId) {
                 let promises = [];
-                promises.push(options.banMember!.ban({ days: Number(options.days) ?? 0, reason: options.reason ?? options.locale.command.ban.interaction.bannedWithNoReason }));
+                promises.push(options.banMember!.ban({
+                    ...options.days ? { deleteMessageSeconds: 60 * 60 * 24 * Number(options.days) } : {},
+                    reason: options.reason ?? options.locale.command.ban.interaction.bannedWithNoReason
+                }));
                 await Promise.all(promises);
                 options.banMember!.send({
                     embeds: [PM.toBanishedMember({

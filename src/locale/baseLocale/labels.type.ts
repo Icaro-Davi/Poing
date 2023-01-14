@@ -8,4 +8,5 @@ export type BaseLabels = {
     muted: string;
     unmute: string;
     reason: string;
+    usedCommand: string;  // vars: {command}
 }

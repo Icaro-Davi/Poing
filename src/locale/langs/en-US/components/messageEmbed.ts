@@ -19,6 +19,10 @@ const messageEmbed: BaseMessageEmbed = {
         "fieldDays": "Deleting **{days}** days messages.",
         "fieldReason": "Reason for banishment"
     },
+    "confirmSoftBan": {
+        "title": "Please confirm soft ban!",
+        "description": "By pressing yes the member will be banned and unbanned at the same time and their messages of up to 7 days will be removed."
+    },
     "confirmKickMember": {
         "title": "Please confirm the kick!",
         "fieldReason": "Reason for kick"

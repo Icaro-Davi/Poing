@@ -9,7 +9,8 @@ const labels: BaseLabels = {
     "roles": "Roles",
     "muted": "Muted",
     "unmute": "Unmute",
-    "reason": "Reason"
+    "reason": "Reason",
+    "usedCommand": "Used the {command} command"
 }
 
 export default labels;

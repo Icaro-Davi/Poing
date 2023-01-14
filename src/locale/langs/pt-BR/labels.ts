@@ -9,7 +9,8 @@ const labels: BaseLabels = {
     roles: "Cargos",
     muted: "Silenciado",
     unmute: "Desmuta",
-    reason: "Motivo"
+    reason: "Motivo",
+    usedCommand: "Usou o comando {command}"
 }
 
 export default labels;

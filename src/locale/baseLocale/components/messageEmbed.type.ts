@@ -19,6 +19,11 @@ export type BaseConfirmBanishMember = {
     fieldReason: string;
 }
 
+export type BaseConfirmSoftBan = {
+    title: string;
+    description: string;
+}
+
 export type BaseConfirmKickMember = {
     title: string;
     fieldReason: string;
@@ -38,6 +43,7 @@ export type BaseMessageEmbed = {
     getHelp: BaseGetHelp;
     privateMessage: BasePrivateMessage;
     confirmBanishMember: BaseConfirmBanishMember;
+    confirmSoftBan: BaseConfirmSoftBan;
     confirmKickMember: BaseConfirmKickMember;
     messageToBanishedMember: BaseMessageToBanishedMember;
     memberStatus: BaseMemberStatus;

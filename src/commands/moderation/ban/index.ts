@@ -12,7 +12,7 @@ const command: BotCommandFunc = ({ locale }) => ({
     usage: [
         [
             argument.MEMBER({ locale, required: false }),
-            argument.SOFT_BAN({ locale, required: true }),
+            argument.SOFT({ locale, required: true }),
             argument.LIST({ locale, required: true }),
         ],
         [
@@ -38,7 +38,7 @@ const command: BotCommandFunc = ({ locale }) => ({
             description: `[${locale.category.moderation}] ${locale.command.ban.usage.list.description}`
         },
         {
-            ...argument.SOFT_BAN({ locale }),
+            ...argument.SOFT({ locale }),
             type: 'SUB_COMMAND',
             description: `[${locale.category.moderation}] ${locale.command.ban.usage.soft_ban.description}`,
             options: [

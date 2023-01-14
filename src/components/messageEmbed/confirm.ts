@@ -1,6 +1,6 @@
 import { MessageEmbed } from "discord.js"
 import MD from "../../utils/md";
-import { replaceValuesInString  } from "../../utils/replaceValues";
+import { replaceValuesInString } from "../../utils/replaceValues";
 
 import type { ColorResolvable, GuildMember } from 'discord.js';
 import type { Locale } from "../../locale";
@@ -40,8 +40,18 @@ const kickMember = ({ locale, reason, member, authorTag, authorUrl, botColor }: 
         .setThumbnail(member.user?.avatarURL() || '')
 }
 
+const softBanMember = ({ locale, botColor, authorTag, authorUrl, member }: Options) => {
+    return new MessageEmbed()
+        .setColor(botColor)
+        .setAuthor({ name: authorTag, iconURL: authorUrl })
+        .setTitle(MD.bold.b(locale.messageEmbed.confirmSoftBan.title))
+        .setDescription(locale.messageEmbed.confirmSoftBan.description)
+        .setThumbnail(member.user?.avatarURL() ?? '');
+}
+
 export default {
     banMember,
-    kickMember
+    kickMember,
+    softBanMember
 };
 

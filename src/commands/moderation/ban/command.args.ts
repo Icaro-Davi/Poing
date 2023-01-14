@@ -4,7 +4,7 @@ import { createFilter } from "../../argument.utils";
 
 import type { BotArgumentFunc } from "../../index.types";
 
-const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER' | 'SOFT_BAN', BotArgumentFunc> = {
+const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER' | 'SOFT', BotArgumentFunc> = {
     MEMBER: (options) => ({
         name: 'member',
         required: false,
@@ -29,13 +29,12 @@ const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER' |
             }
         })
     }),
-    SOFT_BAN: (options) => ({
-        name: 'soft-ban',
+    SOFT: (options) => ({
+        name: 'soft',
         required: false,
         description: options.locale.command.ban.usage.soft_ban.description,
         filter: createFilter(options, (_, args) => {
-            console.log('test soft ban', args[0].toLocaleLowerCase() === 'soft-ban');
-            if (args[0] && args[0].toLocaleLowerCase() === 'soft-ban') {
+            if (args[0] && args[0].toLocaleLowerCase() === 'soft') {
                 return true;
             }
         })
