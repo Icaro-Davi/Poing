@@ -1,7 +1,7 @@
 import { CommandInteraction, GuildMember, Message } from "discord.js";
 import { confirmButtons } from "../../../components/messageActionRow";
 import { confirm, PM } from "../../../components/messageEmbed";
-import { onlyMessageAuthorCanUse } from "../../../utils/collectorFilters";
+import { onlyMessageAuthorCanUse } from "../../../components/collectorFilters";
 import handleError from "../../../utils/handleError";
 import { RequireAtLeastOne } from "../../../utils/typescript.funcs";
 import { ExecuteCommandOptions } from "../../index.types";

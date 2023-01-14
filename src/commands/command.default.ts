@@ -31,9 +31,6 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
                 else throw new Error(options.locale.interaction.verifyTheArguments);
             }
         }
-
-        console.log(args)
-
         return args;
     } catch (err: any) {
         handleError(err, {

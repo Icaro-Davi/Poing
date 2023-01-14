@@ -1,7 +1,7 @@
 import { CommandInteraction, Guild, Message } from "discord.js";
 import { createPaginationButtons } from "../../../components/messageActionRow";
 import { paginationOfBannedMembers } from "../../../components/messageEmbed";
-import { onlyWithPermission } from "../../../utils/collectorFilters";
+import { onlyWithPermission } from "../../../components/collectorFilters";
 import handleError from "../../../utils/handleError";
 import { RequireAtLeastOne } from "../../../utils/typescript.funcs";
 import { ExecuteCommandOptions } from "../../index.types";
