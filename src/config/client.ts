@@ -16,6 +16,7 @@ class Client {
             Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
             Intents.FLAGS.GUILD_MESSAGE_REACTIONS
         ],
+        partials: ['CHANNEL', 'MESSAGE', 'REACTION']
     });
 
     static async start() {
