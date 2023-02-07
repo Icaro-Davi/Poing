@@ -9,4 +9,6 @@ export type BaseLabels = {
     unmute: string;
     reason: string;
     usedCommand: string;  // vars: {command}
+    added: string;
+    removed: string;
 }

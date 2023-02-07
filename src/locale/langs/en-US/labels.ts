@@ -10,7 +10,9 @@ const labels: BaseLabels = {
     "muted": "Muted",
     "unmute": "Unmute",
     "reason": "Reason",
-    "usedCommand": "Used the {command} command"
+    "usedCommand": "Used the {command} command",
+    "added": "Added",
+    "removed": "Removed"
 }
 
 export default labels;

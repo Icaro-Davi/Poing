@@ -3,6 +3,7 @@ export interface BaseMember {
     kickFromServer: string;
     isNotKickable: string;
     notFound: string;
+    botDoesNotHavePermission: string;
     total: string;
 }
 

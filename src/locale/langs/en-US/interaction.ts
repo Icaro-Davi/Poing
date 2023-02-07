@@ -17,7 +17,8 @@ const interaction: BaseInteraction = {
         "kickFromServer": "KIC-KA-DO hahaha 😈",
         "isNotKickable": "My attack had no effect, i couldn't kick him.",
         "notFound": "I couldn't find this member :c",
-        "total": "Total members"
+        "total": "Total members",
+        "botDoesNotHavePermission": "I'm not allowed to do that, sorry! Try checking my role in the role hierarchy."
     }
 }
 

@@ -1,4 +1,5 @@
-import { BaseModule, BaseWelcomeMemberModule } from "../../baseLocale/module.type";
+import { BaseModule, BaseWelcomeMemberModule } from "../../../baseLocale/module.type";
+import roleByInteraction from './roleByInteraction';
 
 const welcomeMember: BaseWelcomeMemberModule = {
     "messageText": "**👋 Bem vindo {member.mention} \nDivirta-se conosco!!**",
@@ -12,7 +13,8 @@ const welcomeMember: BaseWelcomeMemberModule = {
 }
 
 const modules: BaseModule = {
-    welcomeMember
+    welcomeMember,
+    roleByInteraction
 }
 
 export default modules;

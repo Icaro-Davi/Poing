@@ -17,7 +17,8 @@ const interaction: BaseInteraction = {
         kickFromServer: "KIC-KA-DO muhahahaha 😈",
         isNotKickable: "Meu attack não surtiu efeito, não consegui kickar ele.",
         notFound: "Eu não pude encontrar esse membro :c",
-        total: "Total de membros"
+        total: "Total de membros",
+        botDoesNotHavePermission: "Não tenho permissão para fazer isso, desculpe! Tente verificar meu cargo na hierarquia de cargos do discord."
     }
 }
 

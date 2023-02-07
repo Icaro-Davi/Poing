@@ -1,3 +1,5 @@
+import roleByInteraction from "./modules/roleByInteraction";
+
 /**
  * BaseWelcomeMemberModule Variables, e.g: "The member name is {member.username}"
  *
@@ -22,4 +24,5 @@ export type BaseWelcomeMemberModule = {
 
 export interface BaseModule {
     welcomeMember: BaseWelcomeMemberModule;
+    roleByInteraction: roleByInteraction;
 }
