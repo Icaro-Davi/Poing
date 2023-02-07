@@ -1,5 +1,5 @@
-import ConfirmButtons from "../../../components/WaiterEvent/ConfirmButtons";
 import { confirm } from '../../../components/messageEmbed/';
+import ConfirmButtons, { ConfirmComponentAnswerOptionsParams } from "../../../components/WaiterEvent/ConfirmButtons";
 
 import type { CommandInteraction, GuildMember, Message, User } from "discord.js";
 import type { Locale } from "../../../locale";
@@ -35,7 +35,7 @@ const softBan = async (bannedMember: GuildMember, author: User, options: { inter
             interactionProps: { ...props, ephemeral: true }
         })
         .onCollect({
-            onAnswerYes: async (_options) => {
+            onAnswerYes: async (_options: ConfirmComponentAnswerOptionsParams) => {
                 const reason = `${author.id}: ${author.username}#${author.discriminator} "${options.locale.labels.usedCommand.replaceAll('{command}', 'ban soft-ban')}"`;
                 await bannedMember.ban({ reason, deleteMessageSeconds: 604800 }); // 7 days
                 await bannedMember.guild.bans.remove(bannedMember.id, reason);
@@ -47,7 +47,7 @@ const softBan = async (bannedMember: GuildMember, author: User, options: { inter
                     await options.interaction.editReply({ ...props, content: '🔨' });
                 }
             },
-            onAnswerNo: async (_options) => {
+            onAnswerNo: async (_options: ConfirmComponentAnswerOptionsParams) => {
                 if (_options.messageReply) {
                     await _options.messageReply.delete();
                     return;

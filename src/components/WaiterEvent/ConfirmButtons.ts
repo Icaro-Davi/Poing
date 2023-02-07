@@ -18,7 +18,10 @@ const ConfirmButtonComponent = (options: { componentId: string; locale: Locale }
     return { component: row, id: { yes, no } };
 }
 
-type AnswerFuncCallback = (options: { messageReply?: Message<boolean> }) => void;
+export type ConfirmComponentAnswerOptionsParams = {
+    messageReply?: Message<boolean>;
+}
+type AnswerFuncCallback = (options: ConfirmComponentAnswerOptionsParams) => void;
 
 class ConfirmComponent {
     private readonly locale: Locale;
@@ -38,7 +41,7 @@ class ConfirmComponent {
         });
     }
 
-    setMessage(options: { message?: Message<boolean>, messageProps: ReplyMessageOptions }) {
+    setMessage(options: { message?: Message<boolean>, messageProps: ReplyMessageOptions }): Omit<ConfirmComponent, 'setMessage'> {
         if (options.message) {
             this.messageProps = options.messageProps;
             this.messageReply = options.message;
@@ -52,7 +55,7 @@ class ConfirmComponent {
         return this as Omit<ConfirmComponent, 'setMessage'>;
     }
 
-    setInteraction(options: { interaction?: CommandInteraction, interactionProps: InteractionReplyOptions }) {
+    setInteraction(options: { interaction?: CommandInteraction, interactionProps: InteractionReplyOptions }): Omit<ConfirmComponent, 'setInteraction'> {
         if (options.interaction) {
             this.interaction = options.interaction;
             this.interactionProps = options.interactionProps;
