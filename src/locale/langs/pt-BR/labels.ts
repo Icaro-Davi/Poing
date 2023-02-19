@@ -12,7 +12,10 @@ const labels: BaseLabels = {
     reason: "Motivo",
     usedCommand: "Usou o comando {command}",
     added: "Adicionado",
-    removed: "Removido"
+    removed: "Removido",
+    roleName: {
+        "MANAGE_ROLES": "Gerenciar Cargos"
+    }
 }
 
 export default labels;

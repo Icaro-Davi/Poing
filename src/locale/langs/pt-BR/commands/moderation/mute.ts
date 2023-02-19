@@ -9,10 +9,11 @@ const mute: BaseMuteCommand = {
         "mutedSuccessful": "O membro {memberMutedName} foi mutado por {author} e acabará {duration}.",
         "memberAlreadyMuted": "O membro já foi mutado, remova o cargo e tente novamente.",
         "needMuteRoleId": "Precisa me falar um cargo que eu possa \"Mutar\", use `!mute --a \"Nome do cargo | Id do cargo | @Cargo\"` para adicionar um.",
+        "muteRoleCreated": "Cargo {role} criado.",
         "muteRoleAdded": "Irei lembrar esse cargo :3 até você me falar outro",
         "cannotRegisterRole": "Não consegui registrar esse cargo.",
         "roleNotFound": "Não encontrei esse cargo no servidor.",
-        "needRegisterRole": "Precisa registrar um cargo, use `!help mute`",
+        "needRegisterRole": "Precisa registrar um cargo, use `!help mute` para mais informações.",
         "cannotMuteAdmin": "Não consigo... esse membro... o poder dele é sem limites D:",
         "arg": {
             "time": {

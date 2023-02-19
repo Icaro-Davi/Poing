@@ -51,6 +51,7 @@ export type BotCommand = {
     category: BotCommandCategory | string;
     description: string;
     allowedPermissions?: PermissionResolvable[];
+    botPermissions?: PermissionResolvable[];
     slashCommand?: ApplicationCommandOptionData[];
     usage?: BotUsage;
 }

@@ -12,7 +12,10 @@ const labels: BaseLabels = {
     "reason": "Reason",
     "usedCommand": "Used the {command} command",
     "added": "Added",
-    "removed": "Removed"
+    "removed": "Removed",
+    "roleName": {
+        "MANAGE_ROLES": "Manage Roles"
+    }
 }
 
 export default labels;

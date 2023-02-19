@@ -10,6 +10,7 @@ const interaction: BaseInteraction = {
     "youCantUseThisButton": "This button has a powerful magic that prevents you from using it!",
     "iDidntFoundAnything": "I couldn't find anything.",
     "youDontHavePermission": "You are not allowed to do it.",
+    "botDontHavePermissions": "I need the {role} role to continue.",
     "needARole": "I need the server to have a role called {role}.",
     "verifyTheArguments": "Argument invalid, verify the arguments you passed to the command.",
     "member": {
@@ -18,7 +19,7 @@ const interaction: BaseInteraction = {
         "isNotKickable": "My attack had no effect, i couldn't kick him.",
         "notFound": "I couldn't find this member :c",
         "total": "Total members",
-        "botDoesNotHavePermission": "I'm not allowed to do that, sorry! Try checking my role in the role hierarchy."
+        "botDoesNotHavePermission": "I'm not allowed to do that, sorry. Try to verify that you have the required permissions or checking my role in the role hierarchy."
     }
 }
 

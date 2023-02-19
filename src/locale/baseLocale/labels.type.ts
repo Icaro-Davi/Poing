@@ -1,3 +1,5 @@
+import { PermissionString } from "discord.js";
+
 export type BaseLabels = {
     nickname: string;
     name: string;
@@ -11,4 +13,5 @@ export type BaseLabels = {
     usedCommand: string;  // vars: {command}
     added: string;
     removed: string;
+    roleName: Partial<Record<PermissionString, string>>;
 }

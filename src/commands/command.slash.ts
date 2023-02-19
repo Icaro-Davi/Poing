@@ -2,6 +2,7 @@ import { BotApplication } from "../application";
 import { DiscordBot } from "../config";
 
 import type { CommandInteraction } from "discord.js";
+import { isAllowedToUseThisCommand } from "./command.utils";
 
 const execSlashCommand = async (interaction: CommandInteraction) => {
     try {
@@ -12,7 +13,11 @@ const execSlashCommand = async (interaction: CommandInteraction) => {
 
         const locale = DiscordBot.LocaleMemory.get(botConf.locale);
         const botCommand = Command({ locale });
+
         if (!botCommand || !botCommand.execSlash) return;
+
+        if (await isAllowedToUseThisCommand({ interaction, allowedPermissions: botCommand.allowedPermissions, locale })) return;
+        if (await isAllowedToUseThisCommand({ interaction, allowedPermissions: botCommand.botPermissions, locale, isBot: true })) return;
 
         const returnMessageOptions = await botCommand.execSlash(interaction, {
             locale,

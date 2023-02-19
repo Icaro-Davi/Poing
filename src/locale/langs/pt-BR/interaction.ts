@@ -10,6 +10,7 @@ const interaction: BaseInteraction = {
     youCantUseThisButton: "Este botão possui uma magia muito forte que estar te impedindo de usar!",
     iDidntFoundAnything: "Não consegui encontrar nada.",
     youDontHavePermission: "Você não tem permissão para fazer isso.",
+    botDontHavePermissions: "Preciso da permissão {role} para continuar.",
     needARole: "Preciso que o servidor tenha um cargo chamado {role}.",
     verifyTheArguments: "Argumento invalido, verifique o que foi passado para o comando.",
     member: {
@@ -18,7 +19,7 @@ const interaction: BaseInteraction = {
         isNotKickable: "Meu attack não surtiu efeito, não consegui kickar ele.",
         notFound: "Eu não pude encontrar esse membro :c",
         total: "Total de membros",
-        botDoesNotHavePermission: "Não tenho permissão para fazer isso, desculpe! Tente verificar meu cargo na hierarquia de cargos do discord."
+        botDoesNotHavePermission: "Não tenho permissão para fazer isso, desculpe. Tente verificar se tem as permissões necessárias ou meu cargo na hierarquia de cargos do Discord."
     }
 }
 

@@ -1,9 +1,10 @@
 import { DiscordBot } from '../config';
 import handleError from '../utils/handleError';
 
-import type { Locale } from '../locale'
+import type { Message } from 'discord.js';
+import type { Locale } from '../locale';
+import { isAllowedToUseThisCommand } from './command.utils';
 import type { BotCommand, ExecuteCommandOptions } from './index.types';
-import type { Message, PermissionResolvable } from 'discord.js';
 
 export const getArgs = async (options: { message: Message, command: BotCommand, args: string[], locale: Locale }) => {
     try {
@@ -19,7 +20,7 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
         for (let args of options.command.usage) {
             const checkedArgs: { failed: boolean; required: boolean; }[] = [];
             for (let arg of args) {
-                if (typeof filters[`${arg.name}`] === 'undefined'){
+                if (typeof filters[`${arg.name}`] === 'undefined') {
                     const filterResult = arg.filter ? await arg.filter(options.message, options.args, options.locale, filters) : undefined;
                     filters[`${arg.name}`] = filterResult?.data;
                     checkedArgs.push({ failed: typeof filterResult?.data === 'undefined', required: !!filterResult?.required });
@@ -40,10 +41,6 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
             customMessage: err.message,
         });
     }
-}
-
-export const memberDoesNotHavePermissions = (message: Message, allowedPermissions: PermissionResolvable[]) => {
-    return !allowedPermissions.some(permission => message.member?.permissions.has(permission));
 }
 
 export const findInMessageAValidPrefix = (message: Message, prefix?: string) => {
@@ -78,10 +75,8 @@ const getDefaultCommand = async (message: Message) => {
 
         const botCommand = _command({ locale });
 
-        if (botCommand.allowedPermissions?.length && memberDoesNotHavePermissions(message, botCommand.allowedPermissions)) {
-            await message.reply(locale.interaction.youDontHavePermission);
-            return;
-        }
+        if (await isAllowedToUseThisCommand({ message, allowedPermissions: botCommand.allowedPermissions, locale })) return;
+        if (await isAllowedToUseThisCommand({ message, allowedPermissions: botCommand.botPermissions, locale, isBot: true })) return;
 
         const options: ExecuteCommandOptions = {
             bot: {

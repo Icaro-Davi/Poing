@@ -9,6 +9,7 @@ const command: BotCommandFunc = (options) => ({
     category: options.locale.category.moderation,
     description: options.locale.command.mute.description,
     allowedPermissions: ['MUTE_MEMBERS'],
+    botPermissions: ['MANAGE_ROLES'],
     usage: [
         [
             argument.MEMBER({ locale: options.locale, required: true }),

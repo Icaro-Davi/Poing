@@ -9,9 +9,10 @@ const mute: BaseMuteCommand = {
         "memberAlreadyMuted": "This member is already muted.",
         "needMuteRoleId": "Register a role that i can use to \"mute\" any member, use `!mute --a \"Role name | Role ID | @Role\"` to add a role.",
         "muteRoleAdded": "I will remember this role 🧑‍💻",
+        "muteRoleCreated": "Created {role} role.",
         "cannotRegisterRole": "I couldn't register this role.",
         "roleNotFound": "I couldn't find this role in guild.",
-        "needRegisterRole": "Need help to add a role? Use `!help mute` 🤓",
+        "needRegisterRole": "Need help to add a role? Use `!help mute` to get help.",
         "mustBeNumber": 'Must be a number.',
         "cannotMuteAdmin": "I can't... this member... so strong. 😱",
         "arg": {
