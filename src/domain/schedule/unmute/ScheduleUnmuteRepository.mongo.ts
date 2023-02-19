@@ -4,7 +4,10 @@ import ScheduleUnmuteSchema, { IScheduleUnmute } from "./ScheduleUnmute.schema";
 class ScheduleUnmuteRepository {
     static async create(scheduleUnmute: IScheduleUnmute) {
         try {
-            return (await ScheduleUnmuteSchema.create(scheduleUnmute)).toJSON();
+            const conditions = { guildId: scheduleUnmute.guildId, memberId: scheduleUnmute.memberId };
+            const update = { $set: { timeout: scheduleUnmute.timeout } };
+            const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+            return (await ScheduleUnmuteSchema.findOneAndUpdate(conditions, update, options))?.toJSON();
         } catch (error) {
             console.error(error);
             throw new Error('[errorScheduleUnmuteRepositoryCreate]');
