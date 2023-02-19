@@ -9,7 +9,7 @@ export interface BaseMember {
 
 export interface BaseInteraction {
     onlyNumbers: string;
-    welcomeGuild: string;
+    welcomeGuild: string; // {bot.@mention}
     cannotSendPrivateMessage: string;
     iDontKnowThisArgument: string;
     isDMMessage: string;
@@ -17,7 +17,8 @@ export interface BaseInteraction {
     youCantUseThisButton: string;
     iDidntFoundAnything: string;
     youDontHavePermission: string;
-    needARole: string;
+    botDontHavePermissions: string; // {role}
+    needARole: string;// {role}
     verifyTheArguments: string;
     member: BaseMember;
 }
