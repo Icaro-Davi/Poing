@@ -17,9 +17,8 @@ const execDefaultCommand: ExecuteCommand = async function (message, args, option
             options,
             reason,
             muteTime: time,
-            author: message.author,
-            guild: message.guild!,
             mutedMember: muteMember,
+            message
         });
     }
     if (muteRole) return { content: await addMuteRole({ guild: message.guild!, role: muteRole, locale: options.locale }) };

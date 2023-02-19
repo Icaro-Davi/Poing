@@ -40,10 +40,8 @@ const execSlashCommand: ExecuteSlashCommand = async function (interaction, optio
         return await MuteGuildMember({
             options, reason,
             muteTime: _muteTime,
-            author: interaction.user,
-            guild: interaction.guild!,
+            interaction: interaction,
             mutedMember: muteMember,
-            ephemeral: true
         });
 
     }

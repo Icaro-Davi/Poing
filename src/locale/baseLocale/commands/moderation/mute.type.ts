@@ -11,6 +11,7 @@ export type BaseMuteCommand = {
         memberAlreadyMuted: string;
         needMuteRoleId: string;
         muteRoleAdded: string;
+        muteRoleCreated: string; // {role}
         cannotRegisterRole: string;
         roleNotFound: string;
         needRegisterRole: string;
