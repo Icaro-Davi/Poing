@@ -80,13 +80,17 @@ const getDefaultCommand = async (message: Message) => {
 
         const options: ExecuteCommandOptions = {
             bot: {
+                // channel: { logsId: '1057080188216823818' },
+                channel: botConf?.channel,
                 name: DiscordBot.Bot.name,
                 "@mention": `<@${DiscordBot.Bot.ID}>`,
                 hexColor: botConf.messageEmbedHexColor ?? DiscordBot.Bot.defaultBotHexColor,
                 prefix: botConf.prefix ?? DiscordBot.Bot.defaultPrefix,
             },
-            locale
+            locale,
+            context: { data: {}, argument: {} },
         }
+
 
         const args = await getArgs({
             message,
