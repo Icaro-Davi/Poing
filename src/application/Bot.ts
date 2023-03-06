@@ -4,7 +4,7 @@ import GuildRepository from "../domain/guild/GuildRepository.mongo";
 class Bot {
     static async getConfigurations(guildId: string) {
         try {
-            const guild = await GuildRepository.findByIdAndOmitValues(guildId, { bot: { prefix: 1, locale: 1, messageEmbedHexColor: 1 } });
+            const guild = await GuildRepository.findByIdAndOmitValues(guildId, { bot: { prefix: 1, locale: 1, messageEmbedHexColor: 1, channel: 1 } });
             if (!guild) {
                 const _guild = await GuildApplication.create(guildId);
                 if (!_guild) throw new Error();
