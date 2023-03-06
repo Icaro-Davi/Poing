@@ -41,7 +41,7 @@ class GuildRepository {
 
     static async findByIdAndOmitValues(guildId: string, select: SelectGuildValues) {
         try {
-            return (await GuildSchema.findById(guildId).select(select))?.toJSON();
+            return (await GuildSchema.findById(guildId).select(select))?.toObject();
         } catch (error) {
             console.error(error);
             throw new Error('[errorGuildFindByIdAndOmitValues]');
