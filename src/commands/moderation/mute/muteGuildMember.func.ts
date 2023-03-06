@@ -5,7 +5,7 @@ import { DiscordBot } from "../../../config";
 import AnswerMember from "../../../utils/AnswerMember";
 import { replaceValuesInString } from "../../../utils/replaceValues";
 import { ExecuteCommandOptions, ExecuteCommandReturn } from "../../index.types";
-import createMutedRole from "./createMutedRole";
+import createMutedRole from "./createMutedRole.func";
 
 type MuteGuildMemberOptions = {
     options: ExecuteCommandOptions;

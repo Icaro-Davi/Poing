@@ -18,8 +18,9 @@ const execSlashCommand: ExecuteSlashCommand = async function (interaction, optio
         TARGET_ROLE: argument.TARGET_ROLE(options),
         TIME: argument.TIME(options),
     }
-    if (subCommand === argument.MEMBER.name) {
-        const muteMember = interaction.options.getMember(arg.TARGET_MEMBER.name, arg.TARGET_MEMBER.required) as GuildMember;
+
+    if (subCommand === arg.MEMBER.name) {
+        const mutedMember = interaction.options.getMember(arg.TARGET_MEMBER.name, arg.TARGET_MEMBER.required) as GuildMember;
         const reason = interaction.options.getString(arg.REASON.name) as string;
         const muteTime = interaction.options.getString(arg.TIME.name);
 
@@ -28,7 +29,7 @@ const execSlashCommand: ExecuteSlashCommand = async function (interaction, optio
             if (muteTime) {
                 if (muteTime.match(/^[\d]+(?:D|M|H)$/gi))
                     _muteTime = arg.TIME.filter
-                        ? (await arg.TIME.filter({} as Message, ['', interaction.options.getString(arg.TIME.name)!], options.locale, { [arg.MEMBER.name]: muteMember }))?.data
+                        ? (await arg.TIME.filter({} as Message, ['', interaction.options.getString(arg.TIME.name)!], options.locale, { [arg.MEMBER.name]: mutedMember }))?.data
                         : undefined;
                 else return { content: options.locale.command.mute.interaction.invalidTime, ephemeral: true }
             }
@@ -37,13 +38,11 @@ const execSlashCommand: ExecuteSlashCommand = async function (interaction, optio
             return;
         }
 
-        return await MuteGuildMember({
-            options, reason,
-            muteTime: _muteTime,
-            interaction: interaction,
-            mutedMember: muteMember,
+        await MuteGuildMember({
+            interaction,
+            options, reason, mutedMember,
+            muteTime: _muteTime
         });
-
     }
     if (subCommand === arg.ADD_ROLE.name) {
         const muteRole = interaction.options.getRole(arg.TARGET_ROLE.name, arg.TARGET_ROLE.required) as Role;
