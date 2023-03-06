@@ -1,6 +1,8 @@
 import type { ApplicationCommandOptionData, Collection, ColorResolvable, CommandInteraction, Message, MessageEmbed, PermissionResolvable } from 'discord.js';
-import type { Locale, LocaleLabel } from '../locale';
 import type { CommandHandler } from '../config/command';
+import { IChannelSchema } from '../domain/bot/Bot.schema';
+import type { Locale } from '../locale';
+import { CreateCommandBotLogParamAction } from '../utils/creteBotLog';
 
 export type BotArgumentFilterFunction = (args: string[]) => any | void;
 export type ExecuteCommandReturn = Promise<Partial<Omit<CommandHandler, 'message'>> | void>;
@@ -18,6 +20,7 @@ export type BotDefinitions = {
     prefix: string;
     hexColor: ColorResolvable;
     '@mention': string;
+    channel?: IChannelSchema;
 }
 
 type FilterType = {
@@ -41,6 +44,11 @@ export type BotArgumentFunc = (options: { locale: Locale; required?: boolean; ar
 export type ExecuteCommandOptions = {
     locale: Locale;
     bot: BotDefinitions;
+    context: {
+        [key: string]: any;
+        data: any;
+        argument: any;
+    },
 }
 
 export type BotCommand = {
