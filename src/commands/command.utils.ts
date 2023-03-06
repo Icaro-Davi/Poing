@@ -1,6 +1,7 @@
 import { CommandInteraction, Message, PermissionResolvable, PermissionString } from "discord.js";
 import { Locale } from "../locale";
 import AnswerMember from "../utils/AnswerMember";
+import MD from "../utils/md";
 import { replaceValuesInString } from "../utils/replaceValues";
 
 export const isAllowedToUseThisCommand = async (params: {
@@ -33,11 +34,20 @@ export const isAllowedToUseThisCommand = async (params: {
             content: {
                 content: params.isBot && params.allowedPermissions.length
                     ? replaceValuesInString(params.locale.interaction.botDontHavePermissions, {
-                        role: params.locale.labels.roleName?.[doesNotHaveThisPermission as PermissionString] ?? '{role}'
+                        role: params.locale.labels.roleName?.[doesNotHaveThisPermission as PermissionString] ?? doesNotHaveThisPermission ?? '{role}'
                     })
-                    : params.locale.interaction.member.botDoesNotHavePermission
+                    : params.locale.interaction.member.botDoesNotHavePermission,
+                ephemeral: true
             }
         });
     }
     return notHavePermission;
+}
+
+export const extractVarsFromObject = function (obj: { [key: string]: string }) {
+    return Object.keys(obj).reduce((prev, current) => {
+        if (obj[current])
+            return `${prev} ${MD.codeBlock.line(current)} [${obj[current]}]`;
+        else return prev;
+    }, '');
 }
