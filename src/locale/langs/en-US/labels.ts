@@ -14,7 +14,10 @@ const labels: BaseLabels = {
     "added": "Added",
     "removed": "Removed",
     "roleName": {
-        "MANAGE_ROLES": "Manage Roles"
+        "MANAGE_ROLES": "Manage Roles",
+        "MANAGE_MESSAGES": 'Manage Messages',
+        "SEND_MESSAGES": 'Send Messages',
+        "VIEW_AUDIT_LOG": 'View Audit Log',
     }
 }
 
