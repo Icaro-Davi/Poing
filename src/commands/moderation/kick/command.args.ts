@@ -1,7 +1,7 @@
 import Member from "../../../application/Member";
 import { createFilter } from "../../argument.utils";
-
-import type { BotArgumentFunc } from "../../index.types";
+import { middleware } from "../../command.middleware";
+import type { BotArgumentFunc, ExecuteCommandOptions } from "../../index.types";
 
 const argument: Record<'MEMBER' | 'REASON', BotArgumentFunc> = {
     MEMBER: (options) => ({
@@ -25,3 +25,25 @@ const argument: Record<'MEMBER' | 'REASON', BotArgumentFunc> = {
 }
 
 export default argument;
+
+const getArgs = (options: ExecuteCommandOptions) => ({
+    MEMBER: argument.MEMBER(options),
+    REASON: argument.REASON(options)
+});
+
+export const argMiddleware = middleware.createGetArgument(
+    async function (message, args, options, next) {
+        const arg = getArgs(options);
+        const kickedMember = args.get(arg.MEMBER.name);
+        const reason = args.get(arg.REASON.name);
+        options.context.data = { kickedMember, reason };
+        next();
+    },
+    async function (interaction, options, next) {
+        const arg = getArgs(options);
+        const kickedMember = interaction.options.getMember(arg.MEMBER.name, arg.MEMBER.required);
+        const reason = interaction.options.getString(arg.REASON.name, arg.REASON.required);
+        options.context.data = { kickedMember, reason };
+        next();
+    }
+);

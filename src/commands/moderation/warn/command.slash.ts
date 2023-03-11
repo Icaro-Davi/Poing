@@ -5,7 +5,6 @@ import submitWarn from "./submitWarn.func";
 
 const execCommandSlash = middleware.create('COMMAND_INTERACTION', async function (interaction, options, next) {
     const context = options.context;
-    console.log(context)
     if (context.argument.isMessage) {
         if (context.data.member && context.data.message) {
             await submitWarn({ interaction, options, warn: options.context.data })

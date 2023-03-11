@@ -1,11 +1,11 @@
 import { MessageEmbed } from "discord.js";
 import AnswerMember from "../../../utils/AnswerMember";
 import { replaceValuesInString } from "../../../utils/replaceValues";
-import { MiddlewareCommandFunc } from "../../command.middleware";
+import { middleware } from "../../command.middleware";
 import embedCommandCreateEmbedFunc from '../../utils/embed/createEmbedFromString.func';
 import submitWarn from "./submitWarn.func";
 
-const execCommandDefault: MiddlewareCommandFunc = async function (message, args, options, next) {
+const execCommandDefault = middleware.create('COMMAND', async function (message, args, options, next) {
     const messageArgs = { ...options.context.data };
 
     if (!messageArgs.member) {
@@ -26,7 +26,7 @@ const execCommandDefault: MiddlewareCommandFunc = async function (message, args,
             message, options,
             warn: { ...messageArgs }
         });
-        await message.reply(options.locale.command.warn.interaction.messageSubmit);
+        await AnswerMember({ message, content: { content: options.locale.command.warn.interaction.messageSubmit } });
         next();
     } else if (options.context.argument.isEmbed) {
         await embedCommandCreateEmbedFunc({
@@ -36,6 +36,7 @@ const execCommandDefault: MiddlewareCommandFunc = async function (message, args,
         });
         next();
     }
-}
+
+});
 
 export default execCommandDefault;

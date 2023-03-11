@@ -1,4 +1,4 @@
-import runMiddleware, { middleware } from "../../command.middleware";
+import { middleware } from "../../command.middleware";
 import { extractVarsFromObject } from "../../command.utils";
 import { BotCommandFunc } from "../../index.types";
 import argument, { getArgs } from "./command.args";
@@ -39,18 +39,18 @@ const command: BotCommandFunc = options => ({
             options: [{ ...argument.MEMBER({ ...options, required: true }), type: 'USER' }]
         }
     ],
-    execDefault: runMiddleware('COMMAND', [
+    commandPipeline: [
         argsMiddleware[0], execCommandDefault,
         middleware.submitLog('COMMAND', (context) => ({ subCommand: context.argument.subCommand }))
-    ]),
-    execSlash: runMiddleware('COMMAND_INTERACTION', [
+    ],
+    slashCommandPipeline: [
         argsMiddleware[1], execCommandSlash,
         middleware.submitLog('COMMAND_INTERACTION', (context) => ({
             subCommand: context.argument.subCommand,
             userInput: extractVarsFromObject(context.argument.userInput),
             ...context.argument.embedMessage ? { embedMessage: context.argument.embedMessage } : {}
         }))
-    ]),
+    ]
 });
 
 export default command;

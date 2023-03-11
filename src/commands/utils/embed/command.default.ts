@@ -1,14 +1,17 @@
-import { IteratorFlags } from "../../../utils/regex/getValuesFromStringFlag";
-import { ExecuteCommand } from "../../index.types";
-import argument from "./command.args";
+import { middleware } from "../../command.middleware";
 import CreateEmbedFromString from "./createEmbedFromString.func";
 
-const execCommandDefault: ExecuteCommand = async (message, args, options) => {
-    const flags = args.get(argument.FLAGS(options).name) as IteratorFlags;
+const execCommandDefault = middleware.create('COMMAND', async (message, args, options, next) => {
+    const flags = options.context.data.flags;
     await CreateEmbedFromString({
         options, message,
         embedMessageFlags: flags,
+        async onFinish(embed) {
+            await message.channel.send({ embeds: [embed] });
+            options.context.argument.embed = embed;
+            next();
+        },
     });
-}
+});
 
 export default execCommandDefault;

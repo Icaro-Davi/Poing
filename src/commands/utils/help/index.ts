@@ -1,9 +1,10 @@
-import argument from "./command.args";
-import execDefaultCommand from "./command.default";
-import execSlashCommand from "./command.slash";
 import { DiscordBot } from "../../../config";
-
+import { middleware } from "../../command.middleware";
+import { extractVarsFromObject } from "../../command.utils";
 import type { BotCommandFunc } from "../../index.types";
+import argument, { argsMiddleware } from "./command.args";
+import commandMiddleware from "./command.default";
+import slashCommandMiddleware from "./command.slash";
 
 const command: BotCommandFunc = (options) => ({
     name: 'help',
@@ -28,8 +29,17 @@ const command: BotCommandFunc = (options) => ({
             }]
         }
     ],
-    execSlash: execSlashCommand,
-    execDefault: execDefaultCommand
+    commandPipeline: [
+        argsMiddleware[0], commandMiddleware,
+        middleware.submitLog('COMMAND', data => ({ subCommand: data.argument.subCommand }))
+    ],
+    slashCommandPipeline: [
+        argsMiddleware[1], slashCommandMiddleware,
+        middleware.submitLog('COMMAND_INTERACTION', data => ({
+            subCommand: data.argument.subCommand,
+            userInput: extractVarsFromObject({  command: data.data.commandName  })
+        }))
+    ]
 });
 
 DiscordBot.Command.onLoad((commands) => {

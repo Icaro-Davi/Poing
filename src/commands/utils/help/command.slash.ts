@@ -1,25 +1,28 @@
 import { list } from "../../../components/messageEmbed";
-import argument from "./command.args";
+import AnswerMember from "../../../utils/AnswerMember";
+import { middleware } from "../../command.middleware";
 import getCommandHelp from "./getCommandHelp.func";
 
-import type { ExecuteSlashCommand } from "../../index.types";
-
-const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
-    const subCommand = interaction.options.getSubcommand(true);
-    const arg = {
-        COMMAND: argument.COMMAND(options),
-        LIST: argument.LIST(options),
-        TARGET: argument.TARGET(options),
+const execSlashCommand = middleware.create('COMMAND_INTERACTION', async function (interaction, options, next) {
+    if (options.context.argument?.isList) {
+        const embed = await list.commandsByCategory(options);
+        await AnswerMember({ interaction, content: { embeds: [embed], ephemeral: true } }); next();
+        return;
     }
-    if (subCommand === arg.LIST.name)
-        return { content: list.commandsByCategory(options), type: 'embed', ephemeral: true };
-    if (subCommand === arg.COMMAND.name)
-        return await getCommandHelp({
-            options,
-            ephemeral: true,
-            commandName: interaction.options.getString(arg.TARGET.name, arg.TARGET.required)!,
+    if (options.context.argument?.isCommand) {
+        await getCommandHelp({
+            options, ephemeral: true, commandName: options.context.data.commandName,
+            async onFinish(params) {
+                await AnswerMember({ interaction, content: { embeds: [params.embed], components: [params.button], ephemeral: true } }); next();
+            },
+            async onError(message) {
+                next({ type: 'COMMAND_USER', message: { content: message, ephemeral: true } });
+            },
         });
-    return { content: list.commandsByCategory(options), type: 'embed', ephemeral: true };
-}
+        return;
+    }
+    const embed = await list.commandsByCategory(options);
+    await AnswerMember({ interaction, content: { embeds: [embed], ephemeral: true } }); next();
+});
 
 export default execSlashCommand;

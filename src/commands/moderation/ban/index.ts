@@ -1,14 +1,16 @@
-import argument from "./command.args";
-import slashCommand from "./command.slash";
-import defaultCommand from "./command.default";
-
+import { middleware } from "../../command.middleware";
+import { extractVarsFromObject } from "../../command.utils";
 import type { BotCommandFunc } from "../../index.types";
+import argument, { argMiddleware } from "./command.args";
+import commandMiddleware from "./command.default";
+import slashCommandMiddleware from "./command.slash";
 
 const command: BotCommandFunc = ({ locale }) => ({
     name: 'ban',
     category: locale.category.moderation,
     description: locale.command.ban.description,
     allowedPermissions: ['BAN_MEMBERS'],
+    botPermissions: ['BAN_MEMBERS'],
     usage: [
         [
             argument.MEMBER({ locale, required: false }),
@@ -46,8 +48,25 @@ const command: BotCommandFunc = ({ locale }) => ({
             ]
         }
     ],
-    execSlash: slashCommand,
-    execDefault: defaultCommand
+    commandPipeline: [
+        argMiddleware[0], commandMiddleware,
+        middleware.submitLog('COMMAND', context => ({
+            status: true,
+            subCommand: context.argument.subCommand
+        })),
+    ],
+    slashCommandPipeline: [
+        argMiddleware[1], slashCommandMiddleware,
+        middleware.submitLog('COMMAND_INTERACTION', context => ({
+            subCommand: context.argument.subCommand,
+            status: false,
+            userInput: extractVarsFromObject({
+                reason: context.data.reason,
+                days: context.data.days,
+                target: context.data.banMember
+            })
+        })),
+    ]
 });
 
 export default command;

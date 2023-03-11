@@ -1,10 +1,11 @@
 import ping from "./ping.func";
 
-import type { ExecuteCommand } from "../../index.types";
+import { middleware } from "../../command.middleware";
 
-const execDefaultCommand: ExecuteCommand = async function(message, args, options) {
+const execDefaultCommand = middleware.create('COMMAND', async function (message, args, options, next) {
     await ping({ message, options });
-}
+    next();
+});
 
 
 export default execDefaultCommand;

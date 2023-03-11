@@ -1,28 +1,47 @@
-import argument from "./command.args";
+import { middleware } from "../../command.middleware";
 import guildBanMember from './banMember.func';
 import listBannedMembers from "./listBannedMembers.func";
 import softBanMember from "./softBan.func";
 
-import type { ExecuteCommand } from "../../index.types";
-
-const defaultCommand: ExecuteCommand = async function (message, args, options) {
-    const banMember = args.get(argument.MEMBER(options).name);
-    const list = args.get(argument.LIST(options).name);
-    const softBan = args.get(argument.SOFT(options).name);
-
-    if (banMember) {
-        if (softBan)
-            return await softBanMember(banMember, message.author, { bot: options.bot, locale: options.locale, message });
-
-        const days = args.get(argument.DAYS(options).name);
-        const reason = args.get(argument.REASON(options).name);
-        const answer = guildBanMember({
-            message,
-            options: { ...options, days, reason, banMember }
-        });
-        return answer;
+const defaultCommand = middleware.create('COMMAND', async function (message, args, options, next) {
+    if (options.context.data.banMember) {
+        if (options.context.argument.isSoftBan) {
+            await softBanMember(options.context.data.banMember, message.author, {
+                message,
+                bot: options.bot,
+                locale: options.locale,
+                onFinish(params) {
+                    options.context.argument.banned = params.banned;
+                    next();
+                },
+                onError(message) {
+                    next({ type: 'COMMAND_USER', message: { content: message } });
+                },
+            }); return;
+        }
+        if (options.context.argument.isBan) {
+            const banMember = options.context.data.banMember;
+            const days = options.context.data.days;
+            const reason = options.context.data.reason;
+            await guildBanMember({
+                message, options: {
+                    ...options, days, reason, banMember,
+                    onError(error) {
+                        next({ type: 'COMMAND_USER', message: { content: error } });
+                    },
+                    onFinish(params) {
+                        options.context.argument.banned = params.banned;
+                        next();
+                    },
+                }
+            });
+            return;
+        }
     }
-    if (list) return listBannedMembers({ options, message });
-}
+    if (options.context.argument.isList) {
+        await listBannedMembers({ options, message });
+        next(); return;
+    }
+});
 
 export default defaultCommand;

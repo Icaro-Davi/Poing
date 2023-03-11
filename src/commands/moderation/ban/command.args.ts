@@ -1,8 +1,8 @@
 import Member from "../../../application/Member";
 import getValuesFromStringFlag from "../../../utils/regex/getValuesFromStringFlag";
 import { createFilter } from "../../argument.utils";
-
-import type { BotArgumentFunc } from "../../index.types";
+import { middleware } from "../../command.middleware";
+import type { BotArgumentFunc, ExecuteCommandOptions } from "../../index.types";
 
 const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER' | 'SOFT', BotArgumentFunc> = {
     MEMBER: (options) => ({
@@ -73,3 +73,56 @@ const argument: Record<'MEMBER' | 'DAYS' | 'REASON' | 'LIST' | 'TARGET_MEMBER' |
 }
 
 export default argument;
+
+const getArgs = (options: ExecuteCommandOptions) => {
+    const args = {
+        DAYS: argument.DAYS(options),
+        LIST: argument.LIST(options),
+        REASON: argument.REASON(options),
+        MEMBER: argument.MEMBER(options),
+        TARGET_MEMBER: argument.TARGET_MEMBER(options),
+        SOFT_BAN: argument.SOFT(options)
+    }
+    return args;
+}
+
+export const argMiddleware = middleware.createGetArgument(
+    async function (message, args, options, next) {
+        const arg = getArgs(options);
+        const banMember = args.get(arg.MEMBER.name);
+        const list = args.get(arg.LIST.name);
+        const softBan = args.get(arg.SOFT_BAN.name);
+        const days = args.get(argument.DAYS(options).name);
+        const reason = args.get(argument.REASON(options).name);
+        options.context.argument = {
+            isSoftBan: softBan!!,
+            isBan: banMember!!,
+            isList: list!!,
+            subCommand: (() => {
+                if (list) return arg.LIST.name;
+                if (softBan) return arg.SOFT_BAN.name;
+                if (banMember && !softBan) return arg.MEMBER.name;
+                return '';
+            })()
+        }
+        options.context.data = { banMember, days, reason };
+        next();
+    },
+    async function (interaction, options, next) {
+        const subCommand = interaction.options.getSubcommand();
+        const args = getArgs(options);
+        options.context.argument = {
+            subCommand,
+            isSoftBan: subCommand === args.SOFT_BAN.name,
+            isList: subCommand === args.LIST.name,
+            isBan: subCommand === args.MEMBER.name
+        }
+        if (options.context.argument.isBan || options.context.argument.isSoftBan) {
+            const banMember = interaction.options.getMember(args.TARGET_MEMBER.name, args.MEMBER.required);
+            const days = interaction.options.getNumber(args.DAYS.name, args.DAYS.required);
+            const reason = interaction.options.getString(args.REASON.name, args.REASON.required);
+            options.context.data = { banMember, days, reason };
+        }
+        next();
+    }
+)

@@ -1,8 +1,10 @@
-import argument from './command.args';
-import execDefault from './command.default';
-import execSlash from './command.slash';
+import argument, { argsMiddleware } from './command.args';
+import commandDefaultMiddleware from './command.default';
+import slashCommandMiddleware from './command.slash';
 
 import type { BotCommandFunc } from '../../index.types';
+import { middleware } from '../../command.middleware';
+import { extractVarsFromObject } from '../../command.utils';
 
 const command: BotCommandFunc = (options) => ({
     name: 'info',
@@ -19,8 +21,11 @@ const command: BotCommandFunc = (options) => ({
             options: [{ ...argument.TARGET_MEMBER(options), type: 'USER' }]
         }
     ],
-    execSlash,
-    execDefault
+    commandPipeline: [argsMiddleware[0], commandDefaultMiddleware, middleware.submitLog('COMMAND', context => ({ subCommand: context.argument.subCommand }))],
+    slashCommandPipeline: [argsMiddleware[1], slashCommandMiddleware, middleware.submitLog('COMMAND_INTERACTION', context => ({
+        subCommand: context.argument.subCommand,
+        userInput: extractVarsFromObject({ ...context.data })
+    }))]
 });
 
 export default command;

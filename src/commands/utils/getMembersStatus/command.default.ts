@@ -1,12 +1,14 @@
+import { middleware } from "../../command.middleware";
 import getMembersStatus from "./getMembersStatus.func";
+import AnswerMember from "../../../utils/AnswerMember";
 
-import type { ExecuteCommand } from "../../index.types";
-
-const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
+const execDefaultCommand = middleware.create('COMMAND', async function (message, args, options, next) {
     if (!message.guild) return;
-
-    const answer = await getMembersStatus(message.guild, options);
-    return { content: answer, type: 'embed' };
-}
+    const embed = await getMembersStatus(message.guild, options);
+    await AnswerMember({
+        message, content: { embeds: [embed] }
+    });
+    next();
+});
 
 export default execDefaultCommand;

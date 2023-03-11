@@ -13,7 +13,9 @@ type BanMemberOptions = {
     reason?: string | null;
     bot: BotDefinitions;
     banMember?: GuildMember;
-    ephemeral?: boolean
+    ephemeral?: boolean;
+    onError: (error: string) => void;
+    onFinish: (params: { banned: boolean }) => void;
 }
 
 type BanMemberArgs = {
@@ -22,10 +24,13 @@ type BanMemberArgs = {
     options: BanMemberOptions;
 }
 
-const banMember = async ({ message, interaction, options }: RequireAtLeastOne<BanMemberArgs, 'message' | 'interaction'>): ExecuteCommandReturn => {
-    if (!message && !interaction) throw new Error('Please add to this func a message or interaction param');
-    if (!options.banMember) return { content: options.locale.interaction.member.notFound, ephemeral: options.ephemeral };
-    if (!options.banMember.bannable) return { content: options.locale.command.ban.interaction.isNotBannable, ephemeral: options.ephemeral };
+const banMember = async ({ message, interaction, options }: RequireAtLeastOne<BanMemberArgs, 'message' | 'interaction'>) => {
+    if (!message && !interaction)
+        throw new Error('Please add to this func a message or interaction param');
+    if (!options.banMember)
+        return options.onError(options.locale.interaction.member.notFound);
+    if (!options.banMember.bannable)
+        return options.onError(options.locale.command.ban.interaction.isNotBannable);
 
     const action = (message ? message : interaction);
     const guild = message?.guild || interaction?.guild;
@@ -74,11 +79,13 @@ const banMember = async ({ message, interaction, options }: RequireAtLeastOne<Ba
                 });
                 message && await interactionMessage!.edit({ content: `🔨 ${options.locale.command.ban.interaction.banishedFromServer}`, embeds: [], components: [] });
                 interaction && await interaction.editReply({ content: `🔨 ${options.locale.command.ban.interaction.banishedFromServer}`, embeds: [], components: [] });
+                options.onFinish({ banned: true });
             }
             if (buttonId === component.button.noId) {
                 const cancelled = { content: `🎈 ${options.locale.command.ban.interaction.banishedCanceled}`, embeds: [], components: [] };
                 message && await interactionMessage!.edit(cancelled);
                 interaction && await interaction.editReply(cancelled);
+                options.onFinish({ banned: false });
             }
             return;
         } catch (error: any) {

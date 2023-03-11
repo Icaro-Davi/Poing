@@ -1,5 +1,6 @@
 import Member from "../../../application/Member";
 import { createFilter } from "../../argument.utils";
+import { middleware } from "../../command.middleware";
 
 import type { BotArgumentFunc } from "../../index.types";
 
@@ -24,3 +25,29 @@ const argument: Record<'MEMBER' | 'TARGET_MEMBER', BotArgumentFunc> = {
 }
 
 export default argument;
+
+export const argsMiddleware = middleware.createGetArgument(
+    async function (message, args, options, next) {
+        const member = args.get(argument.MEMBER(options).name);
+        if (member) {
+            options.context.data = { member };
+            options.context.argument = { subCommand: 'member' };
+        }
+        next();
+    },
+    async function (interaction, options, next) {
+        const args = { member: argument.MEMBER(options), targetMember: argument.TARGET_MEMBER(options) };
+        const subCommand = interaction.options.getSubcommand();
+        if (subCommand.includes(args.member.name)) {
+            const member = interaction.options.getMember(args.targetMember.name, args.targetMember.required);
+            if (!member)
+                return next({
+                    type: 'COMMAND_INTERACTION_USER',
+                    message: { content: options.locale.interaction.member.notFound, ephemeral: true }
+                });
+            options.context.data = { member };
+            options.context.argument = { subCommand };
+        }
+        next();
+    }
+)

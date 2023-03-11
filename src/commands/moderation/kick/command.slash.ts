@@ -1,14 +1,19 @@
-import argument from "./command.args";
 import kickMember from "./kickMember.func";
+import { middleware } from "../../command.middleware";
 
-import type { GuildMember } from "discord.js";
-import type { ExecuteSlashCommand } from "../../index.types";
-
-const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
-    const kickedMember = interaction.options.getMember(argument.MEMBER.name, argument.MEMBER(options).required) as GuildMember;
-    const reason = interaction.options.getString(argument.REASON.name, argument.REASON(options).required) || undefined;
-
-    return await kickMember({ kickedMember, options, interaction, reason, ephemeral: true });
-}
+const execSlashCommand = middleware.create('COMMAND_INTERACTION', async function (interaction, options, next) {
+    const kickedMember = options.context.data.kickedMember;
+    const reason = options.context.data.reason;
+    await kickMember({
+        kickedMember, options, interaction, reason, ephemeral: true,
+        onError(message) {
+            next({ type: 'COMMAND_USER', message: { content: message, ephemeral: true } })
+        },
+        onFinish(params) {
+            options.context.argument.kicked = params.kicked;
+            next();
+        },
+    });
+});
 
 export default execSlashCommand;

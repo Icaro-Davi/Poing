@@ -1,11 +1,18 @@
-import argument from "./command.args";
 import memberInfo from "./memberInfo.func";
 
-import type { ExecuteCommand } from "../../index.types";
+import { middleware } from "../../command.middleware";
+import AnswerMember from "../../../utils/AnswerMember";
 
-const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
-    const member = args.get(argument.MEMBER(options).name);
-    if (member) return { content: await memberInfo(member, options), type: 'embed' };
-}
+const execDefaultCommand = middleware.create('COMMAND', async function (message, args, options, next) {
+    const data = options.context.data;
+    if (data?.member) {
+        await memberInfo(data.member, options, async (memberInfo) => {
+            await AnswerMember({
+                message, content: { embeds: [memberInfo] }
+            });
+        });
+    }
+    next();
+});
 
 export default execDefaultCommand;

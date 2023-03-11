@@ -1,9 +1,10 @@
 import ping from "./ping.func";
 
-import type { ExecuteSlashCommand } from "../../index.types";
+import { middleware } from "../../command.middleware";
 
-const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
+const execSlashCommand = middleware.create('COMMAND_INTERACTION', async function (interaction, options, next) {
     await ping({ interaction, options, ephemeral: true });
-}
+    next();
+});
 
 export default execSlashCommand;

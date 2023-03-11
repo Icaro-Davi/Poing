@@ -1,7 +1,7 @@
 import { CommandInteraction, GuildMember, Message } from "discord.js";
+import { onlyMessageAuthorCanUse } from "../../../components/collectorFilters";
 import { confirmButtons } from "../../../components/messageActionRow";
 import { confirm, PM } from "../../../components/messageEmbed";
-import { onlyMessageAuthorCanUse } from "../../../components/collectorFilters";
 import handleError from "../../../utils/handleError";
 import { RequireAtLeastOne } from "../../../utils/typescript.funcs";
 import { ExecuteCommandOptions } from "../../index.types";
@@ -13,11 +13,14 @@ type KickMemberOptions = {
     reason?: string;
     options: ExecuteCommandOptions;
     ephemeral?: boolean;
+    onError: (message: string) => void;
+    onFinish: (params: { kicked: boolean }) => void;
 }
 
-const kickMember = async ({ interaction, message, kickedMember, reason, options, ephemeral }: RequireAtLeastOne<KickMemberOptions, 'interaction' | 'message'>) => {
-    if (!kickedMember) return { content: options.locale.interaction.member.notFound, ephemeral };
-    if (!kickedMember.kickable) return { content: options.locale.interaction.member.isNotKickable, ephemeral };
+const kickMember = async ({ interaction, message, kickedMember, reason, options, ephemeral, onError, onFinish }: RequireAtLeastOne<KickMemberOptions, 'interaction' | 'message'>) => {
+    if (!interaction && !message) throw new Error('Needs interaction or message');
+    if (!kickedMember) return onError(options.locale.interaction.member.notFound);
+    if (!kickedMember.kickable) return onError(options.locale.interaction.member.isNotKickable);
 
     const author = (message?.author ?? interaction?.user)!;
     const guild = (message?.guild || interaction?.guild)!;
@@ -58,11 +61,13 @@ const kickMember = async ({ interaction, message, kickedMember, reason, options,
                 const editMessage = { content: '🦶💢', components: [], ephemeral };
                 if (interactionMessage) await interactionMessage.edit(editMessage);
                 if (interaction) await interaction.editReply(editMessage);
+                onFinish({ kicked: true });
             }
             if (componentId === component.button.noId) {
                 const editMessage = { content: `🎈 ${options.locale.interaction.member.kickCanceled}`, embeds: [], components: [] };
                 if (interactionMessage) await interactionMessage.edit(editMessage);
                 if (interaction) await interaction.editReply(editMessage);
+                onFinish({ kicked: false });
             }
         } catch (error) {
             message && handleError(error, {

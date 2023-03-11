@@ -1,5 +1,6 @@
 import { getFlagsFromUserInput } from "../../../utils/regex/getValuesFromStringFlag";
 import { createFilter } from "../../argument.utils";
+import { middleware } from "../../command.middleware";
 import { BotArgumentFunc } from "../../index.types";
 
 const argument: Record<'FLAGS', BotArgumentFunc> = {
@@ -48,3 +49,12 @@ const argument: Record<'FLAGS', BotArgumentFunc> = {
 }
 
 export default argument;
+
+export const argsMiddleware = middleware.createGetArgument(
+    async function (message, args, options, next) {
+        const flags = args.get(argument.FLAGS(options).name);
+        options.context.data.flags = flags;
+        next();
+    },
+    () => { }
+)

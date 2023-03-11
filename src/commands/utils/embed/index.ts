@@ -1,7 +1,8 @@
 import { BotCommandFunc } from "../../index.types";
-import execCommandDefault from "./command.default";
-import execCommandSlash from "./command.slash";
-import argument from "./command.args";
+import commandMiddleware from "./command.default";
+import slashCommandMiddleware from "./command.slash";
+import argument, { argsMiddleware } from "./command.args";
+import { middleware } from "../../command.middleware";
 
 const command: BotCommandFunc = options => ({
     name: 'embed',
@@ -13,8 +14,8 @@ const command: BotCommandFunc = options => ({
             { ...argument.FLAGS({ ...options, required: true }) }
         ]
     ],
-    execDefault: execCommandDefault,
-    execSlash: execCommandSlash,
+    commandPipeline: [argsMiddleware[0], commandMiddleware, middleware.submitLog('COMMAND', context => ({ embedMessage: context.argument.embed }))],
+    slashCommandPipeline: [slashCommandMiddleware, middleware.submitLog('COMMAND_INTERACTION', context => ({ embedMessage: context.argument.embed }))]
 });
 
 export default command;

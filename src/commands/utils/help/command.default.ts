@@ -1,17 +1,31 @@
 import { list } from "../../../components/messageEmbed";
-import argument from "./command.args";
+import AnswerMember from "../../../utils/AnswerMember";
+import { middleware } from "../../command.middleware";
 import getCommandHelp from "./getCommandHelp.func";
 
-import type { ExecuteCommand } from "../../index.types";
+const execDefaultCommand = middleware.create('COMMAND', async function (message, args, options, next) {
+    if (options.context.argument?.isList) {
+        const embed = await list.commandsByCategory(options);
+        await AnswerMember({ message, content: { embeds: [embed] } });
+        next(); return;
+    }
 
-const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
-    const commandName = args.get(argument.COMMAND(options).name);
-    const _list = args.get(argument.LIST(options).name);
+    if (options.context.argument.isCommand) {
+        await getCommandHelp({
+            options,
+            commandName: options.context.data.commandName,
+            async onFinish(params) {
+                await AnswerMember({ message, content: { embeds: [params.embed], components: [params.button] } }); next();
+            },
+            async onError(message) {
+                next({ type: 'COMMAND_USER', message: { content: message } });
+            }
+        }); return;
+    }
 
-    if (commandName) return await getCommandHelp({ commandName, options });
-    if (_list) return { content: list.commandsByCategory(options), type: 'embed' };
-    return { content: list.commandsByCategory(options), type: 'embed' }
-
-}
+    const embed = await list.commandsByCategory(options);
+    await AnswerMember({ message, content: { embeds: [embed] } });
+    next();
+});
 
 export default execDefaultCommand;

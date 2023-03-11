@@ -1,7 +1,7 @@
-import execSlashCommand from './command.slash';
-import execDefaultCommand from './command.default';
-
+import slashCommandMiddleware from './command.slash';
+import commandMiddleware from './command.default';
 import type { BotCommandFunc } from '../../index.types';
+import { middleware } from '../../command.middleware';
 
 const command: BotCommandFunc = ({ locale }) => ({
     name: 'get-members-status',
@@ -9,8 +9,8 @@ const command: BotCommandFunc = ({ locale }) => ({
     category: locale.category.utility,
     description: locale.command.getMembersStatus.description,
     aliases: ['gms', 'guildMembers'],
-    execSlash: execSlashCommand,
-    execDefault: execDefaultCommand
+    commandPipeline: [commandMiddleware, middleware.submitLog('COMMAND')],
+    slashCommandPipeline: [slashCommandMiddleware, middleware.submitLog('COMMAND_INTERACTION')]
 });
 
 export default command;

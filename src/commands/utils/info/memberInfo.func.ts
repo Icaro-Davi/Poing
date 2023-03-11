@@ -4,10 +4,10 @@ import Mute from "../../../application/Mute";
 import MD from "../../../utils/md";
 import { ExecuteCommandOptions } from "../../index.types";
 
-const memberInfo = async (member: GuildMember, options: ExecuteCommandOptions) => {
+const memberInfo = async (member: GuildMember, options: ExecuteCommandOptions, onFinish: (embed: MessageEmbed) => void) => {
     const muteRoleId = await Mute.getMuteRoleId(member.guild.id);
     const mutedDoc = (muteRoleId && member.roles.cache.has(muteRoleId)) ? await Mute.findMutedMember(member.guild.id, member.id) : undefined;
-    return new MessageEmbed()
+    const userInfoEmbed = new MessageEmbed()
         .setColor(options.bot.hexColor)
         .setTitle(`Tag ${member.user.tag}`)
         .addFields([
@@ -21,6 +21,8 @@ const memberInfo = async (member: GuildMember, options: ExecuteCommandOptions) =
             { name: options.locale.labels.roles, value: member.roles.cache.map((role, key, collection) => MD.codeBlock.line(`[${role.name}]`)).join(' ') }
         ])
         .setThumbnail(member.user.avatarURL() || '');
+
+    await onFinish(userInfoEmbed);
 }
 
 export default memberInfo;

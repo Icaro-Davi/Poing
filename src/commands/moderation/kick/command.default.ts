@@ -1,13 +1,19 @@
-import argument from "./command.args";
+import { middleware } from "../../command.middleware";
 import kickMember from "./kickMember.func";
 
-import type { ExecuteCommand } from "../../index.types";
-
-const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
-    const kickedMember = args.get(argument.MEMBER(options).name);
-    const reason = args.get(argument.REASON(options).name);
-
-    return kickMember({ kickedMember, options, message, reason });
-}
+const execDefaultCommand = middleware.create('COMMAND', async function (message, args, options, next) {
+    const kickedMember = options.context.data.kickedMember;
+    const reason = options.context.data.reason;
+    await kickMember({
+        kickedMember, options, message, reason,
+        onError(message) {
+            next({ type: 'COMMAND_USER', message: { content: message } })
+        },
+        onFinish(params) {
+            options.context.argument.kicked = params.kicked;
+            next();
+        },
+    });
+});
 
 export default execDefaultCommand;
