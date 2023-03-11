@@ -1,13 +1,14 @@
 import type { ApplicationCommandOptionData, Collection, ColorResolvable, CommandInteraction, Message, MessageEmbed, PermissionResolvable } from 'discord.js';
+import { deprecate } from 'util';
 import type { CommandHandler } from '../config/command';
 import { IChannelSchema } from '../domain/bot/Bot.schema';
 import type { Locale } from '../locale';
-import { CreateCommandBotLogParamAction } from '../utils/creteBotLog';
+import { MiddlewareCommandFunc, MiddlewareSlashCommandFunc } from './command.middleware';
 
 export type BotArgumentFilterFunction = (args: string[]) => any | void;
 export type ExecuteCommandReturn = Promise<Partial<Omit<CommandHandler, 'message'>> | void>;
-export type ExecuteCommand = (this: BotCommand, message: Message, args: FilterType, options: ExecuteCommandOptions) => ExecuteCommandReturn;
-export type ExecuteSlashCommand = (this: BotCommand, message: CommandInteraction, options: ExecuteCommandOptions) => ExecuteCommandReturn;
+export type ExecuteCommand = <T extends CommandOptionsContext>(this: BotCommand, message: Message, args: FilterType, options: ExecuteCommandOptions<T>) => ExecuteCommandReturn;
+export type ExecuteSlashCommand = <T extends CommandOptionsContext>(this: BotCommand, message: CommandInteraction, options: ExecuteCommandOptions<T>) => ExecuteCommandReturn;
 export type BotCommands = Collection<string, BotCommand>;
 export type BotCommandCategory = 'Administration' | 'Moderation' | 'Utility';
 export type BotGetHelp = (customPrefix?: string) => MessageEmbed;
@@ -41,20 +42,25 @@ export type BotArgument = {
 
 export type BotArgumentFunc = (options: { locale: Locale; required?: boolean; argIndex?: number }) => BotArgument;
 
-export type ExecuteCommandOptions = {
+type CommandOptionsContext = { [key: string]: any; data: any; argument: any; };
+export type ExecuteCommandOptions<T = CommandOptionsContext> = {
     locale: Locale;
     bot: BotDefinitions;
-    context: {
-        [key: string]: any;
-        data: any;
-        argument: any;
-    },
+    context: T,
 }
 
 export type BotCommand = {
     name: string;
     aliases?: string[];
-    execDefault: ExecuteCommand;
+    commandPipeline?: MiddlewareCommandFunc[];
+    slashCommandPipeline?: MiddlewareSlashCommandFunc[];
+    /**
+     * @deprecated
+     */
+    execDefault?: ExecuteCommand;
+    /**
+     * @deprecated
+     */
     execSlash?: ExecuteSlashCommand;
     category: BotCommandCategory | string;
     description: string;
