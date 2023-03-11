@@ -1,6 +1,6 @@
-import { BaseMessageComponentOptions, Interaction, Message, MessageActionRow, MessageActionRowOptions, MessageEmbed, MessagePayload } from "discord.js";
+import { BaseMessageComponentOptions, Interaction, Message, MessageActionRow, MessageActionRowOptions, MessageEmbed } from "discord.js";
 
-type AnswerMemberParams = {
+export type AnswerMemberParams = {
     content: {
         embeds?: MessageEmbed[];
         components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
@@ -23,7 +23,8 @@ type AnswerMemberMessage = AnswerMemberParams & {
     }
 }
 
-async function AnswerMember(params: AnswerMemberInteraction | AnswerMemberMessage) {
+type AnswerMember = AnswerMemberInteraction | AnswerMemberMessage;
+async function AnswerMember(params: AnswerMember) {
     if ('message' in params && params.message) {
         if (params.message?.editable && params.options?.editReply) {
             return await params.message.edit(params.content);
@@ -32,7 +33,7 @@ async function AnswerMember(params: AnswerMemberInteraction | AnswerMemberMessag
     }
     if ('interaction' in params && params.interaction) {
         if (!params.interaction?.isRepliable()) return;
-        if (params.options?.editReply) {
+        if (params.options?.editReply && (params.interaction.deferred || params.interaction.replied)) {
             return await params.interaction.editReply(params.content);
         }
         return await params.interaction.reply({ ...params.content, fetchReply: true });
