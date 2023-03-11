@@ -1,8 +1,10 @@
-import { DiscordBot } from "../config";
+import { DiscordAPIError } from "discord.js";
+import { Locale } from "../locale";
 import { createCommandBotLog, CreateCommandBotLogParamAction } from "../utils/creteBotLog";
+import CommandError, { CommandErrorType } from "./command.error";
 import { BotCommand, ExecuteCommand, ExecuteCommandOptions, ExecuteSlashCommand } from "./index.types";
 
-type BindNextMiddleware = (error?: string) => Promise<void>;
+type BindNextMiddleware = (error?: CommandErrorType) => Promise<void>;
 export type MiddlewareCommandFunc = (this: BotCommand, ...params: [...Parameters<ExecuteCommand>, BindNextMiddleware]) => any;
 export type MiddlewareSlashCommandFunc = (this: BotCommand, ...params: [...Parameters<ExecuteSlashCommand>, BindNextMiddleware]) => any
 type MiddlewareListType = {
@@ -10,26 +12,66 @@ type MiddlewareListType = {
     'COMMAND_INTERACTION': MiddlewareSlashCommandFunc[];
 };
 
-function createMiddlewareHandler<T extends any[]>(params: T, middlewareList: ((...params: [...T, BindNextMiddleware]) => any)[]) {
+function createMiddlewareHandler<T extends (Parameters<ExecuteCommand> | Parameters<ExecuteSlashCommand>)>(params: T, pipeline: ((...params: [...T, BindNextMiddleware]) => Promise<void> | void)[]) {
     return async function (this: BotCommand) {
-        let index = 0;
-        async function next(this: BotCommand, error?: string) {
-            if (error) {
-                console.log('Middleware Error:', error);
-                return;
+        new Promise<boolean>((resolve, reject) => {
+            const next = async function (this: BotCommand, error?: Omit<CommandErrorType, 'commandParams' | 'slashCommandParams'> | Omit<CommandError, 'commandParams' | 'slashCommandParams'>) {
+                if (error) {
+                    if (error instanceof CommandError) {
+                        return reject(error);
+                    } else {
+                        const _error = {
+                            ...error, ...params.length === 3 ? { commandParams: params } : {},
+                            ...params.length === 2 ? { slashCommandParams: params } : {},
+                        }
+                        return reject(new CommandError(_error as CommandErrorType));
+                    }
+                }
+                const middleware = pipeline.shift();
+                if (middleware) {
+                    middleware.call(this, ...[...params, next.bind(this)])?.catch(reject);
+                } else {
+                    resolve(true);
+                }
             }
-            index++;
-            if (index < middlewareList.length) {
-                await middlewareList[index].call(this, ...[...params, next.bind(this)]);
+            next.call(this).catch(reject);
+        }).catch((err: CommandErrorType | CommandError | any) => {
+            if (err instanceof CommandError)
+                return err.throwError();
+
+            let commandParams: Parameters<ExecuteCommand> | undefined;
+            let slashCommandParams: Parameters<ExecuteSlashCommand> | undefined;
+            if (params.length === 2) {
+                slashCommandParams = params;
+            } else if (params.length === 3) {
+                commandParams = params;
             }
-        }
-        await middlewareList[0].call(this, ...[...params, next.bind(this)]);
+            const errorObject = {
+                ...params.length === 3 ? { commandParams } : {},
+                ...params.length === 2 ? { slashCommandParams } : {},
+                error: err,
+            }
+            const locale = (commandParams?.[2].locale ?? slashCommandParams?.[1].locale) as Locale;
+            if (err instanceof DiscordAPIError) {
+                new CommandError({
+                    type: 'DISCORD_API', ...errorObject, message: {
+                        content: locale.error[err.code as keyof Locale['error']] ?? locale.error.unknown
+                    }
+                }).throwError();
+            } else {
+                new CommandError({
+                    type: 'UNKNOWN', ...errorObject, error: err, message: {
+                        content: locale.error.unknown
+                    }
+                }).throwError();
+            }
+        });
     }
 }
 
-function runMiddleware(type: 'COMMAND', middlewareList: MiddlewareCommandFunc[]): ExecuteCommand;
-function runMiddleware(type: 'COMMAND_INTERACTION', middlewareList: MiddlewareSlashCommandFunc[]): ExecuteSlashCommand;
-function runMiddleware<T extends keyof MiddlewareListType>(type: T, middlewareList: MiddlewareListType[T]) {
+function createPipeline(type: 'COMMAND', middlewareList: MiddlewareCommandFunc[]): ExecuteCommand;
+function createPipeline(type: 'COMMAND_INTERACTION', middlewareList: MiddlewareSlashCommandFunc[]): ExecuteSlashCommand;
+function createPipeline<T extends keyof MiddlewareListType>(type: T, middlewareList: MiddlewareListType[T]) {
     switch (type) {
         case 'COMMAND':
             return async function commandDefault(this: BotCommand, ...params: Parameters<ExecuteCommand>): ReturnType<ExecuteCommand> {
@@ -44,7 +86,7 @@ function runMiddleware<T extends keyof MiddlewareListType>(type: T, middlewareLi
     }
 }
 
-export default runMiddleware;
+export default createPipeline;
 
 export type MiddlewareCommandType = {
     'COMMAND': MiddlewareCommandFunc;
