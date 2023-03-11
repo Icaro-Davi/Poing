@@ -6,7 +6,8 @@ export type CreateCommandBotLogParamAction = {
     embedMessage?: MessageEmbed;
     userInput?: string;
     subCommand?: string;
-    customParams?: { [key: string]: any }
+    status?: boolean;
+    customParams?: { [key: string]: any };
 }
 
 export type CreateLogParams = {
@@ -24,11 +25,11 @@ export async function createCommandBotLog(params: CreateLogParams) {
         if (channel?.isText()) {
             const avatarUrl = params.member.avatarURL();
             const embed = new MessageEmbed({
-                ...avatarUrl ? { url: avatarUrl } : {},
                 title: `[${params.command.category}] ${params.command.name} ${params.action.subCommand ?? ''}`,
                 description: params.action.userInput,
                 color: params.embedColor,
                 fields: [{ name: `👤 ${params.member.tag}`, value: `<@${params.member.id}>`, inline: false }],
+                ...typeof params.action.status === 'boolean' ? { footer: { text: params.action.status ? '✅' : '❌' } } : {},
                 ...avatarUrl ? { thumbnail: { url: avatarUrl } } : {},
             });
             await channel.send({ embeds: [...params.action.embedMessage ? [params.action.embedMessage] : [], embed] });
