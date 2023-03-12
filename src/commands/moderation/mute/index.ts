@@ -1,7 +1,9 @@
-import argument from "./command.args";
-import execDefaultCommand from "./command.default";
-import execSlashCommand from "./command.slash";
+import argument, { argMiddleware } from "./command.args";
+import commandMiddleware from "./command.default";
+import slashCommandMiddleware from "./command.slash";
 
+import { middleware } from "../../command.middleware";
+import { extractVarsFromObject } from "../../command.utils";
 import type { BotCommandFunc } from "../../index.types";
 
 const command: BotCommandFunc = (options) => ({
@@ -9,7 +11,7 @@ const command: BotCommandFunc = (options) => ({
     category: options.locale.category.moderation,
     description: options.locale.command.mute.description,
     allowedPermissions: ['MUTE_MEMBERS'],
-    botPermissions: ['MANAGE_ROLES'],
+    botPermissions: ['MANAGE_ROLES', 'MUTE_MEMBERS'],
     usage: [
         [
             argument.MEMBER({ locale: options.locale, required: true }),
@@ -42,8 +44,14 @@ const command: BotCommandFunc = (options) => ({
             type: 'SUB_COMMAND'
         },
     ],
-    execSlash: execSlashCommand,
-    execDefault: execDefaultCommand
+    commandPipeline: [
+        argMiddleware[0], commandMiddleware,
+        middleware.submitLog('COMMAND', ctx => ({ subCommand: ctx.argument.subCommand }))
+    ],
+    slashCommandPipeline: [
+        argMiddleware[1], slashCommandMiddleware,
+        middleware.submitLog('COMMAND_INTERACTION', ctx => ({ subCommand: ctx.argument.subCommand, userInput: extractVarsFromObject({ ...ctx.data }) }))
+    ]
 });
 
 export default command;

@@ -1,4 +1,4 @@
-import { DiscordAPIError } from "discord.js";
+import { Base, DiscordAPIError } from "discord.js";
 import { Locale } from "../locale";
 import { createCommandBotLog, CreateCommandBotLogParamAction } from "../utils/creteBotLog";
 import CommandError, { CommandErrorType } from "./command.error";
@@ -14,27 +14,36 @@ type MiddlewareListType = {
 
 function createMiddlewareHandler<T extends (Parameters<ExecuteCommand> | Parameters<ExecuteSlashCommand>)>(params: T, pipeline: ((...params: [...T, BindNextMiddleware]) => Promise<void> | void)[]) {
     return async function (this: BotCommand) {
+        // const pipelineContext = { cancelled: false }
         new Promise<boolean>((resolve, reject) => {
             const next = async function (this: BotCommand, error?: Omit<CommandErrorType, 'commandParams' | 'slashCommandParams'> | Omit<CommandError, 'commandParams' | 'slashCommandParams'>) {
                 if (error) {
+                    pipeline = [];
                     if (error instanceof CommandError) {
-                        return reject(error);
+                        reject(error);
                     } else {
                         const _error = {
                             ...error, ...params.length === 3 ? { commandParams: params } : {},
                             ...params.length === 2 ? { slashCommandParams: params } : {},
                         }
-                        return reject(new CommandError(_error as CommandErrorType));
+                        reject(new CommandError(_error as CommandErrorType));
+                    }
+                } else {
+                    try {
+                        const middleware = pipeline.shift();
+                        if (middleware) {
+                            await middleware.call(this, ...[...params, next.bind(this)]);
+                        } else {
+                            resolve(true);
+                        }
+                    } catch (error) {
+                        reject(error);
                     }
                 }
-                const middleware = pipeline.shift();
-                if (middleware) {
-                    middleware.call(this, ...[...params, next.bind(this)])?.catch(reject);
-                } else {
-                    resolve(true);
-                }
             }
-            next.call(this).catch(reject);
+            next.call(this).catch(err => {
+                reject(err)
+            });
         }).catch((err: CommandErrorType | CommandError | any) => {
             if (err instanceof CommandError)
                 return err.throwError();
@@ -93,10 +102,12 @@ export type MiddlewareCommandType = {
     'COMMAND_INTERACTION': MiddlewareSlashCommandFunc;
 };
 
+function createMiddleware<T extends keyof MiddlewareCommandType>(type: T, callback: (this: BotCommand, ...params: Parameters<MiddlewareCommandType[T]>) => ReturnType<MiddlewareCommandType[T]>): MiddlewareCommandType[T] {
+    return callback as MiddlewareCommandType[T];
+}
+
 export const middleware = {
-    create<T extends keyof MiddlewareCommandType>(type: T, callback: (...params: Parameters<MiddlewareCommandType[T]>) => ReturnType<MiddlewareCommandType[T]>): MiddlewareCommandType[T] {
-        return callback as MiddlewareCommandType[T];
-    },
+    create: createMiddleware,
     createGetArgument(commandCallback: MiddlewareCommandFunc, commandInteractionCallback: MiddlewareSlashCommandFunc): [MiddlewareCommandFunc, MiddlewareSlashCommandFunc] {
         return [commandCallback, commandInteractionCallback]
     },
@@ -132,9 +143,33 @@ export const middleware = {
                 });
                 next();
             }
-            return middleware as MiddlewareCommandType[T];;
+            return middleware as MiddlewareCommandType[T];
         }
         throw new Error('Needs be "COMMAND" or "COMMAND_INTERACTION"');
     },
-
+    DEVELOPMENT: {
+        logContext<T extends keyof MiddlewareCommandType>(type: T, stop?: boolean): MiddlewareCommandType[T] {
+            if (type === 'COMMAND') {
+                const middleware = createMiddleware('COMMAND', async function (message, args, options, next) {
+                    console.log(`[LOG] ${this.name}`, options.context);
+                    if (stop) {
+                        next({ type: 'UNKNOWN' }); return;
+                    }
+                    next();
+                });
+                return middleware as MiddlewareCommandType[T];
+            }
+            if (type === 'COMMAND_INTERACTION') {
+                const middleware = createMiddleware('COMMAND_INTERACTION', async function (interaction, options, next) {
+                    console.log(`[LOG] ${this.name}`, options.context);
+                    if (stop) {
+                        next({ type: 'UNKNOWN' }); return;
+                    }
+                    next();
+                });
+                return middleware as MiddlewareCommandType[T];
+            }
+            throw new Error('Needs be COMMAND or COMMAND_INTERACTION type');
+        }
+    }
 }

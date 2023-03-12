@@ -1,56 +1,65 @@
+import type { Message } from "discord.js";
+import type { Moment } from "moment";
+import AnswerMember from "../../../utils/AnswerMember";
+import { middleware } from "../../command.middleware";
 import addMuteRole from "./addMuteRole.func";
 import argument from "./command.args";
 import listMutedMembers from "./listMutedMembers.func";
 import { MuteGuildMember } from "./muteGuildMember.func";
 
-import type { Moment } from "moment";
-import type { GuildMember, Message, Role } from "discord.js";
-import type { ExecuteSlashCommand } from "../../index.types";
-
-const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
-    const subCommand = interaction.options.getSubcommand();
-    const arg = {
-        ADD_ROLE: argument.ADD_ROLE(options),
-        LIST: argument.LIST(options),
-        MEMBER: argument.MEMBER(options),
-        REASON: argument.REASON(options),
-        TARGET_MEMBER: argument.TARGET_MEMBER(options),
-        TARGET_ROLE: argument.TARGET_ROLE(options),
-        TIME: argument.TIME(options),
-    }
-
-    if (subCommand === arg.MEMBER.name) {
-        const mutedMember = interaction.options.getMember(arg.TARGET_MEMBER.name, arg.TARGET_MEMBER.required) as GuildMember;
-        const reason = interaction.options.getString(arg.REASON.name) as string;
-        const muteTime = interaction.options.getString(arg.TIME.name);
+const execSlashCommand = middleware.create('COMMAND_INTERACTION', async function (interaction, options, next) {
+    if (options.context.argument.isMuteMember) {
+        const arg = {
+            TIME: argument.TIME(options),
+            MEMBER: argument.MEMBER(options)
+        };
+        const mutedMember = options.context.data.target;
+        const reason = options.context.data.reason;
+        const muteTime = options.context.data.time;
 
         let _muteTime: Moment | undefined;
         try {
             if (muteTime) {
-                if (muteTime.match(/^[\d]+(?:D|M|H)$/gi))
+                if (muteTime.match(/^[\d]+(?:D|M|H)$/gi)) {
                     _muteTime = arg.TIME.filter
-                        ? (await arg.TIME.filter({} as Message, ['', interaction.options.getString(arg.TIME.name)!], options.locale, { [arg.MEMBER.name]: mutedMember }))?.data
+                        ? (await arg.TIME.filter({} as Message, ['', muteTime], options.locale, { [arg.MEMBER.name]: mutedMember }))?.data
                         : undefined;
-                else return { content: options.locale.command.mute.interaction.invalidTime, ephemeral: true }
+                } else {
+                    next({ type: 'COMMAND_USER', message: { content: options.locale.command.mute.interaction.invalidTime, ephemeral: true } }); return;
+                }
             }
         } catch (error: any) {
-            await interaction.reply({ content: error.message, ephemeral: true });
-            return;
+            next({ type: 'UNKNOWN' }); return;
         }
 
         await MuteGuildMember({
             interaction,
             options, reason, mutedMember,
-            muteTime: _muteTime
+            muteTime: _muteTime,
+            onError() {
+                next({ type: 'UNKNOWN' });
+            },
         });
+        next();
+    } else if (options.context.argument.isAddRole) {
+        const muteRole = options.context.data.target;
+        await addMuteRole({
+            guild: interaction.guild!, role: muteRole, locale: options.locale,
+            async onError(message) {
+                next({ type: 'COMMAND_USER', message: { ephemeral: true, content: message } });
+            },
+            async onFinish(message) {
+                await AnswerMember({
+                    interaction, content: { content: message }
+                });
+                next();
+            },
+        });
+    } else if (options.context.argument.isList) {
+        const embed = await listMutedMembers({ guild: interaction.guild!, options });
+        await AnswerMember({ content: { embeds: [embed] } });
+        next();
     }
-    if (subCommand === arg.ADD_ROLE.name) {
-        const muteRole = interaction.options.getRole(arg.TARGET_ROLE.name, arg.TARGET_ROLE.required) as Role;
-        return { content: await addMuteRole({ guild: interaction.guild!, role: muteRole, locale: options.locale }), ephemeral: true };
-    }
-    if (subCommand === arg.LIST.name) {
-        return { content: await listMutedMembers({ guild: interaction.guild!, options }), type: 'embed', ephemeral: true };
-    }
-}
+});
 
 export default execSlashCommand;

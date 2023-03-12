@@ -1,11 +1,12 @@
 import moment from "moment";
 import Member from "../../../application/Member";
 import MD from "../../../utils/md";
-import { replaceValuesInString  } from "../../../utils/replaceValues";
+import { replaceValuesInString } from "../../../utils/replaceValues";
 
 import type { Role } from "discord.js";
-import type { BotArgumentFunc } from "../../index.types";
 import { createFilter } from "../../argument.utils";
+import { middleware } from "../../command.middleware";
+import type { BotArgumentFunc, ExecuteCommandOptions } from "../../index.types";
 
 const argument: Record<'MEMBER' | 'ADD_ROLE' | 'LIST' | 'TIME' | 'REASON' | 'TARGET_MEMBER' | 'TARGET_ROLE', BotArgumentFunc> = {
     MEMBER: (options) => ({
@@ -92,3 +93,61 @@ const argument: Record<'MEMBER' | 'ADD_ROLE' | 'LIST' | 'TIME' | 'REASON' | 'TAR
 }
 
 export default argument;
+
+const getArgs = (options: ExecuteCommandOptions) => ({
+    ADD_ROLE: argument.ADD_ROLE(options),
+    LIST: argument.LIST(options),
+    MEMBER: argument.MEMBER(options),
+    REASON: argument.REASON(options),
+    TARGET_MEMBER: argument.TARGET_MEMBER(options),
+    TARGET_ROLE: argument.TARGET_ROLE(options),
+    TIME: argument.TIME(options),
+});
+
+export const argMiddleware = middleware.createGetArgument(
+    async function (message, args, options, next) {
+        const arg = getArgs(options);
+        const member = args.get(arg.MEMBER.name);
+        const muteRole = args.get(arg.ADD_ROLE.name);
+        const list = args.get(arg.LIST.name);
+
+        options.context.argument = {
+            isAddRole: !!muteRole,
+            isList: !!list,
+            isMuteMember: !!member,
+            subCommand: (() => {
+                if (muteRole) return arg.ADD_ROLE.name;
+                if (list) return arg.LIST.name;
+                return '';
+            })()
+        }
+        if (options.context.argument.isMuteMember) {
+            const time = args.get(arg.TIME.name);
+            const reason = args.get(arg.REASON.name);
+            options.context.data = { member, time, reason };
+        } else if (options.context.argument.isAddRole) {
+            options.context.data = { role: muteRole };
+        }
+        next();
+    },
+    async function (interaction, options, next) {
+        const arg = getArgs(options);
+        const subCommand = interaction.options.getSubcommand();
+        options.context.argument = {
+            subCommand,
+            isAddRole: subCommand === arg.ADD_ROLE.name,
+            isList: subCommand === arg.LIST.name,
+            isMuteMember: subCommand === arg.MEMBER.name,
+        }
+        if (options.context.argument.isMuteMember) {
+            const member = interaction.options.getMember(arg.TARGET_MEMBER.name, true);
+            const reason = interaction.options.getString(arg.REASON.name) as string;
+            const muteTime = interaction.options.getString(arg.TIME.name);
+            options.context.data = { target: member, reason, time: muteTime };
+        } else if (options.context.argument.isAddRole) {
+            const muteRole = interaction.options.getRole(arg.TARGET_ROLE.name, true);
+            options.context.data = { target: muteRole };
+        }
+        next();
+    }
+)

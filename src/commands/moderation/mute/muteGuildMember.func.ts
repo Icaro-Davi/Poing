@@ -14,9 +14,10 @@ type MuteGuildMemberOptions = {
     reason?: string;
     interaction?: CommandInteraction;
     message?: Message;
+    onError: () => void;
 };
 
-export const MuteGuildMember = async ({ options, mutedMember, muteTime, reason, message, interaction }: MuteGuildMemberOptions): ExecuteCommandReturn => {
+export const MuteGuildMember = async ({ options, mutedMember, muteTime, reason, message, interaction, onError }: MuteGuildMemberOptions): ExecuteCommandReturn => {
     const guild = (message?.guild ?? interaction?.guild)!;
     const author = (message?.author ?? interaction?.user)!;
     let messageStack = '';
@@ -28,7 +29,7 @@ export const MuteGuildMember = async ({ options, mutedMember, muteTime, reason, 
                 content: options.locale.command.mute.interaction.cannotMuteAdmin,
                 ephemeral: true
             }
-        });
+        }); onError(); return;
     }
 
     const muteRoleId = await MuteApplication.getMuteRoleId(guild.id!);
@@ -53,18 +54,16 @@ export const MuteGuildMember = async ({ options, mutedMember, muteTime, reason, 
                 content: options.locale.command.mute.interaction.needRegisterRole,
                 ephemeral: true
             }
-        });
-        return;
+        }); onError(); return;
     };
-
+    
     if (mutedMember.roles.cache.some(role => role.id === muteRole.id)) {
         await AnswerMember({
             interaction, message, content: {
                 content: options.locale.command.mute.interaction.memberAlreadyMuted,
                 ephemeral: true
             }
-        });
-        return;
+        }); onError(); return;
     };
 
     if (muteTime) {
