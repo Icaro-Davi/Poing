@@ -10,19 +10,19 @@ interface CommandErrorDefault {
 
 interface UserCommandError extends CommandErrorDefault {
     type: 'COMMAND_USER' | 'DISCORD_API';
-    // commandParams: Parameters<ExecuteCommand>;
+    commandParams?: Parameters<ExecuteCommand>;
     message: AnswerMemberParams['content'];
 }
 
 interface UserSlashCommandError extends CommandErrorDefault {
     type: 'COMMAND_INTERACTION_USER' | 'DISCORD_API';
-    // slashCommandParams: Parameters<ExecuteSlashCommand>;
+    slashCommandParams?: Parameters<ExecuteSlashCommand>;
     message: AnswerMemberParams['content'];
 }
 
 interface DiscordAPICommandError extends CommandErrorDefault {
     type: 'DISCORD_API' | 'UNKNOWN';
-    message: AnswerMemberParams['content'];
+    message?: AnswerMemberParams['content'];
     slashCommandParams?: Parameters<ExecuteSlashCommand>;
     commandParams?: Parameters<ExecuteCommand>;
 }
