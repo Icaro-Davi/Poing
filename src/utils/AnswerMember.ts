@@ -25,6 +25,7 @@ type AnswerMemberMessage = AnswerMemberParams & {
 
 type AnswerMember = AnswerMemberInteraction | AnswerMemberMessage;
 async function AnswerMember(params: AnswerMember) {
+    if (!('message' in params) && !('interaction' in params)) throw new Error('Needs Message or Interaction!');
     if ('message' in params && params.message) {
         if (params.message?.editable && params.options?.editReply) {
             return await params.message.edit(params.content);
