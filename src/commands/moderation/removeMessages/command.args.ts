@@ -1,4 +1,5 @@
 import { createFilter } from "../../argument.utils";
+import { middleware } from "../../command.middleware";
 import { BotArgumentFunc } from "../../index.types";
 
 const argument: Record<'QUANTITY', BotArgumentFunc> = {
@@ -15,3 +16,17 @@ const argument: Record<'QUANTITY', BotArgumentFunc> = {
 }
 
 export default argument;
+
+export const argMiddleware = middleware.createGetArgument(
+    async function (message, args, options, next) {
+        const quantity = args.get(argument.QUANTITY(options).name);
+        options.context.data = { quantity };
+        next();
+    },
+    async function (interaction, options, next) {
+        const arg = { QUANTITY: argument.QUANTITY(options) }
+        const quantity = interaction.options.getNumber(arg.QUANTITY.name, arg.QUANTITY.required);
+        options.context.data = { quantity };
+        next();
+    },
+)

@@ -1,15 +1,16 @@
-import argument from "./command.args";
+import { middleware } from "../../command.middleware";
 import deleteMessages from "./deleteMessage.func";
 
-import type { ExecuteSlashCommand } from "../../index.types";
-
-const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
-    if (interaction.channel?.type === 'DM' || interaction.channel?.type === 'GUILD_VOICE') return;
-    const arg = { QUANTITY: argument.QUANTITY(options) }
-    const quantity = interaction.options.getNumber(arg.QUANTITY.name, arg.QUANTITY.required);
-    if (!quantity) return;
-
-    return await deleteMessages({ channel: interaction.channel!, locale: options.locale, ephemeral: true, quantity });
-}
+const execSlashCommand = middleware.create('COMMAND_INTERACTION', async function (interaction, options, next) {
+    if (interaction.channel?.type === 'DM' || interaction.channel?.type === 'GUILD_VOICE') {
+        next({ type: 'UNKNOWN' }); return;
+    }
+    const quantity = options.context.data.quantity;
+    if (!quantity) {
+        next({ type: 'UNKNOWN' }); return;
+    }
+    await deleteMessages({ channel: interaction.channel!, locale: options.locale, ephemeral: true, quantity, interaction });
+    next();
+});
 
 export default execSlashCommand;

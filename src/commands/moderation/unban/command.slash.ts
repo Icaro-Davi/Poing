@@ -1,23 +1,26 @@
-import argument from "./command.args";
+import AnswerMember from "../../../utils/AnswerMember";
+import { middleware } from "../../command.middleware";
 import unbanMember from "./unbanMember.func";
 
-import type { ExecuteSlashCommand } from "../../index.types";
+const execSlashCommand = middleware.create('COMMAND_INTERACTION', async function (interaction, options, next) {
+    const bannedMemberID = options.context.data.member;
+    const reason = options.context.data.reason;
 
-const execSlashCommand: ExecuteSlashCommand = async function (interaction, options) {
-    const arg = {
-        MEMBER: argument.MEMBER(options),
-        REASON: argument.REASON(options)
-    }
-    const memberID = interaction.options.getString(arg.MEMBER.name, arg.MEMBER.required);
-    const reason = interaction.options.getString(arg.REASON.name, arg.REASON.required) ?? undefined;
-
-    return await unbanMember({
-        reason, options,
-        ephemeral: true,
-        author: interaction.user,
-        bannedMemberID: `${memberID}`,
-        guild: interaction.guild!,
+    await unbanMember({
+        bannedMemberID, options, reason, interaction,
+        onError(msg) {
+            next({
+                type: 'COMMAND_USER',
+                message: { content: msg, ephemeral: true }
+            });
+        },
+        async onFinish(msg) {
+            await AnswerMember({
+                content: { content: msg, ephemeral: true }
+            });
+            next();
+        },
     });
-}
+});
 
 export default execSlashCommand;

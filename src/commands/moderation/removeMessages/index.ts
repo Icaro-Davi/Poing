@@ -1,8 +1,10 @@
-import argument from "./command.args";
-import execDefaultCommand from "./command.default";
-import execSlashCommand from "./command.slash";
+import argument, { argMiddleware } from "./command.args";
+import commandMiddleware from "./command.default";
+import slashCommandMiddleware from "./command.slash";
 
 import type { BotCommandFunc } from "../../index.types";
+import { middleware } from "../../command.middleware";
+import { extractVarsFromObject } from "../../command.utils";
 
 const command: BotCommandFunc = (options) => ({
     name: 'remove-messages',
@@ -10,14 +12,23 @@ const command: BotCommandFunc = (options) => ({
     description: options.locale.command.removeMessages.description,
     aliases: ['rm'],
     allowedPermissions: ['MANAGE_MESSAGES'],
+    botPermissions: ['MANAGE_MESSAGES'],
     usage: [
         [argument.QUANTITY({ locale: options.locale, required: true })]
     ],
     slashCommand: [
         { ...argument.QUANTITY(options), type: 'NUMBER' }
     ],
-    execSlash: execSlashCommand,
-    execDefault: execDefaultCommand,
+    commandPipeline: [
+        argMiddleware[0], commandMiddleware,
+        middleware.submitLog('COMMAND')
+    ],
+    slashCommandPipeline: [
+        argMiddleware[1], slashCommandMiddleware,
+        middleware.submitLog('COMMAND_INTERACTION', ctx => ({
+            userInput: extractVarsFromObject({ ...ctx.data })
+        }))
+    ]
 });
 
 export default command;

@@ -1,8 +1,10 @@
-import argument from "./command.args";
-import commandSlash from "./command.slash";
-import commandDefault from "./command.default";
+import argument, { argMiddleware } from "./command.args";
+import commandMiddleware from "./command.default";
+import slashCommandMiddleware from "./command.slash";
 
 import type { BotCommandFunc } from "../../index.types";
+import { middleware } from "../../command.middleware";
+import { extractVarsFromObject } from "../../command.utils";
 
 const command: BotCommandFunc = ({ locale }) => ({
     name: 'anonymous-direct-message',
@@ -10,6 +12,7 @@ const command: BotCommandFunc = ({ locale }) => ({
     aliases: ['adm'],
     description: locale.command.anonymousDirectMessage.description,
     allowedPermissions: ['ADMINISTRATOR'],
+    botPermissions: ['SEND_MESSAGES'],
     usage: [
         [argument.MEMBER({ locale, required: true })],
         [argument.MESSAGE({ locale, required: true })]
@@ -18,8 +21,16 @@ const command: BotCommandFunc = ({ locale }) => ({
         { ...argument.MEMBER({ locale }), type: 'USER' },
         { ...argument.MESSAGE({ locale }), type: 'STRING' }
     ],
-    execSlash: commandSlash,
-    execDefault: commandDefault
+    commandPipeline: [
+        argMiddleware[0], commandMiddleware,
+        middleware.submitLog('COMMAND')
+    ],
+    slashCommandPipeline: [
+        argMiddleware[1], slashCommandMiddleware,
+        middleware.submitLog('COMMAND_INTERACTION', ctx => ({
+            userInput: extractVarsFromObject(ctx.data)
+        }))
+    ]
 });
 
 export default command;

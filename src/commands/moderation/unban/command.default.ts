@@ -1,18 +1,27 @@
-import argument from "./command.args";
+import AnswerMember from "../../../utils/AnswerMember";
+import { middleware } from "../../command.middleware";
 import unbanMember from "./unbanMember.func";
 
-import type { ExecuteCommand } from "../../index.types";
+const execDefaultCommand = middleware.create('COMMAND', async function (message, args, options, next) {
+    const bannedMemberID = options.context.data.member;
+    const reason = options.context.data.reason;
 
-const execDefaultCommand: ExecuteCommand = async function (message, args, options) {
-    const bannedMemberID = args.get(argument.MEMBER(options).name);
-    const reason = args.get(argument.REASON(options).name);
-
-    return await unbanMember({
+    await unbanMember({
         bannedMemberID,
-        options, reason,
-        author: message.author,
-        guild: message.guild!,
+        options, reason, message,
+        onError(msg) {
+            next({
+                type: 'COMMAND_USER',
+                message: { content: msg }
+            });
+        },
+        async onFinish(msg) {
+            await AnswerMember({
+                content: { content: msg }
+            });
+            next();
+        },
     });
-}
+});
 
 export default execDefaultCommand;

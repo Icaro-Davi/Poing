@@ -1,21 +1,26 @@
-import argument from "./command.args";
+import AnswerMember from "../../../utils/AnswerMember";
+import { middleware } from "../../command.middleware";
 import { sendDirectMessage } from "./sendMessage.func";
 
-import type { GuildMember } from "discord.js";
-import type { ExecuteCommand } from "../../index.types";
+const defaultCommand = middleware.create('COMMAND', async function (message, args, options, next) {
+    const member = options.context.data.member;
+    const anonymousMessage = options.context.data.message;
 
-const defaultCommand: ExecuteCommand = async function (message, args, options) {
-    const member = args.get(argument.MEMBER(options).name) as GuildMember;
-    const anonymousMessage = args.get(argument.MESSAGE(options).name) as string;
-
-    const answer = await sendDirectMessage({
-        options,
-        mention: member,
-        anonymousMessage: anonymousMessage,
-        guild: message.guild!,
+    await sendDirectMessage({
+        options, message, anonymousMessage, mention: member,
+        onError(message) {
+            next({
+                type: 'COMMAND_USER',
+                message: { content: message }
+            });
+        },
+        async onFinish() {
+            await AnswerMember({
+                content: { content: options.locale.command.anonymousDirectMessage.interaction.messageSent }
+            });
+            next();
+        },
     });
-
-    return answer;
-}
+});
 
 export default defaultCommand;
