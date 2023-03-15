@@ -4,6 +4,7 @@ import { DiscordBot } from "../config";
 import type { CommandInteraction } from "discord.js";
 import { isAllowedToUseThisCommand } from "./command.utils";
 import { ExecuteCommandOptions } from "./index.types";
+import createPipeline from "./command.middleware";
 
 const execSlashCommand = async (interaction: CommandInteraction) => {
     try {
@@ -15,7 +16,7 @@ const execSlashCommand = async (interaction: CommandInteraction) => {
         const locale = DiscordBot.LocaleMemory.get(localeLang);
         const botCommand = Command({ locale });
 
-        if (!botCommand || !botCommand.execSlash) return;
+        if (!botCommand) return;
 
         if (await isAllowedToUseThisCommand({ interaction, allowedPermissions: botCommand.allowedPermissions, locale })) return;
         if (await isAllowedToUseThisCommand({ interaction, allowedPermissions: botCommand.botPermissions, locale, isBot: true })) return;
@@ -23,7 +24,6 @@ const execSlashCommand = async (interaction: CommandInteraction) => {
         const options: ExecuteCommandOptions = {
             locale,
             bot: {
-                // channel: { logsId: '1057080188216823818' },
                 channel: channel,
                 "@mention": `<@${DiscordBot.Bot.ID}>`,
                 name: DiscordBot.Bot.name,
@@ -32,17 +32,10 @@ const execSlashCommand = async (interaction: CommandInteraction) => {
             },
             context: { data: {}, argument: {} },
         }
-
-        const returnMessageOptions = await botCommand.execSlash(interaction, options);
-
-        await DiscordBot.Command.handleMessage({
-            ...returnMessageOptions,
-            message: interaction,
-            vars: {
-                ...returnMessageOptions?.vars ? returnMessageOptions.vars : {},
-                ...locale,
-            }
-        });
+        if (botCommand.slashCommandPipeline) {
+            const runPipeline = createPipeline('COMMAND_INTERACTION', botCommand.slashCommandPipeline)
+            return runPipeline.call(botCommand, interaction, options);
+        }
     } catch (error) {
         console.error(error);
     }

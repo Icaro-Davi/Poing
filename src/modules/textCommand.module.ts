@@ -1,7 +1,6 @@
-import { DiscordBot } from '../config';
-import handleError from '../utils/handleError';
 import getCommand from '../commands/command.default';
 import createPipeline from '../commands/command.middleware';
+import handleError from '../utils/handleError';
 
 import type { Message } from 'discord.js';
 import { createNewModule } from '.';
@@ -14,16 +13,6 @@ const textCommands = async (message: Message) => {
         if (command.commandPipeline) {
             const runPipeline = await createPipeline('COMMAND', command.commandPipeline);
             await runPipeline.call(command, message, args, options);
-        } else {
-            const returnMessageOptions = await command?.execDefault?.(message, args, options);
-            if (returnMessageOptions)
-                await DiscordBot.Command.handleMessage({
-                    ...returnMessageOptions, message,
-                    vars: {
-                        ...returnMessageOptions?.vars ? returnMessageOptions.vars : {},
-                        ...options,
-                    }
-                });
         }
     } catch (error) {
         Command?.options.locale ? handleError(error, {

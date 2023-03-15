@@ -50,7 +50,7 @@ class Commands {
         this.Collection.forEach(botCommand => {
             (async () => {
                 const command = botCommand({ locale });
-                if (!command.execSlash) return;
+                if (!command.slashCommandPipeline.length) return;
                 commands?.create({
                     name: command.name,
                     description: reduceStringSize(`[${command.category}] ${command.description}`),

@@ -80,7 +80,6 @@ const getDefaultCommand = async (message: Message) => {
 
         const options: ExecuteCommandOptions = {
             bot: {
-                // channel: { logsId: '1057080188216823818' },
                 channel: botConf?.channel,
                 name: DiscordBot.Bot.name,
                 "@mention": `<@${DiscordBot.Bot.ID}>`,

@@ -52,16 +52,8 @@ export type ExecuteCommandOptions<T = CommandOptionsContext> = {
 export type BotCommand = {
     name: string;
     aliases?: string[];
-    commandPipeline?: MiddlewareCommandFunc[];
-    slashCommandPipeline?: MiddlewareSlashCommandFunc[];
-    /**
-     * @deprecated
-     */
-    execDefault?: ExecuteCommand;
-    /**
-     * @deprecated
-     */
-    execSlash?: ExecuteSlashCommand;
+    commandPipeline: MiddlewareCommandFunc[];
+    slashCommandPipeline: MiddlewareSlashCommandFunc[];
     category: BotCommandCategory | string;
     description: string;
     allowedPermissions?: PermissionResolvable[];
