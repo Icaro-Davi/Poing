@@ -1,10 +1,11 @@
+import { middleware } from '../../command.middleware';
+import { extractVarsFromObject } from '../../command.utils';
 import argument, { argsMiddleware } from './command.args';
 import commandDefaultMiddleware from './command.default';
 import slashCommandMiddleware from './command.slash';
 
+import { ApplicationCommandOptionType } from 'discord.js';
 import type { BotCommandFunc } from '../../index.types';
-import { middleware } from '../../command.middleware';
-import { extractVarsFromObject } from '../../command.utils';
 
 const command: BotCommandFunc = (options) => ({
     name: 'info',
@@ -17,8 +18,8 @@ const command: BotCommandFunc = (options) => ({
         {
             ...argument.MEMBER(options),
             description: `[${options.locale.category.utility}] ${argument.MEMBER(options).description}`,
-            type: 'SUB_COMMAND',
-            options: [{ ...argument.TARGET_MEMBER(options), type: 'USER' }]
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [{ ...argument.TARGET_MEMBER(options), type: ApplicationCommandOptionType.User }],
         }
     ],
     commandPipeline: [argsMiddleware[0], commandDefaultMiddleware, middleware.submitLog('COMMAND', context => ({ subCommand: context.argument.subCommand }))],
@@ -27,5 +28,7 @@ const command: BotCommandFunc = (options) => ({
         userInput: extractVarsFromObject({ ...context.data })
     }))]
 });
+
+
 
 export default command;

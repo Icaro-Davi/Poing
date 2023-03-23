@@ -1,4 +1,4 @@
-import { CommandInteraction, Guild, Message } from "discord.js";
+import { CommandInteraction, Guild, Message, PermissionFlagsBits } from "discord.js";
 import { createPaginationButtons } from "../../../components/messageActionRow";
 import { paginationOfBannedMembers } from "../../../components/messageEmbed";
 import { onlyWithPermission } from "../../../components/collectorFilters";
@@ -47,7 +47,7 @@ const listBannedMembers = async ({ interaction, message, options, ephemeral }: L
 
     if (pagination.total < 20) return;
 
-    const collector = onlyWithPermission((message ?? interaction)!, { locale: options.locale, permissions: 'BAN_MEMBERS', ephemeral });
+    const collector = onlyWithPermission((message ?? interaction)!, { locale: options.locale, permissions: PermissionFlagsBits.BanMembers, ephemeral });
     collector.on('collect', async (interactionButton) => {
         try {
             let currentPage = pagination.currentPage;

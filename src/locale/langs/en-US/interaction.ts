@@ -9,9 +9,9 @@ const interaction: BaseInteraction = {
     "needArguments": "I need more arguments.",
     "youCantUseThisButton": "This button has a powerful magic that prevents you from using it!",
     "iDidntFoundAnything": "I couldn't find anything.",
-    "youDontHavePermission": "You are not allowed to do it.",
-    "botDontHavePermissions": "I need the {role} role to continue.",
-    "needARole": "I need the server to have a role called {role}.",
+    "youDontHavePermission": "You are not allowed to do it, you need the role \"{role}\".",
+    "botDontHavePermissions": "I need the \"{role}\" role to continue.",
+    "needARole": "I need the server to have a role called \"{role}\".",
     "verifyTheArguments": "Argument invalid, verify the arguments you passed to the command.",
     "member": {
         "kickCanceled": "Safe, you won't be kicked ❤️",

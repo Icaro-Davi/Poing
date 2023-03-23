@@ -16,7 +16,7 @@ export interface BaseInteraction {
     needArguments: string;
     youCantUseThisButton: string;
     iDidntFoundAnything: string;
-    youDontHavePermission: string;
+    youDontHavePermission: string; // {role}
     botDontHavePermissions: string; // {role}
     needARole: string;// {role}
     verifyTheArguments: string;

@@ -5,21 +5,22 @@ import slashCommandMiddleware from "./command.slash";
 import type { BotCommandFunc } from "../../index.types";
 import { middleware } from "../../command.middleware";
 import { extractVarsFromObject } from "../../command.utils";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 
 const command: BotCommandFunc = ({ locale }) => ({
     name: 'anonymous-direct-message',
     category: locale.category.administration,
     aliases: ['adm'],
     description: locale.command.anonymousDirectMessage.description,
-    allowedPermissions: ['ADMINISTRATOR'],
-    botPermissions: ['SEND_MESSAGES'],
+    allowedPermissions: [PermissionFlagsBits.Administrator],
+    botPermissions: [PermissionFlagsBits.SendMessages],
     usage: [
         [argument.MEMBER({ locale, required: true })],
         [argument.MESSAGE({ locale, required: true })]
     ],
     slashCommand: [
-        { ...argument.MEMBER({ locale }), type: 'USER' },
-        { ...argument.MESSAGE({ locale }), type: 'STRING' }
+        { ...argument.MEMBER({ locale }), type: ApplicationCommandOptionType.User },
+        { ...argument.MESSAGE({ locale }), type: ApplicationCommandOptionType.String }
     ],
     commandPipeline: [
         argMiddleware[0], commandMiddleware,

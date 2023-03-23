@@ -1,22 +1,26 @@
-import Discord, { Intents } from 'discord.js';
+import Discord, { IntentsBitField, Partials } from 'discord.js';
 import { DiscordBot } from '.';
 import startListeningEvents from '../events';
 
 import type { ClientEvents, Awaitable } from 'discord.js';
-
 class Client {
 
     private static client: Discord.Client = new Discord.Client({
         intents: [
-            Intents.FLAGS.GUILDS,
-            Intents.FLAGS.GUILD_MESSAGES,
-            Intents.FLAGS.GUILD_MEMBERS,
-            Intents.FLAGS.GUILD_PRESENCES,
-            Intents.FLAGS.GUILD_BANS,
-            Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-            Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+            IntentsBitField.Flags.Guilds,
+            IntentsBitField.Flags.GuildMessages,
+            IntentsBitField.Flags.GuildMembers,
+            IntentsBitField.Flags.GuildPresences,
+            IntentsBitField.Flags.GuildModeration,
+            IntentsBitField.Flags.GuildEmojisAndStickers,
+            IntentsBitField.Flags.GuildMessageReactions,
+            IntentsBitField.Flags.MessageContent
         ],
-        partials: ['CHANNEL', 'MESSAGE', 'REACTION']
+        partials: [
+            Partials.Channel,
+            Partials.Message,
+            Partials.Reaction
+        ]
     });
 
     static async start() {

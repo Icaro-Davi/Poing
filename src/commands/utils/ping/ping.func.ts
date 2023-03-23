@@ -1,7 +1,7 @@
-import { MessageEmbed } from "discord.js";
-import { replaceValuesInString  } from "../../../utils/replaceValues";
+import { EmbedBuilder } from "discord.js";
+import { replaceValuesInString } from "../../../utils/replaceValues";
 
-import type { ColorResolvable, CommandInteraction, Message, } from 'discord.js';
+import type { CommandInteraction, Message } from 'discord.js';
 import type { RequireAtLeastOne } from "../../../utils/typescript.funcs";
 import type { ExecuteCommandOptions } from "../../index.types";
 
@@ -12,10 +12,10 @@ type PingOptions = RequireAtLeastOne<{
     ephemeral?: boolean;
 }, 'interaction' | 'message'>
 
-const replyPingEmbedMessage = (description: string, color: ColorResolvable) => new MessageEmbed({ color, title: ':small_blue_diamond: Pong', description });
+const replyPingEmbedMessage = (description: string, color: number) => new EmbedBuilder({ color, title: ':small_blue_diamond: Pong', description });
 
 const ping = async ({ options, interaction, message, ephemeral }: PingOptions) => {
-    const pingEmbedMessage = new MessageEmbed({ color: options.bot.hexColor, title: ':small_orange_diamond: Ping' });
+    const pingEmbedMessage = new EmbedBuilder({ color: options.bot.hexColor, title: ':small_orange_diamond: Ping' });
     const resultMessage = await (message ?? interaction)?.channel?.send({ embeds: [pingEmbedMessage] });
 
     let serverPing = replaceValuesInString(options.locale.command.ping.interaction.serverPing, { bot: { ...options.bot }, ping: { server: (message ?? interaction)?.client.ws.ping } });

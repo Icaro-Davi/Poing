@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-import type { ColorResolvable } from "discord.js";
 import type { LocaleLabel } from "../../locale";
 
 export interface IBotRolesSchema {
@@ -22,7 +21,7 @@ const channelSchema = new mongoose.Schema<IChannelSchema>({
 
 export interface IBotSchema {
     prefix: string;
-    messageEmbedHexColor: ColorResolvable;
+    messageEmbedHexColor: string;
     locale: LocaleLabel;
     roles?: IBotRolesSchema;
     channel?: IChannelSchema;

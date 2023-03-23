@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { middleware } from "../../command.middleware";
 import { extractVarsFromObject } from "../../command.utils";
 import { BotCommandFunc } from "../../index.types";
@@ -11,8 +12,8 @@ const command: BotCommandFunc = options => ({
     name: 'warn',
     category: options.locale.category.moderation,
     description: options.locale.command.warn.description,
-    allowedPermissions: ['MODERATE_MEMBERS'],
-    botPermissions: ['MANAGE_MESSAGES', 'SEND_MESSAGES', 'VIEW_AUDIT_LOG'],
+    allowedPermissions: [PermissionFlagsBits.ModerateMembers],
+    botPermissions: [PermissionFlagsBits.ManageMessages, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewAuditLog],
     usage: [
         [
             argument.MESSAGE({ ...options, required: true }),
@@ -25,18 +26,18 @@ const command: BotCommandFunc = options => ({
     slashCommand: [
         {
             ...argument.MESSAGE(options),
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: `[${options.locale.category.moderation}] ${argument.MESSAGE(options).description}`,
             options: [
-                { ...argument.MEMBER({ ...options, required: true }), type: 'USER' },
-                { ...argument.MESSAGE({ ...options, required: true }), type: 'STRING' },
+                { ...argument.MEMBER({ ...options, required: true }), type: ApplicationCommandOptionType.User },
+                { ...argument.MESSAGE({ ...options, required: true }), type: ApplicationCommandOptionType.String },
             ]
         },
         {
             ...argument.EMBED(options),
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: `[${options.locale.category.moderation}] ${argument.EMBED(options).description}`,
-            options: [{ ...argument.MEMBER({ ...options, required: true }), type: 'USER' }]
+            options: [{ ...argument.MEMBER({ ...options, required: true }), type: ApplicationCommandOptionType.User }]
         }
     ],
     commandPipeline: [

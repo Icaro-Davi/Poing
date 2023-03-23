@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js"
+import { EmbedBuilder } from "discord.js"
 import MD from "../../utils/md";
 import { replaceValuesInString } from "../../utils/replaceValues";
 
@@ -16,7 +16,7 @@ type Options = {
 }
 
 const banMember = ({ locale, reason, member, days, authorTag, authorUrl, botColor }: Options) => {
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setColor(botColor)
         .setAuthor({ name: authorTag, iconURL: authorUrl })
         .setTitle(MD.bold.b(locale.messageEmbed.confirmBanishMember.title))
@@ -29,7 +29,7 @@ const banMember = ({ locale, reason, member, days, authorTag, authorUrl, botColo
 }
 
 const kickMember = ({ locale, reason, member, authorTag, authorUrl, botColor }: Omit<Options, 'days'>) => {
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setColor(botColor)
         .setAuthor({ name: authorTag, iconURL: authorUrl })
         .setTitle(MD.bold.b(locale.messageEmbed.confirmKickMember.title))
@@ -41,7 +41,7 @@ const kickMember = ({ locale, reason, member, authorTag, authorUrl, botColor }: 
 }
 
 const softBanMember = ({ locale, botColor, authorTag, authorUrl, member }: Options) => {
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setColor(botColor)
         .setAuthor({ name: authorTag, iconURL: authorUrl })
         .setTitle(MD.bold.b(locale.messageEmbed.confirmSoftBan.title))

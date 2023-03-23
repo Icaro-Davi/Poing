@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from "discord.js";
 import { DiscordBot } from "../../../config";
 import { middleware } from "../../command.middleware";
 import { extractVarsFromObject } from "../../command.utils";
@@ -18,14 +19,14 @@ const command: BotCommandFunc = (options) => ({
         {
             ...argument.LIST(options),
             description: `[${options.locale.category.utility}] ${argument.LIST(options).description}`,
-            type: 'SUB_COMMAND'
+            type: ApplicationCommandOptionType.Subcommand
         },
         {
             ...argument.COMMAND(options),
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: `[${options.locale.category.utility}] ${argument.COMMAND(options).description}`,
             options: [{
-                ...argument.TARGET(options), type: 'STRING',
+                ...argument.TARGET(options), type: ApplicationCommandOptionType.String,
             }]
         }
     ],

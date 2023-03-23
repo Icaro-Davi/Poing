@@ -1,9 +1,9 @@
-import { BaseMessageComponentOptions, Interaction, Message, MessageActionRow, MessageActionRowOptions, MessageEmbed } from "discord.js";
+import { BaseMessageOptions, EmbedBuilder, Interaction, Message } from "discord.js";
 
 export type AnswerMemberParams = {
     content: {
-        embeds?: MessageEmbed[];
-        components?: (MessageActionRow | (Required<BaseMessageComponentOptions> & MessageActionRowOptions))[];
+        embeds?: EmbedBuilder[];
+        components?: BaseMessageOptions['components'];
         content?: string;
         ephemeral?: boolean;
     };

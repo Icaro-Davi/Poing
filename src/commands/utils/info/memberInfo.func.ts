@@ -1,13 +1,13 @@
-import { GuildMember, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildMember } from "discord.js";
 import moment from "moment";
 import Mute from "../../../application/Mute";
 import MD from "../../../utils/md";
 import { ExecuteCommandOptions } from "../../index.types";
 
-const memberInfo = async (member: GuildMember, options: ExecuteCommandOptions, onFinish: (embed: MessageEmbed) => void) => {
+const memberInfo = async (member: GuildMember, options: ExecuteCommandOptions, onFinish: (embed: EmbedBuilder) => void) => {
     const muteRoleId = await Mute.getMuteRoleId(member.guild.id);
     const mutedDoc = (muteRoleId && member.roles.cache.has(muteRoleId)) ? await Mute.findMutedMember(member.guild.id, member.id) : undefined;
-    const userInfoEmbed = new MessageEmbed()
+    const userInfoEmbed = new EmbedBuilder()
         .setColor(options.bot.hexColor)
         .setTitle(`Tag ${member.user.tag}`)
         .addFields([

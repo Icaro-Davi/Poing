@@ -1,4 +1,4 @@
-import { CommandInteraction, Message } from "discord.js";
+import { Interaction, Message } from "discord.js";
 import AnswerMember, { AnswerMemberParams } from "../utils/AnswerMember";
 import { ExecuteCommand, ExecuteSlashCommand } from "./index.types";
 
@@ -36,7 +36,7 @@ interface ICommandError {
 class CommandError implements ICommandError {
     private readonly ERROR_TYPE: CommandErrorType['type'];
     private readonly message?: Message;
-    private readonly interaction?: CommandInteraction;
+    private readonly interaction?: Interaction;
     private readonly answerMemberMessage?: AnswerMemberParams['content'];
     private readonly logError: CommandErrorDefault;
 
@@ -72,7 +72,9 @@ class CommandError implements ICommandError {
 
                     case 'DISCORD_API':
                         await this.throwCommandUserError();
+                        this.throwLogicError();
                         break;
+
                     case 'UNKNOWN':
                         await this.throwLogicError();
                         break;

@@ -1,4 +1,9 @@
-import { CommandInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, Modal, ModalSubmitInteraction, TextInputComponent } from 'discord.js';
+import {
+    ActionRowBuilder,
+    ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType, EmbedBuilder, EmbedData, Message, MessageComponentInteraction, ModalBuilder,
+    ModalSubmitInteraction,
+    TextInputBuilder, TextInputStyle
+} from 'discord.js';
 import { Locale } from '../../../locale';
 import AnswerMember from '../../../utils/AnswerMember';
 import CancelablePromise from '../../../utils/CancelablePromise';
@@ -20,49 +25,53 @@ const createEmbedForm = (params: {
         thumbnailId: createId(`form-thumbnail`, params.uniqueId),
         footerId: createId(`form-footer`, params.uniqueId),
     }
-    const titleComponent = new TextInputComponent({
-        type: 'TEXT_INPUT',
+    const titleComponent = new TextInputBuilder({
+        type: ComponentType.TextInput,
         label: params.locale.command.embed.component.embedMessageForm.title.label,
         placeholder: params.locale.command.embed.component.embedMessageForm.title.placeholder,
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         customId: form.titleId,
-        maxLength: 256
+        maxLength: 256,
+        required: false
     });
 
-    const descriptionComponent = new TextInputComponent({
-        type: 'TEXT_INPUT',
+    const descriptionComponent = new TextInputBuilder({
+        type: ComponentType.TextInput,
         label: params.locale.command.embed.component.embedMessageForm.description.label,
         placeholder: params.locale.command.embed.component.embedMessageForm.description.placeholder,
         maxLength: 4000,
-        style: 'PARAGRAPH',
-        customId: form.descriptionId
+        style: TextInputStyle.Paragraph,
+        customId: form.descriptionId,
+        required: false
     });
 
-    const thumbnailComponent = new TextInputComponent({
-        type: 'TEXT_INPUT',
+    const thumbnailComponent = new TextInputBuilder({
+        type: ComponentType.TextInput,
         label: params.locale.command.embed.component.embedMessageForm.thumbnail.label,
         placeholder: params.locale.command.embed.component.embedMessageForm.thumbnail.placeholder,
-        style: 'SHORT',
-        customId: form.thumbnailId
+        style: TextInputStyle.Short,
+        customId: form.thumbnailId,
+        required: false
     });
 
-    const footerComponent = new TextInputComponent({
-        type: 'TEXT_INPUT',
+    const footerComponent = new TextInputBuilder({
+        type: ComponentType.TextInput,
         label: params.locale.command.embed.component.embedMessageForm.footer.label,
         placeholder: params.locale.command.embed.component.embedMessageForm.footer.placeholder,
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         maxLength: 2040,
-        customId: form.footerId
+        customId: form.footerId,
+        required: false
     });
 
-    const modal = new Modal({
+    const modal = new ModalBuilder({
         title: params.locale.command.embed.component.embedMessageForm.messageBodyTitleModal,
         customId: modalId,
         components: [
-            new MessageActionRow({ components: [titleComponent] }),
-            new MessageActionRow({ components: [descriptionComponent] }),
-            new MessageActionRow({ components: [thumbnailComponent] }),
-            new MessageActionRow({ components: [footerComponent] }),
+            new ActionRowBuilder<TextInputBuilder>({ components: [titleComponent] }),
+            new ActionRowBuilder<TextInputBuilder>({ components: [descriptionComponent] }),
+            new ActionRowBuilder<TextInputBuilder>({ components: [thumbnailComponent] }),
+            new ActionRowBuilder<TextInputBuilder>({ components: [footerComponent] }),
         ]
     });
 
@@ -79,43 +88,42 @@ const createEmbedFormField = (params: {
         descriptionFieldId: createId(`form-description-field`, params.uniqueId),
         inlineFieldId: createId(`form-inline-field`, params.uniqueId),
     }
-    const titleField = new TextInputComponent({
-        type: 'TEXT_INPUT',
+    const titleField = new TextInputBuilder({
         label: params.locale.command.embed.component.embedMessageFormField.title.label,
         placeholder: params.locale.command.embed.component.embedMessageFormField.title.placeholder,
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         maxLength: 256,
         customId: form.titleFieldId,
         required: true
     });
 
-    const descriptionField = new TextInputComponent({
-        type: 'TEXT_INPUT',
+    const descriptionField = new TextInputBuilder({
         label: params.locale.command.embed.component.embedMessageFormField.description.label,
         placeholder: params.locale.command.embed.component.embedMessageFormField.description.placeholder,
-        style: 'PARAGRAPH',
+        style: TextInputStyle.Paragraph,
         maxLength: 1020,
         customId: form.descriptionFieldId,
         required: true
     });
 
-    const inlineField = new TextInputComponent({
-        type: 'SELECT_MENU',
+    // Check
+    const inlineField = new TextInputBuilder({
         label: params.locale.command.embed.component.embedMessageFormField.inline.label,
         placeholder: '(y)es ~ (n)o',
-        style: 'SHORT',
+        style: TextInputStyle.Short,
         value: 'yes',
         customId: form.inlineFieldId,
         maxLength: 3,
+        required: true
     });
 
-    const modal = new Modal({
+    const modal = new ModalBuilder({
         title: params.locale.command.embed.component.embedMessageFormField.addNewFieldTitleModal,
         customId: modalId,
         components: [
-            new MessageActionRow({ components: [titleField] }),
-            new MessageActionRow({ components: [descriptionField] }),
-            new MessageActionRow({ components: [inlineField] })
+            new ActionRowBuilder<TextInputBuilder>({ components: [titleField] }),
+            new ActionRowBuilder<TextInputBuilder>({ components: [descriptionField] }),
+            new ActionRowBuilder<TextInputBuilder>({ components: [inlineField] })
         ]
     });
 
@@ -134,7 +142,7 @@ const createHelperEmbedMessage = (params: {
     const cancelCreateEmbedId = createId(`cancel`, params.uniqueId);
     const messageObject = {
         ephemeral: true,
-        embeds: [new MessageEmbed({
+        embeds: [new EmbedBuilder({
             title: params.locale.command.embed.createEmbedMessageExplanation.title,
             description: params.locale.command.embed.createEmbedMessageExplanation.description.replace('{minutes}', `${collectorTime / 1000 / 60}`),
             color: params.color,
@@ -162,13 +170,13 @@ const createHelperEmbedMessage = (params: {
             ]
         })],
         components: [
-            new MessageActionRow({
+            new ActionRowBuilder<ButtonBuilder>({
                 components: [
-                    new MessageButton({ type: 'BUTTON', label: `📜 ${params.locale.command.embed.createEmbedMessageExplanation.fields.bodyBtn.name}`, customId: openEmbedModalId, style: 'PRIMARY' }),
-                    new MessageButton({ type: 'BUTTON', label: `🖇️ ${params.locale.command.embed.createEmbedMessageExplanation.fields.addItemBtn.name}`, customId: appendEmbedFieldId, style: 'SECONDARY' }),
-                    new MessageButton({ type: 'BUTTON', label: `🚮 ${params.locale.command.embed.createEmbedMessageExplanation.fields.deleteItemBtn.name}`, customId: deleteLastField, style: 'DANGER' }),
-                    new MessageButton({ type: 'BUTTON', label: `✅ ${params.locale.command.embed.createEmbedMessageExplanation.fields.submitEmbedMessageBtn.name}`, customId: submitEmbedMessage, style: 'SUCCESS' }),
-                    new MessageButton({ type: 'BUTTON', label: `❌ ${params.locale.command.embed.createEmbedMessageExplanation.fields.cancelEmbedMessageBtn.name}`, customId: cancelCreateEmbedId, style: 'DANGER' })
+                    new ButtonBuilder({ label: `📜 ${params.locale.command.embed.createEmbedMessageExplanation.fields.bodyBtn.name}`, customId: openEmbedModalId, style: ButtonStyle.Primary }),
+                    new ButtonBuilder({ label: `🖇️ ${params.locale.command.embed.createEmbedMessageExplanation.fields.addItemBtn.name}`, customId: appendEmbedFieldId, style: ButtonStyle.Secondary }),
+                    new ButtonBuilder({ label: `🚮 ${params.locale.command.embed.createEmbedMessageExplanation.fields.deleteItemBtn.name}`, customId: deleteLastField, style: ButtonStyle.Danger }),
+                    new ButtonBuilder({ label: `✅ ${params.locale.command.embed.createEmbedMessageExplanation.fields.submitEmbedMessageBtn.name}`, customId: submitEmbedMessage, style: ButtonStyle.Success }),
+                    new ButtonBuilder({ label: `❌ ${params.locale.command.embed.createEmbedMessageExplanation.fields.cancelEmbedMessageBtn.name}`, customId: cancelCreateEmbedId, style: ButtonStyle.Danger })
                 ]
             })
         ]
@@ -182,15 +190,15 @@ const createHelperEmbedMessage = (params: {
 
 const CreateEmbedCollectorData = async (params: {
     options: ExecuteCommandOptions;
-    interaction?: CommandInteraction;
+    interaction?: ChatInputCommandInteraction;
     message?: Message;
     events?: {
-        onSubmit?: (embed: MessageEmbed) => Promise<void> | void;
+        onSubmit?: (embed: EmbedBuilder) => Promise<void> | void;
         onCancel?: () => Promise<void> | void;
     }
 }) => {
     const user = (params.interaction?.user ?? params.message?.member?.user);
-    const embedColor = parseInt(`${params.options.bot.hexColor}`.replace('#', ''), 16);
+    const embedColor = params.options.bot.hexColor
     if (!user) return;
     const uniqueId = `${Math.random().toString(32).slice(4)}-${user.id}`;
 
@@ -238,7 +246,7 @@ const CreateEmbedCollectorData = async (params: {
     const mainEmbedMessage = createEmbedForm({ locale: params.options.locale, uniqueId });
     const fieldEmbedMessage = createEmbedFormField({ locale: params.options.locale, uniqueId });
 
-    const embed = { author: { name: user.username, iconURL: user.avatarURL() }, color: embedColor } as MessageEmbed;
+    const embed = { author: { name: user.username, iconURL: user.avatarURL() }, color: embedColor } as EmbedData;
     embed.fields = [];
     let expirationRef = expirationMessage();
     let embedBodyPromise: CancelablePromise<ModalSubmitInteraction> | undefined;
@@ -258,7 +266,7 @@ const CreateEmbedCollectorData = async (params: {
                         embed.thumbnail = { url: isURL(modalSubmit.fields.getTextInputValue(mainEmbedMessage.form.thumbnailId)) ?? '' };
                         embed.footer = { text: modalSubmit.fields.getTextInputValue(mainEmbedMessage.form.footerId) ?? '' };
                         await modalSubmit.deferUpdate();
-                        await AnswerMember({ ...replyAnswerMember, content: { ...messageObject, embeds: [embed, ...messageObject.embed.embeds] } });
+                        await AnswerMember({ ...replyAnswerMember, content: { ...messageObject, embeds: [new EmbedBuilder(embed), ...messageObject.embed.embeds] } });
                     });
                     break;
 
@@ -275,24 +283,24 @@ const CreateEmbedCollectorData = async (params: {
                                     ? true
                                     : typeof modalSubmit.fields.getTextInputValue(fieldEmbedMessage.form.inlineFieldId).match(/^y(?:(?:es)?)$/i) === null ? true : false
                             }
-                            embed.fields = [...embed.fields, field];
+                            embed.fields = [...embed.fields!, field];
                             await modalSubmit.deferUpdate();
-                            await AnswerMember({ ...replyAnswerMember, content: { ...messageObject, embeds: [embed, ...messageObject.embed.embeds] } });
+                            await AnswerMember({ ...replyAnswerMember, content: { ...messageObject, embeds: [new EmbedBuilder(embed), ...messageObject.embed.embeds] } });
                         });
                     } else await msg.deferUpdate();
                     break;
 
                 case messageObject.ref.deleteLastField:
-                    embed.fields.pop();
-                    await AnswerMember({ ...replyAnswerMember, content: { ...messageObject, embeds: [embed, ...messageObject.embed.embeds] } });
+                    embed.fields?.pop();
+                    await AnswerMember({ ...replyAnswerMember, content: { ...messageObject, embeds: [new EmbedBuilder(embed), ...messageObject.embed.embeds] } });
                     await msg.deferUpdate();
                     break;
 
                 case messageObject.ref.submitEmbedMessage:
                     const channel = (params.interaction?.channel ?? params.message?.channel);
                     if (channel) {
-                        if (params?.events?.onSubmit) await params.events.onSubmit(embed);
-                        else await channel.send({ embeds: [embed] });
+                        if (params?.events?.onSubmit) await params.events.onSubmit(new EmbedBuilder(embed));
+                        else await channel.send({ embeds: [new EmbedBuilder(embed)] });
                         await AnswerMember({
                             ...replyAnswerMember,
                             content: {

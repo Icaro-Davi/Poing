@@ -3,6 +3,7 @@ import handleError from '../utils/handleError';
 
 import type { Message } from 'discord.js';
 import type { Locale } from '../locale';
+import HexColorToNumber from '../utils/HexColorToNumber';
 import { isAllowedToUseThisCommand } from './command.utils';
 import type { BotCommand, ExecuteCommandOptions } from './index.types';
 
@@ -44,7 +45,7 @@ export const getArgs = async (options: { message: Message, command: BotCommand, 
 }
 
 export const findInMessageAValidPrefix = (message: Message, prefix?: string) => {
-    const botMentionPrefix = message.mentions.users.first()?.id === message.guild?.me?.id ? `<@${message.mentions.users.first()?.id}> ` : undefined;
+    const botMentionPrefix = message.mentions.users.first()?.id === message.guild?.client.user.id ? `<@${message.mentions.users.first()?.id}> ` : undefined;
     const messageStartWithPrefix = (message: Message, prefix: string) => message.content.startsWith(prefix);
     if (prefix && messageStartWithPrefix(message, prefix ?? DiscordBot.Bot.defaultPrefix)) return prefix ?? DiscordBot.Bot.defaultPrefix;
     else if (botMentionPrefix && messageStartWithPrefix(message, botMentionPrefix)) return botMentionPrefix;
@@ -62,7 +63,6 @@ const getDefaultCommand = async (message: Message) => {
         if (!message.guildId || message.author.bot) return;
 
         const botConf = await DiscordBot.GuildMemory.getConfigs(message.guildId);
-
         const prefix = findInMessageAValidPrefix(message, botConf.prefix);
         if (!prefix) return;
 
@@ -83,7 +83,7 @@ const getDefaultCommand = async (message: Message) => {
                 channel: botConf?.channel,
                 name: DiscordBot.Bot.name,
                 "@mention": `<@${DiscordBot.Bot.ID}>`,
-                hexColor: botConf.messageEmbedHexColor ?? DiscordBot.Bot.defaultBotHexColor,
+                hexColor: HexColorToNumber(botConf.messageEmbedHexColor ?? DiscordBot.Bot.defaultBotHexColor),
                 prefix: botConf.prefix ?? DiscordBot.Bot.defaultPrefix,
             },
             locale,

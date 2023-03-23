@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import argument, { argMiddleware } from "./command.args";
 import commandMiddleware from "./command.default";
 import slashCommandMiddleware from "./command.slash";
@@ -10,8 +11,8 @@ const command: BotCommandFunc = (options) => ({
     name: 'mute',
     category: options.locale.category.moderation,
     description: options.locale.command.mute.description,
-    allowedPermissions: ['MUTE_MEMBERS'],
-    botPermissions: ['MANAGE_ROLES', 'MUTE_MEMBERS'],
+    allowedPermissions: [PermissionFlagsBits.MuteMembers],
+    botPermissions: [PermissionFlagsBits.ManageRoles, PermissionFlagsBits.MuteMembers],
     usage: [
         [
             argument.MEMBER({ locale: options.locale, required: true }),
@@ -25,23 +26,23 @@ const command: BotCommandFunc = (options) => ({
         {
             ...argument.MEMBER(options),
             description: `[${options.locale.category.moderation}] ${argument.MEMBER(options).description}`,
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             options: [
-                { ...argument.TARGET_MEMBER(options), type: 'USER' },
-                { ...argument.TIME(options), type: 'STRING' },
-                { ...argument.REASON(options), type: 'STRING' }
+                { ...argument.TARGET_MEMBER(options), type: ApplicationCommandOptionType.User },
+                { ...argument.TIME(options), type: ApplicationCommandOptionType.String },
+                { ...argument.REASON(options), type: ApplicationCommandOptionType.String }
             ]
         },
         {
             ...argument.ADD_ROLE(options),
             description: `[${options.locale.category.moderation}] ${argument.ADD_ROLE(options).description}`,
-            type: 'SUB_COMMAND',
-            options: [{ ...argument.TARGET_ROLE(options), type: 'ROLE' }]
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [{ ...argument.TARGET_ROLE(options), type: ApplicationCommandOptionType.Role }]
         },
         {
             ...argument.LIST(options),
             description: `[${options.locale.category.moderation}] ${argument.LIST(options).description}`,
-            type: 'SUB_COMMAND'
+            type: ApplicationCommandOptionType.Subcommand
         },
     ],
     commandPipeline: [

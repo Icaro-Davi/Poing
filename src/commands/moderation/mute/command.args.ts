@@ -140,7 +140,7 @@ export const argMiddleware = middleware.createGetArgument(
             isMuteMember: subCommand === arg.MEMBER.name,
         }
         if (options.context.argument.isMuteMember) {
-            const member = interaction.options.getMember(arg.TARGET_MEMBER.name, true);
+            const member = interaction.options.getMember(arg.TARGET_MEMBER.name);
             const reason = interaction.options.getString(arg.REASON.name) as string;
             const muteTime = interaction.options.getString(arg.TIME.name);
             options.context.data = { target: member, reason, time: muteTime };

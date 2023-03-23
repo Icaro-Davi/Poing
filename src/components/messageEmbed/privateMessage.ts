@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js"
+import { EmbedBuilder } from "discord.js"
 import { replaceValuesInString  } from "../../utils/replaceValues";
 
 import type { ColorResolvable, Guild } from "discord.js"
@@ -14,7 +14,7 @@ type options = {
 }
 
 const normalMessage = (message: string, guild: Guild, option: ExecuteCommandOptions) => {
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setColor(option.bot.hexColor)
         .setTitle(option.locale.messageEmbed.privateMessage.title.replace('{bot.name}', option.bot.name))
         .setDescription(replaceValuesInString(option.locale.messageEmbed.privateMessage.description, { message, guild: { name: `[${guild.name}](https://discord.com/channels/${guild.id})` } }))
@@ -23,7 +23,7 @@ const normalMessage = (message: string, guild: Guild, option: ExecuteCommandOpti
 }
 
 const toBanishedMember = ({ botColor, guildName, iconUrl, locale, reason }: options) => {
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setColor(botColor)
         .setAuthor({ name: guildName || '', iconURL: iconUrl || '' })
         .setTitle(locale.messageEmbed.messageToBanishedMember.title)
@@ -31,7 +31,7 @@ const toBanishedMember = ({ botColor, guildName, iconUrl, locale, reason }: opti
 }
 
 const toKickedMember = ({ botColor, guildName, iconUrl, locale, reason }: options) => {
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setColor(botColor)
         .setAuthor({ name: guildName || '', iconURL: iconUrl || '' })
         .setTitle(locale.messageEmbed.messageToBanishedMember.title)

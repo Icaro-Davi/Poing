@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import AnswerMember from "../../../utils/AnswerMember";
 import { replaceValuesInString } from "../../../utils/replaceValues";
 import { middleware } from "../../command.middleware";
@@ -9,7 +9,7 @@ const execCommandDefault = middleware.create('COMMAND', async function (message,
     const messageArgs = { ...options.context.data };
 
     if (!messageArgs.member) {
-        const embed = new MessageEmbed({
+        const embed = new EmbedBuilder({
             title: options.locale.command.warn.components.verifyMemberArgument.title,
             description: replaceValuesInString(options.locale.command.warn.components.verifyMemberArgument.descriptionVerifySecondArgPosition, {
                 '{argument_position}': '2°'

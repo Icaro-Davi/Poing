@@ -118,7 +118,7 @@ export const argMiddleware = middleware.createGetArgument(
             isBan: subCommand === args.MEMBER.name
         }
         if (options.context.argument.isBan || options.context.argument.isSoftBan) {
-            const banMember = interaction.options.getMember(args.TARGET_MEMBER.name, args.MEMBER.required);
+            const banMember = interaction.options.getMember(args.TARGET_MEMBER.name);
             const days = interaction.options.getNumber(args.DAYS.name, args.DAYS.required);
             const reason = interaction.options.getString(args.REASON.name, args.REASON.required);
             options.context.data = { banMember, days, reason };

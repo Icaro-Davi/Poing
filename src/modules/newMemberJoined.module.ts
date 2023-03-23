@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Guild, MessageEmbed, PartialGuildMember } from "discord.js";
+import { Guild, EmbedBuilder, PartialGuildMember } from "discord.js";
 import { ChannelApplication, ModulesApplication } from "../application";
 
 import { replaceValuesInObject, replaceValuesInString } from "../utils/replaceValues";
@@ -7,7 +7,7 @@ import { getBotVars } from "../utils/bot";
 import { createNewModule } from ".";
 import type { IGuildSchema } from "../domain/guild/Guild.schema";
 import type { IWelcomeMemberModuleSettings } from "../domain/modules/memberWelcomeModule/WelcomeModule.schema";
-import type { GuildMember, TextChannel, MessageEmbedOptions } from "discord.js";
+import type { GuildMember, TextChannel, EmbedData } from "discord.js";
 
 type EmbedMessageOptionsType = {
     description: string;
@@ -23,7 +23,7 @@ type EmbedMessageOptionsType = {
 
 const createEmbedMessage = (embedMessageOptions: EmbedMessageOptionsType, vars: any) => {
     const embedMessageWithVars = replaceValuesInObject(embedMessageOptions, vars);
-    const embedMessage: MessageEmbedOptions = Object.entries(embedMessageWithVars).reduce((prev, [key, value]: [string, any]) => {
+    const embedMessage: EmbedData = Object.entries(embedMessageWithVars).reduce((prev, [key, value]: [string, any]) => {
         switch (key) {
             case 'thumbnail':
                 return { ...prev, [key]: { url: value } };
@@ -35,7 +35,7 @@ const createEmbedMessage = (embedMessageOptions: EmbedMessageOptionsType, vars: 
                 return { ...prev, [key]: value };
         }
     }, {});
-    return new MessageEmbed({
+    return new EmbedBuilder({
         ...embedMessage,
         color: vars.bot.hexColor,
     });

@@ -1,3 +1,4 @@
+import { ActivityType } from 'discord.js';
 import fs from 'fs';
 import { createNewEvent } from '.';
 import { DiscordBot } from '../config';
@@ -6,9 +7,8 @@ export default createNewEvent('ready', () => {
     DiscordBot.Command.loadSlashCommands();
     DiscordBot.Client.get().guilds.cache.size;
     DiscordBot.Client.get().user?.setActivity({
-        type: 'LISTENING',
+        type: ActivityType.Listening,
         name: `I'm in ${DiscordBot.Client.get().guilds.cache.size} servers.`,
-        // url: 'https://github.com/icaro-davi'
     });
 
     console.log('\x1b[95m', '\n\n', fs.readFileSync('./draw').toString(), '\x1b[0m')

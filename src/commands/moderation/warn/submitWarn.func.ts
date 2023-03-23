@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, Message, MessageEmbed } from "discord.js";
+import { CommandInteraction, GuildMember, Message, EmbedBuilder } from "discord.js";
 import { ExecuteCommandOptions } from "../../index.types";
 
 const submitWarn = async (params: {
@@ -8,7 +8,7 @@ const submitWarn = async (params: {
     warn: {
         member: GuildMember;
         message?: string;
-        embed?: MessageEmbed;
+        embed?: EmbedBuilder;
     }
 }) => {
     const user = (params.message?.member?.user ?? params.interaction?.user);

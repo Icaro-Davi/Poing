@@ -1,4 +1,4 @@
-import { Base, DiscordAPIError } from "discord.js";
+import { DiscordAPIError } from "discord.js";
 import { Locale } from "../locale";
 import { createCommandBotLog, CreateCommandBotLogParamAction } from "../utils/creteBotLog";
 import CommandError, { CommandErrorType } from "./command.error";
@@ -123,7 +123,7 @@ export const middleware = {
                         command: this,
                         logChannelId: options.bot.channel?.logsId,
                         member: message.member?.user,
-                        embedColor: parseInt(`${options.bot.hexColor}`.replace('#', ''), 16),
+                        embedColor: options.bot.hexColor,
                         action: { ...action, userInput: message.content }
                     });
                 }
@@ -138,7 +138,7 @@ export const middleware = {
                     command: this,
                     logChannelId: options.bot.channel?.logsId,
                     member: interaction.user,
-                    embedColor: parseInt(`${options.bot.hexColor}`.replace('#', ''), 16),
+                    embedColor: options.bot.hexColor,
                     action: { ...action }
                 });
                 next();

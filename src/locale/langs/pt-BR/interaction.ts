@@ -9,9 +9,9 @@ const interaction: BaseInteraction = {
     needArguments: "Preciso de mais argumentos.",
     youCantUseThisButton: "Este botão possui uma magia muito forte que estar te impedindo de usar!",
     iDidntFoundAnything: "Não consegui encontrar nada.",
-    youDontHavePermission: "Você não tem permissão para fazer isso.",
-    botDontHavePermissions: "Preciso da permissão {role} para continuar.",
-    needARole: "Preciso que o servidor tenha um cargo chamado {role}.",
+    youDontHavePermission: "Você não tem permissão para fazer isso, você precisa do cargo \"{role}\".",
+    botDontHavePermissions: "Preciso da permissão \"{role}\" para continuar.",
+    needARole: "Preciso que o servidor tenha um cargo chamado \"{role}\".",
     verifyTheArguments: "Argumento invalido, verifique o que foi passado para o comando.",
     member: {
         kickCanceled: "Salvo, não será mais kicado ❤️",

@@ -1,12 +1,13 @@
-import { ButtonInteraction, GuildMember, MessageEmbed, SelectMenuInteraction } from "discord.js";
+import { ButtonInteraction, GuildMember, EmbedBuilder, StringSelectMenuInteraction } from "discord.js";
 import { DiscordBot } from '../config';
 import { createNewModule } from ".";
 import MD from "../utils/md";
 import Bot from "../config/Bot";
+import HexColorToNumber from "../utils/HexColorToNumber";
 
 const RoleInteractionReference = 'role-by-component';
 
-async function RoleByInteraction(interaction: ButtonInteraction | SelectMenuInteraction): Promise<boolean> {
+async function RoleByInteraction(interaction: ButtonInteraction | StringSelectMenuInteraction): Promise<boolean> {
     if (interaction.customId.startsWith(RoleInteractionReference)) {
         const guildConfig = await DiscordBot.GuildMemory.get(interaction.guildId ?? '');
         if (!guildConfig.config.modules?.roleByInteraction.isActive) return true;
@@ -18,10 +19,10 @@ async function RoleByInteraction(interaction: ButtonInteraction | SelectMenuInte
             const sendReply = async (options: { removedMessage?: string; addedMessage?: string; }) => {
                 await interaction.reply({
                     embeds: [
-                        new MessageEmbed()
+                        new EmbedBuilder()
                             .setTitle(locale.module.roleByInteraction.embed.title)
                             .setDescription(locale.module.roleByInteraction.embed.description)
-                            .setColor(guildConfig.config.bot.messageEmbedHexColor ?? Bot.defaultBotHexColor)
+                            .setColor(HexColorToNumber(guildConfig.config.bot.messageEmbedHexColor ?? Bot.defaultBotHexColor))
                             .setFields([
                                 ...options.addedMessage ? [{ name: `✅ ${locale.labels.added}`, value: options.addedMessage, inline: false }] : [],
                                 ...options.removedMessage ? [{ name: `❌ ${locale.labels.removed}`, value: options.removedMessage, inline: false }] : [],
@@ -46,7 +47,7 @@ async function RoleByInteraction(interaction: ButtonInteraction | SelectMenuInte
                 }
             }
 
-            if (interaction.isSelectMenu()) {
+            if (interaction.isAnySelectMenu()) {
                 const listRoleId = interaction.values;
                 const selectedRoles = roles?.filter(role => listRoleId.some(roleId => roleId === role.id));
 

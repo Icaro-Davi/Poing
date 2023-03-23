@@ -11,7 +11,7 @@ export const getBotVars = ({ guildConf, discordGuild, guildMember }: { guildConf
         },
         guild: {
             name: discordGuild.name,
-            picture: discordGuild.iconURL({ dynamic: true }),
+            picture: discordGuild.iconURL(),
             memberCount: discordGuild.memberCount,
         },
         member: {

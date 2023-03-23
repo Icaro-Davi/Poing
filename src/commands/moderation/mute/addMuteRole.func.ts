@@ -1,4 +1,4 @@
-import { CommandInteraction, Guild, Message, Role } from "discord.js";
+import { Guild, Role } from "discord.js";
 import { MuteApplication } from "../../../application";
 import { Locale } from "../../../locale";
 

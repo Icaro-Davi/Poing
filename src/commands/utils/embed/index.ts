@@ -3,12 +3,13 @@ import commandMiddleware from "./command.default";
 import slashCommandMiddleware from "./command.slash";
 import argument, { argsMiddleware } from "./command.args";
 import { middleware } from "../../command.middleware";
+import { PermissionFlagsBits } from "discord.js";
 
 const command: BotCommandFunc = options => ({
     name: 'embed',
     category: options.locale.category.utility,
     description: options.locale.command.embed.description,
-    botPermissions: ['SEND_MESSAGES'],
+    botPermissions: [PermissionFlagsBits.SendMessages],
     usage: [
         [
             { ...argument.FLAGS({ ...options, required: true }) }

@@ -1,16 +1,16 @@
-import Discord from 'discord.js';
+import Discord, { InteractionReplyOptions } from 'discord.js';
 import path from 'path';
 import fs from 'fs';
 import { DiscordBot } from '.';
 import { replaceValuesInString } from '../utils/replaceValues';
 
 import type { BotCommand, BotCommandFunc } from '../commands/index.types';
-import type { Message, MessageEmbed, MessageOptions, ReplyMessageOptions, CommandInteraction, MessageComponent } from 'discord.js';
+import { Message, EmbedBuilder, MessageReplyOptions, CommandInteraction, MessageComponent } from 'discord.js';
 
 export type CommandHandler = {
     message: Message | CommandInteraction;
     vars: any;
-    content?: string | MessageEmbed;
+    content?: string | EmbedBuilder;
     type?: 'message' | 'embed';
     use?: 'reply' | 'send';
     ignore?: boolean;
@@ -58,7 +58,7 @@ class Commands {
                         ...option,
                         description: reduceStringSize(option.description)
                     }))
-                })
+                });
             })();
         });
     }
@@ -103,7 +103,7 @@ class Commands {
             reply: (m: any) => message.reply(m)
         }
         const _type = {
-            embed: () => ({ embeds: [content], ephemeral, components }) as MessageOptions | ReplyMessageOptions,
+            embed: () => ({ embeds: [content], ephemeral, components }) as InteractionReplyOptions | MessageReplyOptions,
             message: () => ({ content: replaceValuesInString(content as string, vars) || content, ephemeral, components })
         }
         await exec[use](_type[type]());

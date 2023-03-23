@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, Message } from "discord.js";
+import { ChatInputCommandInteraction, GuildMember, Message, PermissionFlagsBits } from "discord.js";
 import moment from "moment";
 import { MuteApplication } from "../../../application";
 import { DiscordBot } from "../../../config";
@@ -12,7 +12,7 @@ type MuteGuildMemberOptions = {
     mutedMember: GuildMember;
     muteTime?: moment.Moment;
     reason?: string;
-    interaction?: CommandInteraction;
+    interaction?: ChatInputCommandInteraction;
     message?: Message;
     onError: () => void;
 };
@@ -22,7 +22,7 @@ export const MuteGuildMember = async ({ options, mutedMember, muteTime, reason, 
     const author = (message?.author ?? interaction?.user)!;
     let messageStack = '';
 
-    if (mutedMember && mutedMember.permissions.has('ADMINISTRATOR')) {
+    if (mutedMember && mutedMember.permissions.has(PermissionFlagsBits.Administrator)) {
         await AnswerMember({
             interaction, message,
             content: {
@@ -56,7 +56,7 @@ export const MuteGuildMember = async ({ options, mutedMember, muteTime, reason, 
             }
         }); onError(); return;
     };
-    
+
     if (mutedMember.roles.cache.some(role => role.id === muteRole.id)) {
         await AnswerMember({
             interaction, message, content: {

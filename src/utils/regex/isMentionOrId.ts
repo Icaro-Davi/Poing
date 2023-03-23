@@ -1,0 +1,1 @@
+export const isMemberReference = (str:string) => /<@\d+>|^\d+$/.test(str);

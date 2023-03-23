@@ -1,10 +1,10 @@
-import { CommandInteraction, Message, NewsChannel, PartialDMChannel, TextChannel, ThreadChannel } from "discord.js";
+import { ChannelType, CommandInteraction, Message, TextBasedChannel } from "discord.js";
 import { Locale } from "../../../locale";
 import { replaceValuesInString } from "../../../utils/replaceValues";
 import { ExecuteCommandReturn } from "../../index.types";
 
 type options = {
-    channel: PartialDMChannel | NewsChannel | TextChannel | ThreadChannel;
+    channel: TextBasedChannel;
     quantity: number;
     locale: Locale;
     ephemeral?: boolean;
@@ -13,7 +13,7 @@ type options = {
 }
 
 const deleteMessages = async ({ channel, locale, quantity, ephemeral, message, interaction }: options): ExecuteCommandReturn => {
-    if (channel.type === 'DM') return;
+    if (channel.type === ChannelType.DM) return;
     if (message) quantity += 1;
     const deletedMessages = await channel.bulkDelete(quantity, true);
     const msg = {

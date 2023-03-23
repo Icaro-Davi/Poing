@@ -4,20 +4,21 @@ import slashCommandMiddleware from "./command.slash";
 import type { BotCommandFunc } from "../../index.types";
 import { middleware } from "../../command.middleware";
 import { extractVarsFromObject } from "../../command.utils";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 
 const command: BotCommandFunc = (options) => ({
     name: 'unban',
     category: options.locale.category.moderation,
     description: options.locale.command.unban.description,
-    allowedPermissions: ['BAN_MEMBERS'],
-    botPermissions: ['BAN_MEMBERS'],
+    allowedPermissions: [PermissionFlagsBits.BanMembers],
+    botPermissions: [PermissionFlagsBits.BanMembers],
     usage: [
         [argument.MEMBER({ locale: options.locale, required: true })],
         [argument.REASON(options)]
     ],
     slashCommand: [
-        { ...argument.MEMBER(options), type: 'NUMBER' },
-        { ...argument.REASON(options), type: 'STRING' }
+        { ...argument.MEMBER(options), type: ApplicationCommandOptionType.Number },
+        { ...argument.REASON(options), type: ApplicationCommandOptionType.String }
     ],
     commandPipeline: [
         argMiddleware[0], commandMiddleware,

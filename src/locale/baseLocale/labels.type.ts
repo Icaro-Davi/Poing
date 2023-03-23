@@ -1,4 +1,4 @@
-import { PermissionString } from "discord.js";
+import { PermissionFlagsBits } from "discord.js";
 
 export type BaseLabels = {
     nickname: string;
@@ -13,5 +13,5 @@ export type BaseLabels = {
     usedCommand: string;  // vars: {command}
     added: string;
     removed: string;
-    roleName: Partial<Record<PermissionString, string>>;
+    roleName: Partial<Record<keyof typeof PermissionFlagsBits, string>>;
 }

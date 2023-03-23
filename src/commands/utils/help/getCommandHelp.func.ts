@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle } from 'discord.js';
 import { createGetHelp } from "../../../components/messageEmbed";
 import { DiscordBot } from "../../../config";
 import MD from "../../../utils/md";
@@ -9,7 +9,7 @@ type GetCommandHelpOptions = {
     commandName: string;
     options: ExecuteCommandOptions;
     ephemeral?: boolean;
-    onFinish: (params: { embed: MessageEmbed, button: MessageActionRow }) => void,
+    onFinish: (params: { embed: EmbedBuilder, button: ActionRowBuilder<ButtonBuilder> }) => void,
     onError: (message: string) => void
 }
 
@@ -18,10 +18,10 @@ const getCommandHelp = async ({ commandName, options, onFinish, onError }: GetCo
     const defaultCommand = DiscordBot.Command.Collection.get(commandFromAliases || commandName);
     if (defaultCommand) {
         const botCommand = defaultCommand({ locale: options.locale });
-        const row = new MessageActionRow().addComponents([
-            new MessageButton()
+        const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
+            new ButtonBuilder()
                 .setLabel(options.locale.messageActionRow.getHelpButton)
-                .setStyle('LINK')
+                .setStyle(ButtonStyle.Link)
                 .setURL(`${DiscordBot.Bot.urlWebApp}/${options.locale.localeLabel}/commands?category=${botCommand.category}&command=${botCommand.name}`)
         ]);
         await onFinish({ embed: createGetHelp(botCommand, options), button: row }); return;

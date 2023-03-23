@@ -39,7 +39,7 @@ export const argsMiddleware = middleware.createGetArgument(
         const args = { member: argument.MEMBER(options), targetMember: argument.TARGET_MEMBER(options) };
         const subCommand = interaction.options.getSubcommand();
         if (subCommand.includes(args.member.name)) {
-            const member = interaction.options.getMember(args.targetMember.name, args.targetMember.required);
+            const member = interaction.options.getMember(args.targetMember.name);
             if (!member)
                 return next({
                     type: 'COMMAND_INTERACTION_USER',

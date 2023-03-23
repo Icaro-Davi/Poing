@@ -1,26 +1,26 @@
-import { MessageActionRow, MessageButton } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 const createPaginationButtons = () => {
     let firstPage = `pagination-first-page-${Math.random().toString(32).slice(2)}`;
     let previous = `pagination-previous-${Math.random().toString(32).slice(2)}`;
     let next = `pagination-next-${Math.random().toString(32).slice(2)}`;
     let lastPage = `pagination-last-page-${Math.random().toString(32).slice(2)}`;
-    const row = new MessageActionRow().addComponents(
-        new MessageButton()
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder()
             .setCustomId(firstPage)
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setLabel('<<'),
-        new MessageButton()
+        new ButtonBuilder()
             .setCustomId(previous)
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setLabel('<'),
-        new MessageButton()
+        new ButtonBuilder()
             .setCustomId(next)
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setLabel('>'),
-        new MessageButton()
+        new ButtonBuilder()
             .setCustomId(lastPage)
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setLabel('>>'),
     );
     return {

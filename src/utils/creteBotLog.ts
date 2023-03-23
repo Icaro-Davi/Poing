@@ -1,9 +1,9 @@
-import { MessageEmbed, User } from "discord.js";
+import { EmbedBuilder, User } from "discord.js";
 import { BotCommand } from "../commands/index.types";
 import { DiscordBot } from "../config";
 
 export type CreateCommandBotLogParamAction = {
-    embedMessage?: MessageEmbed;
+    embedMessage?: EmbedBuilder;
     userInput?: string;
     subCommand?: string;
     status?: boolean;
@@ -22,9 +22,9 @@ export async function createCommandBotLog(params: CreateLogParams) {
     try {
         if (!params.logChannelId) return;
         const channel = DiscordBot.Client.get().channels.cache.get(params.logChannelId) ?? await DiscordBot.Client.get().channels.fetch(params.logChannelId, { cache: true });
-        if (channel?.isText()) {
+        if (channel?.isTextBased()) {
             const avatarUrl = params.member.avatarURL();
-            const embed = new MessageEmbed({
+            const embed = new EmbedBuilder({
                 title: `[${params.command.category}] ${params.command.name} ${params.action.subCommand ?? ''}`,
                 description: params.action.userInput,
                 color: params.embedColor,

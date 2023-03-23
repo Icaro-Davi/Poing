@@ -1,4 +1,4 @@
-import { MessageEmbed, Guild } from "discord.js";
+import { EmbedBuilder, Guild } from "discord.js";
 import MD from "../../../utils/md";
 import { ExecuteCommandOptions } from "../../index.types";
 
@@ -20,7 +20,7 @@ const getMembersStatus = async (guild: Guild, options: ExecuteCommandOptions) =>
     let offlineMemberText = `${MD.bold.b(`:white_circle: ${options.locale.status.offline}:`)} ${membersStatusCount?.offline || 0}`;
     let totalMemberText = `${MD.bold.b(`:blue_circle: ${options.locale.interaction.member.total}:`)} ${guild.memberCount || 0}`;
 
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setColor(options.bot.hexColor)
         .setTitle(options.locale.messageEmbed.memberStatus.title)
         .setDescription(`${onlineMemberText}\n${idleMemberText}\n${dndMemberText}\n${offlineMemberText}\n${totalMemberText}`);

@@ -1,9 +1,9 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { ExecuteCommandOptions } from "../../commands/index.types";
 import MD from "../../utils/md";
 
 const paginationOfBannedMembers = (pagination: { bannedMembers: { tag: string, id: string }[][], total: number, maxIndex: number, currentPage: number }, options: ExecuteCommandOptions) => {
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setColor(options.bot.hexColor)
         .setTitle(`Total de banidos: ${pagination.total}`)
         .setDescription(pagination.bannedMembers[pagination.currentPage]?.reduce(

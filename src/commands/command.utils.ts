@@ -1,6 +1,7 @@
-import { CommandInteraction, Message, PermissionResolvable, PermissionString } from "discord.js";
+import { ChatInputCommandInteraction, Message, PermissionResolvable } from "discord.js";
 import { Locale } from "../locale";
 import AnswerMember from "../utils/AnswerMember";
+import DiscordPermission from "../utils/DiscordPermission";
 import MD from "../utils/md";
 import { replaceValuesInString } from "../utils/replaceValues";
 
@@ -8,7 +9,7 @@ export const isAllowedToUseThisCommand = async (params: {
     locale: Locale;
     allowedPermissions?: PermissionResolvable[];
     message?: Message;
-    interaction?: CommandInteraction;
+    interaction?: ChatInputCommandInteraction;
     isBot?: boolean;
 }) => {
     if (!params.allowedPermissions || !params.allowedPermissions.length) return;
@@ -21,22 +22,18 @@ export const isAllowedToUseThisCommand = async (params: {
         : strategy?.guild?.members.cache.get(userId);
     if (!member) return true;
 
-    let doesNotHaveThisPermission: PermissionResolvable | undefined;
-    const notHavePermission = params.allowedPermissions.some(permission => {
-        doesNotHaveThisPermission = permission;
-        return !member.permissions.has(permission);
-    });
+    const notHavePermission = params.allowedPermissions.find(permission => !member.permissions.has(permission));
 
     if (notHavePermission) {
+        let permissionString = DiscordPermission.stingToBits(notHavePermission);
+        console.log(params.isBot, params.allowedPermissions.length);
         await AnswerMember({
             message: params.message,
             interaction: params.interaction,
             content: {
-                content: params.isBot && params.allowedPermissions.length
-                    ? replaceValuesInString(params.locale.interaction.botDontHavePermissions, {
-                        role: params.locale.labels.roleName?.[doesNotHaveThisPermission as PermissionString] ?? doesNotHaveThisPermission ?? '{role}'
-                    })
-                    : params.locale.interaction.member.botDoesNotHavePermission,
+                content: replaceValuesInString(params.isBot ? params.locale.interaction.botDontHavePermissions : params.locale.interaction.youDontHavePermission, {
+                    role: permissionString ? params.locale.labels.roleName?.[permissionString] ?? permissionString : '{role}'
+                }),
                 ephemeral: true
             }
         });

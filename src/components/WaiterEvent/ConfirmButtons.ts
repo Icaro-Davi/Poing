@@ -1,18 +1,18 @@
-import { MessageActionRow, MessageButton, Message, CommandInteraction, InteractionReplyOptions, ReplyMessageOptions, User, MessageEditOptions } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, InteractionReplyOptions, Message, MessageEditOptions, MessageReplyOptions, User } from "discord.js";
 import { Locale } from "../../locale";
 import { onlyMessageAuthorCanUse } from "../collectorFilters";
 
 const ConfirmButtonComponent = (options: { componentId: string; locale: Locale }) => {
     const yes = `component-confirm-button-yes-${options.componentId ?? ''}`;
     const no = `component-confirm-button-no-${options.componentId ?? ''}`;
-    const row = new MessageActionRow().addComponents(
-        new MessageButton()
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder()
             .setLabel(options.locale.messageActionRow.confirmButtons.successLabel || 'YES')
-            .setStyle('SUCCESS')
+            .setStyle(ButtonStyle.Success)
             .setCustomId(yes),
-        new MessageButton()
+        new ButtonBuilder()
             .setLabel(options.locale.messageActionRow.confirmButtons.dangerLabel || 'NO')
-            .setStyle('DANGER')
+            .setStyle(ButtonStyle.Danger)
             .setCustomId(no),
     );
     return { component: row, id: { yes, no } };
@@ -27,10 +27,10 @@ class ConfirmComponent {
     private readonly locale: Locale;
     private user: User;
     private messageReply: Message<boolean> | undefined;
-    private messageProps: ReplyMessageOptions | undefined;
+    private messageProps: MessageReplyOptions | undefined;
     private interaction: CommandInteraction | undefined;
     private interactionProps: InteractionReplyOptions | undefined;
-    private Button: { component: MessageActionRow, id: { yes: string; no: string; } };
+    private Button: { component: ActionRowBuilder<ButtonBuilder>, id: { yes: string; no: string; } };
 
     constructor(options: { locale: Locale; user: User, buttonId: string }) {
         this.locale = options.locale;
@@ -41,7 +41,7 @@ class ConfirmComponent {
         });
     }
 
-    setMessage(options: { message?: Message<boolean>, messageProps: ReplyMessageOptions }): Omit<ConfirmComponent, 'setMessage'> {
+    setMessage(options: { message?: Message<boolean>, messageProps: MessageReplyOptions }): Omit<ConfirmComponent, 'setMessage'> {
         if (options.message) {
             this.messageProps = options.messageProps;
             this.messageReply = options.message;

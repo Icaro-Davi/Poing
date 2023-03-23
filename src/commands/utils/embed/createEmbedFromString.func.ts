@@ -1,4 +1,4 @@
-import { CommandInteraction, Message, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
 import AnswerMember from "../../../utils/AnswerMember";
 import { IteratorFlags } from "../../../utils/regex/getValuesFromStringFlag";
 import isURL from "../../../utils/regex/isURL";
@@ -11,17 +11,17 @@ const CreateEmbedFromString = async (params: {
     embedMessageFlags: IteratorFlags;
     options: ExecuteCommandOptions;
     message?: Message
-    interaction?: CommandInteraction;
-    onFinish?: (embed: MessageEmbed) => Promise<void> | void;
+    interaction?: ChatInputCommandInteraction;
+    onFinish?: (embed: EmbedBuilder) => Promise<void> | void;
 }) => {
     try {
         const user = params.interaction?.user ?? params.message?.member?.user;
-        const embedColor = parseInt(`${params.options.bot.hexColor}`.replace('#', ''), 16);
+        const embedColor = params.options.bot.hexColor;
         const embedLocale = params.options.locale.command.embed;
         if (!user) return;
 
         if (params.embedMessageFlags.invalidFlags.length) {
-            const message: MessageEmbed = new MessageEmbed({
+            const message: EmbedBuilder = new EmbedBuilder({
                 title: embedLocale.component.haveInvalidFlags.title,
                 description: params.embedMessageFlags.invalidFlags.join(' '),
                 color: embedColor,
@@ -33,7 +33,7 @@ const CreateEmbedFromString = async (params: {
         let fieldTitle = (params.embedMessageFlags.flag.get('fieldTitle') as string[]) ?? [];
         let fieldValue = (params.embedMessageFlags.flag.get('fieldTitle') as string[]) ?? [];
         if (fieldTitle.length !== fieldValue.length) {
-            const embed: MessageEmbed = new MessageEmbed({
+            const embed: EmbedBuilder = new EmbedBuilder({
                 title: embedLocale.component.incompleteFieldFlags.title,
                 description: replaceValuesInString(embedLocale.component.incompleteFieldFlags.description, {
                     '{flag_field_title}': '**__field_title__**',
@@ -48,7 +48,7 @@ const CreateEmbedFromString = async (params: {
         let fieldTitleInline = (params.embedMessageFlags.flag.get('fieldTitleInline') as string[]) ?? [];
         let fieldValueInline = (params.embedMessageFlags.flag.get('fieldValueInline') as string[]) ?? [];
         if (fieldTitleInline.length !== fieldValueInline.length) {
-            const embed: MessageEmbed = new MessageEmbed({
+            const embed: EmbedBuilder = new EmbedBuilder({
                 title: embedLocale.component.incompleteFieldFlags.title,
                 description: replaceValuesInString(embedLocale.component.incompleteFieldFlags.description, {
                     '{flag_field_title}': '**__field_title_inline__**',
@@ -62,7 +62,7 @@ const CreateEmbedFromString = async (params: {
 
         let thumbnail = params.embedMessageFlags.flag.get('thumbnail');
         if (typeof thumbnail === 'string' && !isURL(thumbnail)) {
-            const embed: MessageEmbed = new MessageEmbed({
+            const embed: EmbedBuilder = new EmbedBuilder({
                 title: embedLocale.component.invalidThumbnailUrl.title,
                 description: replaceValuesInString(embedLocale.component.invalidThumbnailUrl.description, {
                     '{flag_thumbnail}': '**__thumb__**'
@@ -139,12 +139,12 @@ const CreateEmbedFromString = async (params: {
         }
 
         params.onFinish
-            ? await params.onFinish(message as unknown as MessageEmbed)
+            ? await params.onFinish(message as unknown as EmbedBuilder)
             : await AnswerMember({
                 message: params.message,
                 interaction: params.interaction,
                 content: {
-                    embeds: [new MessageEmbed(message as unknown as MessageEmbed)]
+                    embeds: [new EmbedBuilder(message)]
                 }
             });
     } catch (error) {

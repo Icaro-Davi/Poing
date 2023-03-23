@@ -14,10 +14,11 @@ const labels: BaseLabels = {
     added: "Adicionado",
     removed: "Removido",
     roleName: {
-        "MANAGE_ROLES": "Gerenciar Cargos",
-        "MANAGE_MESSAGES": 'Gerenciar Mensagens',
-        "SEND_MESSAGES": 'Enviar Mensagens',
-        "VIEW_AUDIT_LOG": 'Registro de Auditoria',
+        "ManageRoles": "Gerenciar Cargos",
+        "ManageMessages": 'Gerenciar Mensagens',
+        "SendMessages": 'Enviar Mensagens',
+        "ViewAuditLog": 'Registro de Auditoria',
+        "MuteMembers": 'Mutar Membros'
     }
 }
 

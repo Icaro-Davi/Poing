@@ -1,11 +1,11 @@
-import { Guild } from "discord.js";
+import { Colors, Guild, PermissionFlagsBits } from "discord.js";
 
 const createMutedRole = async (DiscordGuild: Guild) => {
     try {
         return await DiscordGuild.roles?.create({
             name: 'Silenced',
-            color: 'RED',
-            permissions: ['VIEW_CHANNEL', 'CONNECT', 'VIEW_CHANNEL'],
+            color: Colors.Red,
+            permissions: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect],
         });
     } catch (error) {
         throw error;
