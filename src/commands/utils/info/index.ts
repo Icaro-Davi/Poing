@@ -29,6 +29,4 @@ const command: BotCommandFunc = (options) => ({
     }))]
 });
 
-
-
 export default command;

@@ -2,7 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import AnswerMember from "../../../utils/AnswerMember";
 import { replaceValuesInString } from "../../../utils/replaceValues";
 import { middleware } from "../../command.middleware";
-import embedCommandCreateEmbedFunc from '../../utils/embed/createEmbedFromString.func';
+import CreateEmbedFromString from '../../utils/embed/createEmbedFromString.func';
 import submitWarn from "./submitWarn.func";
 
 const execCommandDefault = middleware.create('COMMAND', async function (message, args, options, next) {
@@ -29,14 +29,13 @@ const execCommandDefault = middleware.create('COMMAND', async function (message,
         await AnswerMember({ message, content: { content: options.locale.command.warn.interaction.messageSubmit } });
         next();
     } else if (options.context.argument.isEmbed) {
-        await embedCommandCreateEmbedFunc({
+        await CreateEmbedFromString({
             message, embedMessageFlags: messageArgs.embed, options, async onFinish(embed) {
                 await submitWarn({ message, options, warn: { ...messageArgs, embed } });
             },
         });
         next();
     }
-
 });
 
 export default execCommandDefault;

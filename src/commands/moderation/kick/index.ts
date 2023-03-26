@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { middleware } from "../../command.middleware";
 import { extractVarsFromObject } from "../../command.utils";
 import type { BotCommandFunc } from "../../index.types";
@@ -9,15 +10,30 @@ const command: BotCommandFunc = ({ locale }) => ({
     name: 'kick',
     category: locale.category.moderation,
     description: locale.command.kick.description,
-    allowedPermissions: ['KICK_MEMBERS'],
-    botPermissions: ['KICK_MEMBERS'],
-    usage: [[argument.MEMBER({ locale, required: true })], [argument.REASON({ locale })]],
+    allowedPermissions: [PermissionFlagsBits.KickMembers],
+    botPermissions: [PermissionFlagsBits.KickMembers],
+    usage: [
+        [argument.MEMBER({ locale, required: true }), argument.MASS({ locale })],
+        [argument.REASON({ locale })]
+    ],
     slashCommand: [
-        { ...argument.MEMBER({ locale }), type: 'USER' },
-        { ...argument.REASON({ locale }), type: 'STRING' }
+        {
+            type: ApplicationCommandOptionType.Subcommand,
+            ...argument.MEMBER({ locale }),
+            options: [
+                { ...argument.TARGET_MEMBER({ locale }), type: ApplicationCommandOptionType.User },
+                { ...argument.REASON({ locale }), type: ApplicationCommandOptionType.String },
+            ]
+        },
+        {
+            type: ApplicationCommandOptionType.Subcommand,
+            ...argument.MASS({ locale }),
+        }
     ],
     commandPipeline: [
-        argMiddleware[0], commandMiddleware,
+        argMiddleware[0],
+        middleware.DEVELOPMENT.logContext('COMMAND', true),
+        commandMiddleware,
         middleware.submitLog('COMMAND', context => ({
             status: context.argument.kicked
         }))
