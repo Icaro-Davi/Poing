@@ -16,7 +16,7 @@ const defaultCommand = middleware.create('COMMAND', async function (message, arg
         },
         async onFinish() {
             await AnswerMember({
-                content: { content: options.locale.command.anonymousDirectMessage.interaction.messageSent }
+                message, content: { content: options.locale.command.anonymousDirectMessage.interaction.messageSent }
             });
             next();
         },

@@ -76,7 +76,8 @@ class CommandError implements ICommandError {
                         break;
 
                     case 'UNKNOWN':
-                        await this.throwLogicError();
+                        await this.throwCommandUserError();
+                        this.throwLogicError();
                         break;
                 }
             } catch (error) {
@@ -93,16 +94,17 @@ class CommandError implements ICommandError {
                     content: this.answerMemberMessage,
                     options: { editReply: true }
                 });
-
             }
         }
     }
 
     private throwLogicError() {
-        console.error('[COMMAND_ERROR_HANDLER]');
-        this.logError.origin && console.error('--[ORIGIN]', this.logError.origin);
-        this.logError.logMessage && console.error('--[LOG]', this.logError.logMessage);
-        this.logError.error && console.error('--[ERROR]', this.logError.error);
+        console.group('[COMMAND_ERROR_HANDLER]');
+        this.ERROR_TYPE && console.error('[TYPE]', this.ERROR_TYPE),
+            this.logError.origin && console.error('[ORIGIN]', this.logError.origin);
+        this.logError.logMessage && console.error('[LOG]', this.logError.logMessage);
+        this.logError.error && console.error('[ERROR]', this.logError.error);
+        console.groupEnd();
     }
 }
 

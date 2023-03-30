@@ -19,15 +19,7 @@ function createMiddlewareHandler<T extends (Parameters<ExecuteCommand> | Paramet
             const next = async function (this: BotCommand, error?: Omit<CommandErrorType, 'commandParams' | 'slashCommandParams'> | Omit<CommandError, 'commandParams' | 'slashCommandParams'>) {
                 if (error) {
                     pipeline = [];
-                    if (error instanceof CommandError) {
-                        reject(error);
-                    } else {
-                        const _error = {
-                            ...error, ...params.length === 3 ? { commandParams: params } : {},
-                            ...params.length === 2 ? { slashCommandParams: params } : {},
-                        }
-                        reject(new CommandError(_error as CommandErrorType));
-                    }
+                    reject(error);
                 } else {
                     try {
                         const middleware = pipeline.shift();
@@ -64,13 +56,17 @@ function createMiddlewareHandler<T extends (Parameters<ExecuteCommand> | Paramet
             if (err instanceof DiscordAPIError) {
                 new CommandError({
                     type: 'DISCORD_API', ...errorObject, message: {
-                        content: locale.error[err.code as keyof Locale['error']] ?? locale.error.unknown
+                        content: locale.error[err.code as keyof Locale['error']] ?? locale.error.unknown,
+                        components: [],
+                        embeds: []
                     }
                 }).throwError();
             } else {
                 new CommandError({
                     type: 'UNKNOWN', ...errorObject, error: err, message: {
-                        content: locale.error.unknown
+                        content: locale.error.unknown,
+                        components: [],
+                        embeds: []
                     }
                 }).throwError();
             }
@@ -124,7 +120,10 @@ export const middleware = {
                         logChannelId: options.bot.channel?.logsId,
                         member: message.member?.user,
                         embedColor: options.bot.hexColor,
-                        action: { ...action, userInput: message.content }
+                        action: {
+                            ...action,
+                            userInput: action.userInput ?? message.content,
+                        }
                     });
                 }
                 next();
