@@ -38,13 +38,11 @@ const kickMember = async ({ interaction, message, kickedMember, reason, options,
 
     const collector = onlyMessageAuthorCanUse((message || interaction)!, { author, locale: options.locale, ephemeral });
 
-    collector.on('end', async memberInteraction => {
+    collector.on('collect', async memberInteraction => {
         try {
-            const componentId = memberInteraction.first()?.customId;
+            const componentId = memberInteraction.customId;
             if (componentId === component.button.yesId) {
-                await kickedMember.kick(reason || '');
-                await memberInteraction.first()?.reply(options.locale.interaction.member.kickFromServer);
-                kickedMember.send({
+                await kickedMember.send({
                     embeds: [PM.toKickedMember({
                         botColor: options.bot.hexColor, guildName: guild.name || '',
                         iconUrl: guild.iconURL() || '',
@@ -57,17 +55,21 @@ const kickMember = async ({ interaction, message, kickedMember, reason, options,
                     message,
                     customMessage: error.code == '50007' ? options.locale.command.kick.error[50007] : ''
                 }));
+                await kickedMember.kick(reason || '');
+                await memberInteraction.reply(options.locale.interaction.member.kickFromServer);
 
-                const editMessage = { content: '🦶💢', components: [], ephemeral };
+                const editMessage = { content: '🦶💢', components: [], embeds: [], ephemeral };
                 if (interactionMessage) await interactionMessage.edit(editMessage);
                 if (interaction) await interaction.editReply(editMessage);
-                onFinish({ kicked: true });
+                collector.stop();
+                await onFinish({ kicked: true });
             }
             if (componentId === component.button.noId) {
                 const editMessage = { content: `🎈 ${options.locale.interaction.member.kickCanceled}`, embeds: [], components: [] };
                 if (interactionMessage) await interactionMessage.edit(editMessage);
                 if (interaction) await interaction.editReply(editMessage);
-                onFinish({ kicked: false });
+                collector.stop();
+                await onFinish({ kicked: false });
             }
         } catch (error) {
             message && handleError(error, {

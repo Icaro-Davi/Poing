@@ -10,19 +10,7 @@ const argument: Record<'MEMBER' | 'REASON' | 'MASS' | 'TARGET_MEMBER', BotArgume
         name: 'mass',
         description: 'Kick mass members',
         filter: createFilter(options, async (message, args, locale, data) => {
-            if (args[0] === 'mass') {
-                const flags = getFlagsFromUserInput(message.content, {
-                    members: {
-                        type: 'STRING',
-                        flags: ['--members', '-m']
-                    },
-                    reason: {
-                        type: 'STRING',
-                        flags: ['--reason', '-r']
-                    }
-                });
-                return flags.flag;
-            }
+            return args[0] === 'mass';
         })
     }),
     MEMBER: (options) => ({
@@ -60,8 +48,8 @@ const getArgs = (options: ExecuteCommandOptions) => ({
 export const argMiddleware = middleware.createGetArgument(
     async function (message, args, options, next) {
         const arg = getArgs(options);
-        const kickedMember = args.get(arg.MEMBER.name);
         const massKickFlags = args.get(arg.MASS_KICK.name);
+        const kickedMember = args.get(arg.MEMBER.name);
         const reason = args.get(arg.REASON.name);
 
         options.context.argument = {
@@ -75,23 +63,6 @@ export const argMiddleware = middleware.createGetArgument(
 
         if (options.context.argument.isKick) {
             options.context.data = { kickedMember, reason };
-        } else if (options.context.argument.isMassKick) {
-            const flagMembers = massKickFlags.get('members');
-            const flagReason = massKickFlags.get('reason');
-            if (!flagMembers)
-                return next({ type: 'COMMAND_USER', message: { content: options.locale.interaction.needArguments } });
-
-            const regex = /(?:^|\s|,)(\d+)(?:$|\s|,)|<@(\d+)>/g;
-            const membersPromise = [...(flagMembers as string).matchAll(regex)]
-                .map(async match => {
-                    const id = match?.[1] ?? match?.[2];
-                    const member = message.mentions.members?.get(id)
-                        ?? message.guild?.members.cache.get(id)
-                        ?? Member.find({ guild: message.guild!, member: id })
-                    return member;
-                });
-            const members = await Promise.all(membersPromise);
-            options.context.data = { members, reason: flagReason };
         }
 
         next();

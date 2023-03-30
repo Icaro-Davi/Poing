@@ -31,18 +31,29 @@ const command: BotCommandFunc = ({ locale }) => ({
         }
     ],
     commandPipeline: [
-        argMiddleware[0],
-        middleware.DEVELOPMENT.logContext('COMMAND', true),
-        commandMiddleware,
+        argMiddleware[0], commandMiddleware,
         middleware.submitLog('COMMAND', context => ({
-            status: context.argument.kicked
+            status: context.argument.kicked,
+            subCommand: context.argument.subCommand,
+            userInput: extractVarsFromObject({
+                member: context.data.kickedMember,
+                reason: context.data.reason,
+                members: context.argument.members,
+                vote: context.argument.vote
+            })
         }))
     ],
     slashCommandPipeline: [
         argMiddleware[1], slashCommandMiddleware,
         middleware.submitLog('COMMAND_INTERACTION', context => ({
             status: context.argument.kicked,
-            userInput: extractVarsFromObject({ member: context.data.kickedMember, reason: context.data.reason })
+            subCommand: context.argument.subCommand,
+            userInput: extractVarsFromObject({
+                member: context.data.kickedMember,
+                reason: context.data.reason,
+                members: context.argument.members,
+                vote: context.argument.vote
+            })
         }))
     ]
 });
