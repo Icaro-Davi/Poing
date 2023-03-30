@@ -7,10 +7,11 @@ import { ExecuteCommandOptions } from "../../index.types";
 const memberInfo = async (member: GuildMember, options: ExecuteCommandOptions, onFinish: (embed: EmbedBuilder) => void) => {
     const muteRoleId = await Mute.getMuteRoleId(member.guild.id);
     const mutedDoc = (muteRoleId && member.roles.cache.has(muteRoleId)) ? await Mute.findMutedMember(member.guild.id, member.id) : undefined;
-    const userInfoEmbed = new EmbedBuilder()
-        .setColor(options.bot.hexColor)
-        .setTitle(`Tag ${member.user.tag}`)
-        .addFields([
+    const thumbnail = member.user.avatarURL()
+    const userInfoEmbed = new EmbedBuilder({
+        color: options.bot.hexColor,
+        title: `Tag ${member.user.tag}`,
+        fields: [
             ...member.nickname ? [{ name: options.locale.labels.nickname, value: member.nickname || '', inline: true }] : [],
             { name: 'Status', value: member.presence?.status ? options.locale.status[member.presence.status] : 'offline', inline: true },
             ...member.user.createdTimestamp ? [{ name: options.locale.labels.joinedDiscord, value: moment(member.user.createdTimestamp).locale(options.locale.localeLabel).fromNow(), inline: true }] : [],
@@ -19,8 +20,9 @@ const memberInfo = async (member: GuildMember, options: ExecuteCommandOptions, o
             ...(!mutedDoc && muteRoleId) && member.roles.cache.has(muteRoleId) ? [{ name: options.locale.labels.muted, value: '♾️' }] : [],
             { name: 'ID', value: member.id },
             { name: options.locale.labels.roles, value: member.roles.cache.map((role, key, collection) => MD.codeBlock.line(`[${role.name}]`)).join(' ') }
-        ])
-        .setThumbnail(member.user.avatarURL() || '');
+        ],
+        ...thumbnail ? { thumbnail: { url: thumbnail } } : {}
+    });
 
     await onFinish(userInfoEmbed);
 }

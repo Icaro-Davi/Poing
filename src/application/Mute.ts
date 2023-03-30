@@ -1,5 +1,6 @@
 import { Guild } from "discord.js";
 import mongoose from "mongoose";
+import { MemberApplication } from ".";
 import { DiscordBot } from "../config";
 import GuildRepository from "../domain/guild/GuildRepository";
 import ScheduleUnmuteRepository from "../domain/schedule/unmute/ScheduleUnmuteRepository";
@@ -42,11 +43,11 @@ class Mute {
         const guildDoc = await GuildRepository.findByIdAndOmitValues(guildId, { bot: { roles: { muteId: 1 } } });
         if (!guildDoc?.bot?.roles) return false;
 
-        const guild = await DiscordBot.Client.get().guilds.fetch(guildId);
-        if (!guild) throw new Error('BOT_00100');
+        const guild = DiscordBot.Client.get().guilds.cache.get(guildId) ?? await DiscordBot.Client.get().guilds.fetch(guildId);
+        if (!guild) throw new Error('src.application.Mute.unmute guild not fount on try to unmute member');
 
         await ScheduleUnmuteRepository.delete(scheduleDocId);
-        const member = guild.members.cache.find(member => member.id === memberId);
+        const member = await MemberApplication.find({ guild: guild, member: memberId });
         await member?.roles.remove(guildDoc.bot.roles.muteId);
     }
 

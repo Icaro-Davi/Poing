@@ -52,9 +52,9 @@ const banMember = async ({ message, interaction, options }: RequireAtLeastOne<Ba
 
     const collector = onlyMessageAuthorCanUse((message! ?? interaction!), { ...options, author: author });
 
-    collector.on('end', async (buttonInteraction) => {
+    collector.on('collect', async (buttonInteraction) => {
         try {
-            let buttonId = buttonInteraction.first()?.customId;
+            let buttonId = buttonInteraction.customId;
             if (buttonId === component.button.yesId) {
                 let promises = [];
                 promises.push(options.banMember!.ban({
@@ -79,12 +79,14 @@ const banMember = async ({ message, interaction, options }: RequireAtLeastOne<Ba
                 });
                 message && await interactionMessage!.edit({ content: `🔨 ${options.locale.command.ban.interaction.banishedFromServer}`, embeds: [], components: [] });
                 interaction && await interaction.editReply({ content: `🔨 ${options.locale.command.ban.interaction.banishedFromServer}`, embeds: [], components: [] });
+                collector.stop();
                 options.onFinish({ banned: true });
             }
             if (buttonId === component.button.noId) {
                 const cancelled = { content: `🎈 ${options.locale.command.ban.interaction.banishedCanceled}`, embeds: [], components: [] };
                 message && await interactionMessage!.edit(cancelled);
                 interaction && await interaction.editReply(cancelled);
+                collector.stop();
                 options.onFinish({ banned: false });
             }
             return;

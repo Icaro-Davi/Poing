@@ -29,17 +29,13 @@ const execDefaultCommand = middleware.create('COMMAND', async function (message,
                 next({ type: 'COMMAND_USER', message: { content: msg } });
             },
             async onFinish(msg) {
-                await AnswerMember({
-                    message, content: { content: msg }
-                });
+                await AnswerMember({ message, content: { content: msg } });
                 next();
             },
         });
     } else if (options.context.argument.isList) {
         const embed = await listMutedMembers({ guild: message.guild!, options });
-        await AnswerMember({
-            content: { embeds: [embed] }
-        });
+        await AnswerMember({ message, content: { embeds: [embed] } });
         next();
     } else {
         next({ type: 'UNKNOWN' });

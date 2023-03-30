@@ -68,8 +68,9 @@ export const MuteGuildMember = async ({ options, mutedMember, muteTime, reason, 
 
     if (muteTime) {
         const muteDoc = await MuteApplication.addMember(guild.id, mutedMember.id, moment(muteTime).toDate());
-        if (muteDoc && (muteTime.valueOf() - moment.utc().valueOf()) < DiscordBot.ScheduleEvent.getLoopTimeMs())
-            DiscordBot.ScheduleEvent.unmuteCountdown(muteDoc._id, guild.id, mutedMember.id, muteTime.valueOf() - moment.utc().valueOf());
+        if (muteDoc && (muteTime.valueOf() - moment.utc().valueOf()) < DiscordBot.ScheduleEvent.getLoopTimeMs()) {
+            DiscordBot.ScheduleEvent.scheduleUnmute(muteDoc._id, guild.id, mutedMember.id, muteTime.valueOf() - moment.utc().valueOf());
+        }
     }
 
     await mutedMember.roles.add(muteRole, reason ? reason : undefined);

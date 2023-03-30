@@ -1,8 +1,8 @@
-import { EmbedBuilder } from "discord.js"
+import { EmbedBuilder } from "discord.js";
 import MD from "../../utils/md";
 import { replaceValuesInString } from "../../utils/replaceValues";
 
-import type { ColorResolvable, GuildMember } from 'discord.js';
+import type { GuildMember } from 'discord.js';
 import type { Locale } from "../../locale";
 
 type Options = {
@@ -12,41 +12,47 @@ type Options = {
     member: GuildMember;
     authorTag: string;
     authorUrl: string;
-    botColor: ColorResolvable;
+    botColor: number;
 }
 
 const banMember = ({ locale, reason, member, days, authorTag, authorUrl, botColor }: Options) => {
-    return new EmbedBuilder()
-        .setColor(botColor)
-        .setAuthor({ name: authorTag, iconURL: authorUrl })
-        .setTitle(MD.bold.b(locale.messageEmbed.confirmBanishMember.title))
-        .setFields([
+    const thumbnail = member.user?.avatarURL();
+    return new EmbedBuilder({
+        color: botColor,
+        author: { name: authorTag, iconURL: authorUrl },
+        title: MD.bold.b(locale.messageEmbed.confirmBanishMember.title),
+        fields: [
             { name: 'Tag', value: member.user.tag },
             ...days ? [{ name: locale.messageEmbed.confirmBanishMember.fieldNameDays, value: replaceValuesInString(locale.messageEmbed.confirmBanishMember.fieldDays, { days: days }) }] : [],
             ...reason ? [{ name: locale.messageEmbed.confirmBanishMember.fieldReason, value: reason }] : []
-        ])
-        .setThumbnail(member.user?.avatarURL() || '')
+        ],
+        ...thumbnail ? { thumbnail: { url: thumbnail } } : {}
+    });
 }
 
 const kickMember = ({ locale, reason, member, authorTag, authorUrl, botColor }: Omit<Options, 'days'>) => {
-    return new EmbedBuilder()
-        .setColor(botColor)
-        .setAuthor({ name: authorTag, iconURL: authorUrl })
-        .setTitle(MD.bold.b(locale.messageEmbed.confirmKickMember.title))
-        .setFields([
+    const thumbnail = member.user?.avatarURL();
+    return new EmbedBuilder({
+        color: botColor,
+        author: { name: authorTag, iconURL: authorUrl },
+        title: MD.bold.b(locale.messageEmbed.confirmKickMember.title),
+        fields: [
             { name: 'Tag', value: member.user.tag },
             ...reason ? [{ name: locale.messageEmbed.confirmKickMember.fieldReason, value: reason }] : []
-        ])
-        .setThumbnail(member.user?.avatarURL() || '')
+        ],
+        ...thumbnail ? { thumbnail: { url: thumbnail } } : {}
+    });
 }
 
 const softBanMember = ({ locale, botColor, authorTag, authorUrl, member }: Options) => {
-    return new EmbedBuilder()
-        .setColor(botColor)
-        .setAuthor({ name: authorTag, iconURL: authorUrl })
-        .setTitle(MD.bold.b(locale.messageEmbed.confirmSoftBan.title))
-        .setDescription(locale.messageEmbed.confirmSoftBan.description)
-        .setThumbnail(member.user?.avatarURL() ?? '');
+    const thumbnail = member.user?.avatarURL();
+    return new EmbedBuilder({
+        color: botColor,
+        author: { name: authorTag, iconURL: authorUrl },
+        title: MD.bold.b(locale.messageEmbed.confirmSoftBan.title),
+        description: locale.messageEmbed.confirmSoftBan.description,
+        ...thumbnail ? { thumbnail: { url: thumbnail } } : {}
+    });
 }
 
 export default {

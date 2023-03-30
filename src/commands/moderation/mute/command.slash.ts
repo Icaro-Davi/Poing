@@ -49,15 +49,13 @@ const execSlashCommand = middleware.create('COMMAND_INTERACTION', async function
                 next({ type: 'COMMAND_USER', message: { ephemeral: true, content: message } });
             },
             async onFinish(message) {
-                await AnswerMember({
-                    interaction, content: { content: message }
-                });
+                await AnswerMember({ interaction, content: { content: message } });
                 next();
             },
         });
     } else if (options.context.argument.isList) {
         const embed = await listMutedMembers({ guild: interaction.guild!, options });
-        await AnswerMember({ content: { embeds: [embed] } });
+        await AnswerMember({ interaction, content: { embeds: [embed] } });
         next();
     }
 });

@@ -16,9 +16,7 @@ const execDefaultCommand = middleware.create('COMMAND', async function (message,
             });
         },
         async onFinish(msg) {
-            await AnswerMember({
-                content: { content: msg }
-            });
+            await AnswerMember({ message, content: { content: msg } });
             next();
         },
     });

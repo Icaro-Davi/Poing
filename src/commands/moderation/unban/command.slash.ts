@@ -15,9 +15,7 @@ const execSlashCommand = middleware.create('COMMAND_INTERACTION', async function
             });
         },
         async onFinish(msg) {
-            await AnswerMember({
-                content: { content: msg, ephemeral: true }
-            });
+            await AnswerMember({ interaction, content: { content: msg, ephemeral: true } });
             next();
         },
     });

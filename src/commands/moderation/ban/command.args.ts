@@ -95,13 +95,12 @@ export const argMiddleware = middleware.createGetArgument(
         const days = args.get(argument.DAYS(options).name);
         const reason = args.get(argument.REASON(options).name);
         options.context.argument = {
-            isSoftBan: softBan!!,
-            isBan: banMember!!,
-            isList: list!!,
+            isSoftBan: !!softBan,
+            isBan: !!banMember,
+            isList: !!list,
             subCommand: (() => {
                 if (list) return arg.LIST.name;
                 if (softBan) return arg.SOFT_BAN.name;
-                if (banMember && !softBan) return arg.MEMBER.name;
                 return '';
             })()
         }
