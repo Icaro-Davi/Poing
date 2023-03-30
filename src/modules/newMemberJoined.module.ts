@@ -50,10 +50,10 @@ export async function createMessage<S extends IWelcomeMemberModuleSettings>({ di
 
     if (moduleSettings?.isMessageText) {
         moduleSettings.messageText &&
-            channel?.send(replaceValuesInString(moduleSettings.messageText, vars));
+            await channel?.send(replaceValuesInString(moduleSettings.messageText, vars));
     } else {
         (moduleSettings?.messageEmbed && moduleSettings.messageEmbed.description) &&
-            channel?.send({
+            await channel?.send({
                 content: vars.member.mention,
                 embeds: [createEmbedMessage(moduleSettings.messageEmbed, vars)]
             });
