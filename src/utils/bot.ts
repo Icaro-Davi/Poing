@@ -2,12 +2,13 @@ import { Guild, GuildMember, PartialGuildMember } from "discord.js";
 import moment from "moment";
 import { DiscordBot } from "../config"
 import { IGuildSchema } from "../domain/guild/Guild.schema"
+import HexColorToNumber from "./HexColorToNumber";
 
 export const getBotVars = ({ guildConf, discordGuild, guildMember }: { guildConf: IGuildSchema; discordGuild: Guild; guildMember: GuildMember | PartialGuildMember }) => {
     return {
         bot: {
             ...DiscordBot.Bot.getDefaultVars(),
-            hexColor: guildConf.bot.messageEmbedHexColor || DiscordBot.Bot.defaultBotHexColor
+            hexColor: HexColorToNumber(guildConf.bot.messageEmbedHexColor || DiscordBot.Bot.defaultBotHexColor)
         },
         guild: {
             name: discordGuild.name,
