@@ -12,6 +12,14 @@ class Database {
             mongoose.connection.on('connected', () => {
                 this.mongoDBOnline = true;
             });
+            mongoose.connection.on('disconnected', () => {
+                this.mongoDBOnline = false;
+                console.warn('MongoDB Disconnected');
+            });
+            mongoose.connection.on('reconnect', () => {
+                this.mongoDBOnline = true;
+                console.warn('Reconnected');
+            });
             mongoose.connection.on('error', err => {
                 console.error('[database connectMongoDB error] Could not connect to mongoDB, exiting process...', err);
                 process.exit(1);
@@ -20,6 +28,10 @@ class Database {
         } catch (error) {
             console.error('[database connectMongoDB error]', error);
         }
+    }
+
+    static isConnected() {
+        return this.mongoDBOnline;
     }
 
     static getMongoDBStatus() {

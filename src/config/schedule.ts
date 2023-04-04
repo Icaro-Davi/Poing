@@ -12,15 +12,36 @@ type ScheduleMuteEvent = {
 
 class ScheduleEvent {
     private static mainEventLoop: NodeJS.Timer;
-    private static loopTime = 1000 * 60 * 60;
     private static scheduledEvents: Map<string, ScheduleMuteEvent> = new Map<string, ScheduleMuteEvent>();
+    private static loopTime = 1000 * 60 * 60 * 1; // 1 hour
+    private static reconnect: {
+        timeoutRef?: NodeJS.Timeout;
+        time: number;
+    } = { time: 1000 * 30 };
 
     static start() {
         this.scheduleUnmuteMembersEvents();
+        this.startScheduleInterval();
+        return !!this.mainEventLoop;
+    }
+
+    private static startScheduleInterval() {
         this.mainEventLoop = setInterval(() => {
             this.scheduleUnmuteMembersEvents();
         }, this.loopTime);
-        return !!this.mainEventLoop;
+    }
+
+    private static onErrorWaitToReconnect() {
+        this.reconnect.timeoutRef = setTimeout(() => {
+            if (mongoose.connection.readyState !== 1) {
+                console.warn('ScheduleEvent try reconnect');
+                this.onErrorWaitToReconnect();
+            } else {
+                this.reconnect.timeoutRef && clearTimeout(this.reconnect.timeoutRef);
+                this.startScheduleInterval();
+                console.warn('ScheduleEvent Reconnected');
+            }
+        }, this.reconnect.time);
     }
 
     static stop() {
@@ -60,12 +81,21 @@ class ScheduleEvent {
     }
 
     private static async scheduleUnmuteMembersEvents() {
-        (await ScheduleUnmuteRepository.listByDate(moment(moment.utc().valueOf() + this.loopTime).toDate()))
-            .forEach(mute => {
-                moment(mute.timeout).valueOf() < moment.utc().valueOf()
-                    ? MuteApplication.unmute(mute._id, mute.guildId, mute.memberId).catch(err => console.log(err))
-                    : this.scheduleUnmute(mute._id, mute.guildId, mute.memberId, moment(mute.timeout).valueOf() - moment.utc().valueOf())
-            });
+        try {
+            if (mongoose.connection.readyState === 1) {
+                (await ScheduleUnmuteRepository.listByDate(moment(moment.utc().valueOf() + this.loopTime).toDate()))
+                    .forEach(mute => {
+                        moment(mute.timeout).valueOf() < moment.utc().valueOf()
+                            ? MuteApplication.unmute(mute._id, mute.guildId, mute.memberId).catch(err => console.log(err))
+                            : this.scheduleUnmute(mute._id, mute.guildId, mute.memberId, moment(mute.timeout).valueOf() - moment.utc().valueOf())
+                    });
+            } else {
+                this.stop();
+                this.onErrorWaitToReconnect();
+            }
+        } catch (error) {
+            console.error('[src.config.schedule.ScheduleEvent.scheduleUnmuteMembersEvents] Failed to get members');
+        }
     }
 }
 
